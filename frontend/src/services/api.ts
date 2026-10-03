@@ -10,8 +10,8 @@ import {
   AIActivityLog,
   AppNotification
 } from '../types';
-
-const API_BASE = '/api/v1';
+const ENV_BACKEND_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
+const API_BASE = `${ENV_BACKEND_URL}/api/v1`;
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
   const headers = {

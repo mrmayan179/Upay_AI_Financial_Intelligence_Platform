@@ -53,14 +53,27 @@ app.include_router(credit_router, prefix=API_PREFIX)
 app.include_router(voice_router, prefix=API_PREFIX)
 app.include_router(audit_router, prefix=API_PREFIX)
 
-@app.get("/")
-def root():
+@app.get("/api")
+def api_info():
     return {
         "service": "Upay AI Financial Intelligence Platform",
         "status": "ONLINE",
         "docs": "/docs",
         "environment": "Controlled Hackathon Proof of Concept"
     }
+
+FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
+if FRONTEND_DIST.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")
+else:
+    @app.get("/")
+    def root():
+        return {
+            "service": "Upay AI Financial Intelligence Platform",
+            "status": "ONLINE",
+            "docs": "/docs",
+            "environment": "Controlled Hackathon Proof of Concept"
+        }
 
 if __name__ == "__main__":
     import uvicorn

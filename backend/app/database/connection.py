@@ -13,6 +13,8 @@ DATABASE_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_SQLITE_URL = f"sqlite:///{DATABASE_DIR / 'upay_platform.db'}"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_SQLITE_URL)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(
     DATABASE_URL,
