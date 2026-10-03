@@ -236,22 +236,27 @@ export const CardView: React.FC<CardViewProps> = ({
           {/* RIGHT COLUMN: Controls & Simulation Tools */}
           <div className={`${isDesktop ? 'lg:col-span-7 space-y-6' : 'space-y-5'}`}>
             
-            {/* Card Security & Channel Controls */}
-            <section className="bg-slate-50/70 rounded-3xl p-5 shadow-xs border border-slate-200/80 space-y-3.5">
-              <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
+            {/* Card Security & Channel Controls (Light Elevated Color Card) */}
+            <section className="bg-gradient-to-br from-blue-50/95 via-sky-50/80 to-teal-50/50 rounded-3xl p-5 md:p-6 shadow-[0_8px_30px_rgba(0,71,186,0.08)] border border-blue-200/90 space-y-3.5 relative overflow-hidden">
+              {/* Subtle ambient light glow */}
+              <div className="absolute -top-12 -right-12 w-36 h-36 bg-blue-400/15 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="flex items-center justify-between border-b border-blue-200/70 pb-3 relative z-10">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-[#0047BA]" />
+                  <div className="p-1.5 rounded-xl bg-blue-100 text-[#0047BA] shadow-2xs">
+                    <Lock className="w-4 h-4" />
+                  </div>
                   <span>{isBn ? 'কার্ড সিকিউরিটি ও চ্যানেল নিয়ন্ত্রণ' : 'Card Security & Channel Control'}</span>
                 </h3>
-                <span className="text-[10px] font-mono font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-mono font-bold bg-blue-100/90 text-[#0047BA] px-2.5 py-0.5 rounded-full border border-blue-200/80 shadow-2xs">
                   {isBn ? 'লাইভ নিরাপত্তা শিল্ড' : 'ACTIVE ENCLAVE'}
                 </span>
               </div>
               
               {/* Toggle 1: Card Active / Freeze */}
-              <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50 transition border border-slate-100 shadow-2xs">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-blue-50/30 transition-all border border-blue-100/90 shadow-[0_2px_8px_rgba(0,71,186,0.04)] relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${card.card_enabled ? 'bg-blue-100 text-upayBlue' : 'bg-rose-100 text-rose-600'}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${card.card_enabled ? 'bg-blue-100 text-upayBlue' : 'bg-rose-100 text-rose-600'}`}>
                     <Lock className="w-5 h-5" />
                   </div>
                   <div>
@@ -267,16 +272,16 @@ export const CardView: React.FC<CardViewProps> = ({
                 </div>
                 <button
                   onClick={handleFreezeToggle}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 ${card.card_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 shadow-xs ${card.card_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${card.card_enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Toggle 2: Online Transactions */}
-              <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50 transition border border-slate-100 shadow-2xs">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-blue-50/30 transition-all border border-blue-100/90 shadow-[0_2px_8px_rgba(0,71,186,0.04)] relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div>
@@ -290,16 +295,16 @@ export const CardView: React.FC<CardViewProps> = ({
                 </div>
                 <button
                   onClick={() => toggleSetting('online_enabled', !card.online_enabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 ${card.online_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 shadow-xs ${card.online_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${card.online_enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Toggle 3: International Payments */}
-              <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50 transition border border-slate-100 shadow-2xs">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-blue-50/30 transition-all border border-blue-100/90 shadow-[0_2px_8px_rgba(0,71,186,0.04)] relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
@@ -313,16 +318,16 @@ export const CardView: React.FC<CardViewProps> = ({
                 </div>
                 <button
                   onClick={() => toggleSetting('international_enabled', !card.international_enabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 ${card.international_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 shadow-xs ${card.international_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${card.international_enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Toggle 4: NFC / Contactless */}
-              <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50 transition border border-slate-100 shadow-2xs">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-blue-50/30 transition-all border border-blue-100/90 shadow-[0_2px_8px_rgba(0,71,186,0.04)] relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <Wifi className="w-5 h-5 rotate-90" />
                   </div>
                   <div>
@@ -336,7 +341,7 @@ export const CardView: React.FC<CardViewProps> = ({
                 </div>
                 <button
                   onClick={() => toggleSetting('nfc_enabled', !card.nfc_enabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 ${card.nfc_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer shrink-0 shadow-xs ${card.nfc_enabled ? 'bg-upayBlue' : 'bg-slate-300'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${card.nfc_enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
