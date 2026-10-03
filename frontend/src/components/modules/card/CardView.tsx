@@ -33,8 +33,8 @@ export const CardView: React.FC<CardViewProps> = ({ card, onRefresh }) => {
 
   if (!card) {
     return (
-      <div className="p-8 text-center text-slate-500 font-bengali">
-        কার্ড লোড হচ্ছে...
+      <div className="p-8 text-center text-slate-500 font-sans">
+        {isBn ? 'কার্ড লোড হচ্ছে...' : 'Loading card...'}
       </div>
     );
   }

@@ -280,9 +280,9 @@ const translations: Record<Language, Record<string, string>> = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Language state: default to 'bn' (authentic Bengali Upay experience), switchable to 'en'
+  // 1. Language state: default to 'en' (English), switchable to 'bn' (Bengali)
   const [language, setLanguageState] = useState<Language>(() => {
-    return (localStorage.getItem('upay_language') as Language) || 'bn';
+    return (localStorage.getItem('upay_language') as Language) || 'en';
   });
 
   // 2. ViewMode: Auto-detect based on screen width!

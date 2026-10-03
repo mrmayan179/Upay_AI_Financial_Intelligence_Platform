@@ -120,8 +120,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
       {/* 2. ACTIVE CASES SECTION (SRS Section 9.1: Must show active cases prominently) */}
       <section className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <h3 className="text-sm font-bold text-slate-900 font-bengali">
-            সক্রিয় বিরোধ ও কেসসমূহ ({cases.length})
+          <h3 className={`text-sm font-bold text-slate-900 ${isBn ? 'font-bengali' : 'font-sans'}`}>
+            {isBn ? 'সক্রিয় বিরোধ ও কেসসমূহ' : 'Active Cases'} ({cases.length})
           </h3>
           <span className="text-[11px] text-slate-500 font-sans">Active Cases Only</span>
         </div>
@@ -129,8 +129,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
         {cases.length === 0 ? (
           <div className="p-8 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
             <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2 opacity-80" />
-            <h4 className="text-sm font-bold text-slate-800 font-bengali">কোনো সক্রিয় কেস নেই</h4>
-            <p className="text-xs text-slate-500 font-bengali mt-1">আপনার সব অভিযোগ সফলভাবে সমাধান হয়েছে।</p>
+            <h4 className={`text-sm font-bold text-slate-800 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'কোনো সক্রিয় কেস নেই' : 'No active cases'}</h4>
+            <p className={`text-xs text-slate-500 mt-1 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'আপনার সব অভিযোগ সফলভাবে সমাধান হয়েছে।' : 'All your complaints have been resolved successfully.'}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -175,9 +175,9 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100">
-                    <span className="font-bengali">স্ট্যাটাস: <strong className="text-slate-800">{c.status}</strong></span>
+                    <span className={isBn ? 'font-bengali' : 'font-sans'}>{isBn ? 'স্ট্যাটাস:' : 'Status:'} <strong className="text-slate-800">{c.status}</strong></span>
                     <span className="text-[11px] text-upayBlue font-semibold flex items-center gap-1 group-hover:translate-x-1 transition">
-                      বিস্তারিত দেখুন <ChevronRight className="w-3.5 h-3.5" />
+                      {isBn ? 'বিস্তারিত দেখুন' : 'View Details'} <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
                 </div>
@@ -204,21 +204,21 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900 font-bengali">নতুন অভিযোগ দায়ের করুন</h3>
-                <p className="text-xs text-slate-400 font-bengali">এআই স্বয়ংক্রিয়ভাবে ক্যাটাগরি ও প্রায়োরিটি নির্ধারণ করবে</p>
+                <h3 className={`text-base font-bold text-slate-900 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'নতুন অভিযোগ দায়ের করুন' : 'File New Complaint'}</h3>
+                <p className={`text-xs text-slate-400 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'এআই স্বয়ংক্রিয়ভাবে ক্যাটাগরি ও প্রায়োরিটি নির্ধারণ করবে' : 'AI will automatically determine category and priority'}</p>
               </div>
             </div>
 
             <form onSubmit={handleCreateCase} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1 font-bengali">
-                  সমস্যার বিস্তারিত বিবরণ দিন
+                <label className={`text-xs font-bold text-slate-700 block mb-1 ${isBn ? 'font-bengali' : 'font-sans'}`}>
+                  {isBn ? 'সমস্যার বিস্তারিত বিবরণ দিন' : 'Provide detailed description of the issue'}
                 </label>
                 <textarea
                   rows={4}
                   value={complaintText}
                   onChange={(e) => handleTextChange(e.target.value)}
-                  placeholder="যেমন: আজ সকালে মীনা বাজার কিউআর পেমেন্টে ১৪০০ টাকা কেটেছে কিন্তু মার্চেন্ট পেমেন্ট পায়নি..."
+                  placeholder={isBn ? "যেমন: আজ সকালে মীনা বাজার কিউআর পেমেন্টে ১৪০০ টাকা কেটেছে কিন্তু মার্চেন্ট পেমেন্ট পায়নি..." : "e.g., Today morning 1400 BDT was deducted for Meena Bazar QR payment but merchant didn't receive it..."}
                   className="w-full p-3 rounded-2xl border border-slate-200 text-xs font-sans focus:outline-none focus:border-upayBlue focus:ring-1 focus:ring-upayBlue resize-none"
                   required
                 />
@@ -228,17 +228,17 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
               {aiPreview && (
                 <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs animate-in fade-in duration-200">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-bold text-upayBlue flex items-center gap-1 font-bengali">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> এআই বিশ্লেষণ
+                    <span className={`font-bold text-upayBlue flex items-center gap-1 ${isBn ? 'font-bengali' : 'font-sans'}`}>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {isBn ? 'এআই বিশ্লেষণ' : 'AI Analysis'}
                     </span>
                     <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-mono text-slate-600">
                       {(aiPreview.confidence * 100).toFixed(0)}% Confidence
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 mt-2">
-                    <div>ক্যাটাগরি: <strong className="text-slate-900">{aiPreview.category}</strong></div>
-                    <div>প্রায়োরিটি: <strong className="text-slate-900">{aiPreview.priority}</strong></div>
-                    <div className="col-span-2">দায়িত্বপ্রাপ্ত দল: <strong>{aiPreview.suggested_team}</strong></div>
+                  <div className={`grid grid-cols-2 gap-2 text-[11px] text-slate-700 mt-2 ${isBn ? 'font-bengali' : 'font-sans'}`}>
+                    <div>{isBn ? 'ক্যাটাগরি:' : 'Category:'} <strong className="text-slate-900 font-sans">{aiPreview.category}</strong></div>
+                    <div>{isBn ? 'প্রায়োরিটি:' : 'Priority:'} <strong className="text-slate-900 font-sans">{aiPreview.priority}</strong></div>
+                    <div className="col-span-2">{isBn ? 'দায়িত্বপ্রাপ্ত দল:' : 'Assigned Team:'} <strong className="font-sans">{aiPreview.suggested_team}</strong></div>
                   </div>
                 </div>
               )}
@@ -249,7 +249,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
                 className="w-full py-3 rounded-2xl bg-upayBlue hover:bg-upayNavy text-white font-bold text-xs tracking-wide shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer font-bengali"
               >
                 <Send className="w-4 h-4" />
-                <span>{loading ? "অভিযোগ জমা হচ্ছে..." : "অভিযোগ জমা দিন"}</span>
+                <span>{loading ? (isBn ? "অভিযোগ জমা হচ্ছে..." : "Submitting...") : (isBn ? "অভিযোগ জমা দিন" : "Submit Complaint")}</span>
               </button>
             </form>
 
@@ -299,7 +299,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
             {/* Progress Section */}
             <div className="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-100 mb-5">
               <div className="flex items-center justify-between text-xs mb-2">
-                <span className="font-bold text-slate-800 font-bengali">তদন্তের অগ্রগতি</span>
+                <span className={`font-bold text-slate-800 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'তদন্তের অগ্রগতি' : 'Investigation Progress'}</span>
                 <span className="font-bold text-upayBlue font-mono">{selectedCase.progress_percent}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
@@ -343,10 +343,10 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
               <button
                 onClick={handleEscalateCase}
                 disabled={escalating}
-                className="w-full py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs tracking-wide transition flex items-center justify-center gap-2 cursor-pointer font-bengali"
+                className={`w-full py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs tracking-wide transition flex items-center justify-center gap-2 cursor-pointer ${isBn ? 'font-bengali' : 'font-sans'}`}
               >
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
-                <span>{escalating ? "এসকেলেট করা হচ্ছে..." : "সুপারভাইজরের কাছে এসকেলেট করুন"}</span>
+                <span>{escalating ? (isBn ? "এসকেলেট করা হচ্ছে..." : "Escalating...") : (isBn ? "সুপারভাইজরের কাছে এসকেলেট করুন" : "Escalate to Supervisor")}</span>
               </button>
             )}
 

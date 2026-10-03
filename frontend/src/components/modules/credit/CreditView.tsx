@@ -116,7 +116,7 @@ export const CreditView: React.FC<CreditViewProps> = ({ credit, onRefresh }) => 
       {/* 2. SHAP XAI EXPLAINABILITY: WHY THIS RESULT? */}
       <section className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 font-bengali">ফলাফলের পেছনের কারণসমূহ (XAI)</h3>
+          <h3 className="text-sm font-bold text-slate-900 font-bengali">{isBn ? 'ফলাফলের পেছনের কারণসমূহ (XAI)' : 'Reasons Behind the Result (XAI)'}</h3>
           <p className="text-xs text-slate-500 font-sans">SHAP Feature Attribution Factor Analysis</p>
         </div>
 
@@ -158,8 +158,8 @@ export const CreditView: React.FC<CreditViewProps> = ({ credit, onRefresh }) => 
             <Building2 className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-900 font-bengali">পার্টনার ব্যাংক রিভিউ স্ট্যাটাস</h4>
-            <p className="text-xs text-slate-500 font-bengali">লাইসেন্সপ্রাপ্ত বাণিজ্যিক ব্যাংক কর্তৃক চূড়ান্ত যাচাই</p>
+            <h4 className="text-sm font-bold text-slate-900 font-bengali">{isBn ? 'পার্টনার ব্যাংক রিভিউ স্ট্যাটাস' : 'Partner Bank Review Status'}</h4>
+            <p className="text-xs text-slate-500 font-bengali">{isBn ? 'লাইসেন্সপ্রাপ্ত বাণিজ্যিক ব্যাংক কর্তৃক চূড়ান্ত যাচাই' : 'Final verification by licensed commercial banks'}</p>
           </div>
         </div>
 

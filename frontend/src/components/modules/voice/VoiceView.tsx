@@ -242,8 +242,8 @@ export const VoiceView: React.FC = () => {
       {callActive && (
         <section className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-slate-900 font-bengali uppercase tracking-wider">
-              ভয়েস কমান্ড / নিয়ন্ত্রিত অ্যাকাউন্ট টুলস
+            <h4 className={`text-xs font-bold text-slate-900 uppercase tracking-wider ${isBn ? 'font-bengali' : 'font-sans'}`}>
+              {isBn ? 'ভয়েস কমান্ড / নিয়ন্ত্রিত অ্যাকাউন্ট টুলস' : 'Voice Command / Controlled Account Tools'}
             </h4>
             <span className="text-[10px] text-slate-400 font-sans">Controlled Allow-list Tools</span>
           </div>
@@ -255,7 +255,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-slate-900 block font-bengali">💰 ব্যালেন্স জানুন</span>
+              <span className={`font-bold text-slate-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '💰 ব্যালেন্স জানুন' : '💰 Check Balance'}</span>
               <span className="text-[10px] text-slate-500">get_account_summary</span>
             </button>
 
@@ -264,7 +264,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-slate-900 block font-bengali">📜 শেষ লেনদেনসমূহ</span>
+              <span className={`font-bold text-slate-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '📜 শেষ লেনদেনসমূহ' : '📜 Recent Transactions'}</span>
               <span className="text-[10px] text-slate-500">get_recent_transactions</span>
             </button>
 
@@ -273,7 +273,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-slate-900 block font-bengali">💳 কার্ড ও ইউএসডি কোটা</span>
+              <span className={`font-bold text-slate-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '💳 কার্ড ও ইউএসডি কোটা' : '💳 Card & USD Quota'}</span>
               <span className="text-[10px] text-slate-500">get_card_status</span>
             </button>
 
@@ -282,7 +282,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-slate-900 block font-bengali">📋 কেস ট্র্যাকিং স্ট্যাটাস</span>
+              <span className={`font-bold text-slate-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '📋 কেস ট্র্যাকিং স্ট্যাটাস' : '📋 Case Tracking Status'}</span>
               <span className="text-[10px] text-slate-500">get_case_status</span>
             </button>
 
@@ -294,7 +294,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-amber-200 bg-amber-50 hover:bg-amber-100 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-amber-900 block font-bengali">🚨 অভিযোগ কেস তৈরি</span>
+              <span className={`font-bold text-amber-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '🚨 অভিযোগ কেস তৈরি' : '🚨 Create Complaint Case'}</span>
               <span className="text-[10px] text-amber-700">create_case (Voice Dispatch)</span>
             </button>
 
@@ -303,7 +303,7 @@ export const VoiceView: React.FC = () => {
               disabled={loadingTool}
               className="p-3 rounded-2xl border border-rose-200 bg-rose-50 hover:bg-rose-100 transition text-xs font-medium cursor-pointer"
             >
-              <span className="font-bold text-rose-900 block font-bengali">👨‍💼 হিউম্যান এসকেলেশন</span>
+              <span className={`font-bold text-rose-900 block ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '👨‍💼 হিউম্যান এসকেলেশন' : '👨‍💼 Human Escalation'}</span>
               <span className="text-[10px] text-rose-700">escalate_to_human_agent</span>
             </button>
 
@@ -316,7 +316,7 @@ export const VoiceView: React.FC = () => {
         <section className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
             <MessageSquare className="w-4 h-4 text-upayBlue" />
-            <h4 className="text-xs font-bold text-slate-900 font-bengali">রিয়েলটাইম অডিও ট্রান্সক্রিপ্ট</h4>
+            <h4 className={`text-xs font-bold text-slate-900 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'রিয়েলটাইম অডিও ট্রান্সক্রিপ্ট' : 'Realtime Audio Transcript'}</h4>
           </div>
 
           <div className="space-y-3 max-h-[260px] overflow-y-auto no-scrollbar pr-1">
@@ -352,14 +352,14 @@ export const VoiceView: React.FC = () => {
                 <KeyRound className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900 font-bengali">কলার আইডেন্টিটি ভেরিফিকেশন</h3>
-                <p className="text-xs text-slate-400 font-bengali">ব্যালেন্স ও স্পর্শকাতর তথ্য দেখার পূর্বে যাচাইকরণ</p>
+                <h3 className={`text-base font-bold text-slate-900 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'কলার আইডেন্টিটি ভেরিফিকেশন' : 'Caller Identity Verification'}</h3>
+                <p className={`text-xs text-slate-400 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'ব্যালেন্স ও স্পর্শকাতর তথ্য দেখার পূর্বে যাচাইকরণ' : 'Verification required before viewing balance and sensitive information'}</p>
               </div>
             </div>
 
             <form onSubmit={handleVerifySubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1 font-bengali">৪ সংখ্যার পিন নম্বর (Default: 1234)</label>
+                <label className={`font-bold text-slate-700 block mb-1 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? '৪ সংখ্যার পিন নম্বর (Default: 1234)' : '4-digit PIN (Default: 1234)'}</label>
                 <input
                   type="password"
                   maxLength={4}
@@ -370,7 +370,7 @@ export const VoiceView: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1 font-bengali">অথবা পিতার নাম (বিকল্প ভেরিফিকেশন)</label>
+                <label className={`font-bold text-slate-700 block mb-1 ${isBn ? 'font-bengali' : 'font-sans'}`}>{isBn ? 'অথবা পিতার নাম (বিকল্প ভেরিফিকেশন)' : 'Or Father\'s Name (Alternative Verification)'}</label>
                 <input
                   type="text"
                   placeholder="যেমন: MD. SHAHIDUL ISLAM"
@@ -384,15 +384,15 @@ export const VoiceView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsVerifyModalOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold font-bengali"
+                  className={`flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold ${isBn ? 'font-bengali' : 'font-sans'}`}
                 >
-                  বাতিল
+                  {isBn ? 'বাতিল' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-upayBlue hover:bg-upayNavy text-white font-bold font-bengali shadow-md"
+                  className={`flex-1 py-2.5 rounded-xl bg-upayBlue hover:bg-upayNavy text-white font-bold shadow-md ${isBn ? 'font-bengali' : 'font-sans'}`}
                 >
-                  যাচাই করুন
+                  {isBn ? 'যাচাই করুন' : 'Verify'}
                 </button>
               </div>
             </form>
