@@ -119,7 +119,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
         <div className={`grid grid-cols-1 ${isDesktop ? 'lg:grid-cols-12 gap-8 items-start' : 'gap-5'}`}>
           
           {/* LEFT COLUMN: Hero & Create Form (Sticky on Desktop) */}
-          <div className={`${isDesktop ? 'lg:col-span-4 space-y-6 sticky top-24' : 'space-y-5'}`}>
+          <div className={`${isDesktop ? 'lg:col-span-5 space-y-6 sticky top-24' : 'space-y-5'}`}>
             
             {/* Header Hero & Create Button */}
             <div className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-3xl p-6 shadow-sm relative overflow-hidden">
@@ -177,7 +177,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
           </div>
 
           {/* RIGHT COLUMN: Active Cases List (Stacking Deck from it farm web) */}
-          <div className={`${isDesktop ? 'lg:col-span-8 space-y-4' : 'space-y-3'}`}>
+          <div className={`${isDesktop ? 'lg:col-span-7 space-y-4' : 'space-y-3'}`}>
             
             <div className="flex items-center justify-between px-1 mb-2">
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
