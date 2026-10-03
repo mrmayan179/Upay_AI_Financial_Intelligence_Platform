@@ -1,0 +1,9 @@
+{
+  "total_test_transactions": 10000,
+  "total_flagged_anomalies": 554,
+  "anomaly_flag_rate": 0.0554,
+  "fraud_anomaly_capture_rate": 0.9927,
+  "normal_transaction_fpr": 0.0008,
+  "raw_score_mean": 0.2045,
+  "raw_score_std": 0.0806
+}

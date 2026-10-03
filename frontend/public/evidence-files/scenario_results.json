@@ -1,0 +1,217 @@
+{
+  "timestamp": "2026-10-03T23:44:23.424977",
+  "summary": {
+    "total": 21,
+    "passed": 21,
+    "failed": 0
+  },
+  "fraud_scenarios": [
+    {
+      "id": "F-001",
+      "name": "Normal Daily Grocery Payment",
+      "status": "PASS",
+      "composite_score": 0,
+      "decision": "ALLOW",
+      "risk_level": "LOW",
+      "top_reasons": [
+        "High absolute transaction monetary value"
+      ]
+    },
+    {
+      "id": "F-002",
+      "name": "First-time Payment to New Recipient",
+      "status": "PASS",
+      "composite_score": 0,
+      "decision": "ALLOW",
+      "risk_level": "LOW",
+      "top_reasons": [
+        "Transfer to an unverified new counterparty",
+        "High absolute transaction monetary value"
+      ]
+    },
+    {
+      "id": "F-003",
+      "name": "Transaction from Unrecognized New Device",
+      "status": "PASS",
+      "composite_score": 45,
+      "decision": "CHALLENGE_2FA",
+      "risk_level": "MEDIUM",
+      "top_reasons": [
+        "Transaction amount significantly deviates from historical baseline",
+        "Transaction initiated from an unrecognized device",
+        "Rule: New Device Spending Anomaly"
+      ]
+    },
+    {
+      "id": "F-004",
+      "name": "Geographic Location Jump",
+      "status": "PASS",
+      "composite_score": 10,
+      "decision": "ALLOW",
+      "risk_level": "LOW",
+      "top_reasons": [
+        "Transaction amount significantly deviates from historical baseline",
+        "Transaction geolocation unusual for customer"
+      ]
+    },
+    {
+      "id": "F-005",
+      "name": "Sudden High Velocity Spike",
+      "status": "PASS",
+      "composite_score": 84,
+      "decision": "HOLD_FOR_REVIEW",
+      "risk_level": "HIGH",
+      "top_reasons": [
+        "Sudden burst in 1-hour transaction frequency",
+        "Transaction amount significantly deviates from historical baseline",
+        "Elevated 24-hour transaction velocity",
+        "Rule: Rapid Velocity Threshold Exceeded"
+      ]
+    },
+    {
+      "id": "F-006",
+      "name": "Very Unusual Amount (12x Baseline)",
+      "status": "PASS",
+      "composite_score": 72,
+      "decision": "HOLD_FOR_REVIEW",
+      "risk_level": "HIGH",
+      "top_reasons": [
+        "Transaction amount significantly deviates from historical baseline",
+        "Transfer to an unverified new counterparty",
+        "Rule: Extreme Amount Outlier"
+      ]
+    },
+    {
+      "id": "F-007",
+      "name": "Account Takeover (ATO) Multi-Vector Attack",
+      "status": "PASS",
+      "composite_score": 99,
+      "decision": "BLOCK",
+      "risk_level": "CRITICAL",
+      "top_reasons": [
+        "Sudden burst in 1-hour transaction frequency",
+        "Transaction amount significantly deviates from historical baseline",
+        "Elevated 24-hour transaction velocity",
+        "Rule: Extreme Amount Outlier"
+      ]
+    }
+  ],
+  "credit_scenarios": [
+    {
+      "id": "C-001",
+      "name": "Stable Salaried Professional",
+      "status": "PASS",
+      "readiness_score": 98,
+      "risk_category": "LOW",
+      "limit_range": "BDT 34,000 - BDT 72,200"
+    },
+    {
+      "id": "C-002",
+      "name": "Reliable SME Retailer with Strong Repayments",
+      "status": "PASS",
+      "readiness_score": 98,
+      "risk_category": "LOW",
+      "limit_range": "BDT 48,000 - BDT 102,000"
+    },
+    {
+      "id": "C-003",
+      "name": "Freelancer with Moderate / Emerging Cash Flows",
+      "status": "PASS",
+      "readiness_score": 98,
+      "risk_category": "LOW",
+      "limit_range": "BDT 22,000 - BDT 46,800"
+    },
+    {
+      "id": "C-004",
+      "name": "High-Risk Customer with Delinquency & Immediate Cashout",
+      "status": "PASS",
+      "readiness_score": 5,
+      "risk_category": "HIGH",
+      "limit_range": "BDT 0 (Credit readiness criteria not met)"
+    }
+  ],
+  "complaint_scenarios": [
+    {
+      "id": "R-001",
+      "name": "Payment Stuck at Merchant QR",
+      "status": "PASS",
+      "category": "PAYMENT",
+      "team": "TRANSACTION_OPERATIONS",
+      "action": "VERIFY_TRANSACTION_RECONCILIATION"
+    },
+    {
+      "id": "R-002",
+      "name": "Urgent Fraud Dispute / Unauthorized Cashout",
+      "status": "PASS",
+      "category": "FRAUD",
+      "team": "FRAUD_INVESTIGATION",
+      "action": "FREEZE_ACCOUNT_AND_ESCALATE"
+    },
+    {
+      "id": "R-003",
+      "name": "Dual Currency Card Declined Online",
+      "status": "PASS",
+      "category": "CARD",
+      "team": "CARD_SERVICES",
+      "action": "CHECK_ENDORSEMENT_LIMIT_AND_TOGGLES"
+    },
+    {
+      "id": "R-004",
+      "name": "Account PIN Lock After Wrong Attempts",
+      "status": "PASS",
+      "category": "ACCOUNT",
+      "team": "DISPUTES",
+      "action": "SEND_OTP_RESET_CHALLENGE"
+    }
+  ],
+  "voice_scenarios": [
+    {
+      "id": "V-001",
+      "name": "Successful Voice Caller 2FA Verification",
+      "status": "PASS",
+      "intent": "VERIFY_CALLER",
+      "expected_outcome": "VERIFIED_PROCEED_TO_ASSISTANCE",
+      "should_escalate": false
+    },
+    {
+      "id": "V-002",
+      "name": "Failed Voice Biometric / Security Challenge",
+      "status": "PASS",
+      "intent": "VERIFY_CALLER",
+      "expected_outcome": "REJECT_AND_LOCK_CALL_SESSION",
+      "should_escalate": false
+    },
+    {
+      "id": "V-003",
+      "name": "Caller Balance Inquiry Voice Workflow",
+      "status": "PASS",
+      "intent": "BALANCE_INQUIRY",
+      "expected_outcome": "ANNOUNCE_WALLET_BALANCE",
+      "should_escalate": false
+    },
+    {
+      "id": "V-004",
+      "name": "Last Transaction Lookup Voice Workflow",
+      "status": "PASS",
+      "intent": "TRANSACTION_HISTORY",
+      "expected_outcome": "READOUT_RECENT_TRANSACTION",
+      "should_escalate": false
+    },
+    {
+      "id": "V-005",
+      "name": "Automated Dispute Case Creation via Voice",
+      "status": "PASS",
+      "intent": "PAYMENT_STUCK",
+      "expected_outcome": "CASE_TICKET_GENERATED",
+      "should_escalate": false
+    },
+    {
+      "id": "V-006",
+      "name": "Urgent Human Agent Escalation for High-Risk Distress",
+      "status": "PASS",
+      "intent": "COMPLEX_FRAUD",
+      "expected_outcome": "PRIORITY_HOTLINE_TRANSFER",
+      "should_escalate": true
+    }
+  ]
+}

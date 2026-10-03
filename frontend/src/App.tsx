@@ -8,6 +8,7 @@ import { ReportView } from './components/modules/report/ReportView';
 import { CreditView } from './components/modules/credit/CreditView';
 import { VoiceView } from './components/modules/voice/VoiceView';
 import { AuditView } from './components/modules/audit/AuditView';
+import { EvidenceView } from './components/modules/evidence/EvidenceView';
 import { BalanceBottomSheet } from './components/shared/BalanceBottomSheet';
 import { NotificationModal } from './components/shared/NotificationModal';
 import { api } from './services/api';
@@ -15,7 +16,9 @@ import { UserProfile, Card as CardType, Case, CreditProfile, AppNotification } f
 
 export const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && localStorage.getItem('upay_authenticated') === 'true';
+  });
   const [currentTab, setCurrentTab] = useState<ActiveTab>('home');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [card, setCard] = useState<CardType | null>(null);
@@ -108,6 +111,16 @@ export const App: React.FC = () => {
     }, 2400);
     return () => clearTimeout(timer);
   }, []);
+
+  const isEvidencePath = typeof window !== 'undefined' && (
+    window.location.pathname === '/evidence' ||
+    window.location.pathname === '/evidence/' ||
+    window.location.pathname.startsWith('/evidence')
+  );
+
+  if (isEvidencePath) {
+    return <EvidenceView />;
+  }
 
   if (showSplash) {
     return <SplashView onComplete={() => setShowSplash(false)} />;

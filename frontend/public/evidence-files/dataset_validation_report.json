@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-10-03T23:44:20.623417",
+  "status": "PASS",
+  "tests": {
+    "file_existence": {
+      "status": "PASS",
+      "files_checked": 12
+    },
+    "primary_key_uniqueness": {
+      "status": "PASS"
+    },
+    "foreign_key_integrity": {
+      "status": "PASS"
+    },
+    "financial_sanity": {
+      "status": "PASS"
+    },
+    "synthetic_pii_check": {
+      "status": "PASS"
+    },
+    "label_distribution": {
+      "status": "PASS",
+      "fraud_rate": 0.055,
+      "credit_risk_rate": 0.1106
+    }
+  },
+  "summary": {}
+}
