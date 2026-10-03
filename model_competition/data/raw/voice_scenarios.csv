@@ -1,0 +1,151 @@
+scenario_id,customer_id,intent,verification_required,expected_result,expected_tool,should_escalate
+VOICE-001,SYN-U-12787,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-002,SYN-U-16288,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-003,SYN-U-18735,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-004,SYN-U-15494,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-005,SYN-U-13289,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-006,SYN-U-13318,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-007,SYN-U-19180,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-008,SYN-U-16457,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-009,SYN-U-10369,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-010,SYN-U-19843,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-011,SYN-U-18125,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-012,SYN-U-14099,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-013,SYN-U-19651,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-014,SYN-U-13101,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-015,SYN-U-10551,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-016,SYN-U-16485,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-017,SYN-U-11368,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-018,SYN-U-14718,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-019,SYN-U-13527,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-020,SYN-U-17341,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-021,SYN-U-12215,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-022,SYN-U-10970,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-023,SYN-U-15350,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-024,SYN-U-13007,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-025,SYN-U-18880,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-026,SYN-U-11009,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-027,SYN-U-15966,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-028,SYN-U-19983,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-029,SYN-U-14712,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-030,SYN-U-18369,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-031,SYN-U-16038,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-032,SYN-U-10507,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-033,SYN-U-12880,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-034,SYN-U-12891,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-035,SYN-U-12746,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-036,SYN-U-18437,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-037,SYN-U-18088,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-038,SYN-U-19620,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-039,SYN-U-17559,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-040,SYN-U-11863,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-041,SYN-U-15856,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-042,SYN-U-17057,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-043,SYN-U-16193,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-044,SYN-U-19571,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-045,SYN-U-19198,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-046,SYN-U-11774,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-047,SYN-U-10603,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-048,SYN-U-15885,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-049,SYN-U-12884,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-050,SYN-U-18471,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-051,SYN-U-12904,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-052,SYN-U-14962,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-053,SYN-U-17175,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-054,SYN-U-12107,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-055,SYN-U-11382,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-056,SYN-U-11591,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-057,SYN-U-14096,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-058,SYN-U-10307,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-059,SYN-U-12730,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-060,SYN-U-16725,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-061,SYN-U-12776,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-062,SYN-U-14270,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-063,SYN-U-11518,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-064,SYN-U-16950,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-065,SYN-U-16762,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-066,SYN-U-19483,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-067,SYN-U-14452,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-068,SYN-U-11769,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-069,SYN-U-17470,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-070,SYN-U-10637,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-071,SYN-U-10293,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-072,SYN-U-11035,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-073,SYN-U-15180,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-074,SYN-U-10618,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-075,SYN-U-11899,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-076,SYN-U-19353,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,1
+VOICE-077,SYN-U-19598,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-078,SYN-U-15732,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-079,SYN-U-10272,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-080,SYN-U-12145,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-081,SYN-U-13467,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-082,SYN-U-17003,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-083,SYN-U-16830,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-084,SYN-U-11184,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-085,SYN-U-11333,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-086,SYN-U-17584,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-087,SYN-U-12367,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-088,SYN-U-17382,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-089,SYN-U-15480,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-090,SYN-U-17067,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-091,SYN-U-13337,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-092,SYN-U-13522,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-093,SYN-U-11909,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-094,SYN-U-18280,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-095,SYN-U-14180,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-096,SYN-U-12191,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-097,SYN-U-15673,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-098,SYN-U-12234,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-099,SYN-U-10811,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-100,SYN-U-12643,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-101,SYN-U-11629,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-102,SYN-U-16510,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-103,SYN-U-13449,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-104,SYN-U-11972,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-105,SYN-U-11308,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-106,SYN-U-13207,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-107,SYN-U-18914,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-108,SYN-U-12795,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-109,SYN-U-15140,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-110,SYN-U-16227,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-111,SYN-U-19418,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-112,SYN-U-18951,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-113,SYN-U-16840,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-114,SYN-U-11483,DISPUTE_STATUS,1,Query open case progress percent and estimated resolution timeline.,get_dispute_status,0
+VOICE-115,SYN-U-18675,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-116,SYN-U-13145,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-117,SYN-U-13732,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-118,SYN-U-16938,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-119,SYN-U-19471,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-120,SYN-U-12658,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-121,SYN-U-17527,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-122,SYN-U-17767,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-123,SYN-U-11056,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-124,SYN-U-10824,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-125,SYN-U-10261,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,1
+VOICE-126,SYN-U-11506,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-127,SYN-U-10211,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-128,SYN-U-10088,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-129,SYN-U-14924,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-130,SYN-U-17281,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-131,SYN-U-13325,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-132,SYN-U-10088,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-133,SYN-U-14198,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-134,SYN-U-17921,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-135,SYN-U-14627,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-136,SYN-U-15258,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-137,SYN-U-13478,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-138,SYN-U-19585,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-139,SYN-U-19923,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-140,SYN-U-14812,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0
+VOICE-141,SYN-U-15227,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-142,SYN-U-12592,LIMIT_CHANGE,1,Explain passport endorsement quota status and provide upload link.,get_balance,0
+VOICE-143,SYN-U-16264,PAYMENT_STUCK,1,Retrieve recent transaction status and initiate auto-investigation if pending.,get_transaction,0
+VOICE-144,SYN-U-15574,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-145,SYN-U-11947,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-146,SYN-U-10203,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-147,SYN-U-13300,CARD_BLOCK_REQUEST,1,Instantly change card status to FROZEN and send security SMS.,freeze_card,0
+VOICE-148,SYN-U-12351,COMPLEX_FRAUD,1,Create immediate critical fraud dispute case and bridge caller to fraud specialist.,create_case,1
+VOICE-149,SYN-U-14935,BALANCE_INQUIRY,1,Provide current wallet BDT balance after 2FA verification.,get_balance,0
+VOICE-150,SYN-U-16447,TRANSACTION_HISTORY,1,List last 3 completed transactions with amount and recipient.,get_transaction,0

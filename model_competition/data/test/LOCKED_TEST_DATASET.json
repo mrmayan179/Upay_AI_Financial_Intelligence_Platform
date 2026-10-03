@@ -1,0 +1,26 @@
+{
+  "status": "LOCKED",
+  "lock_timestamp": "2026-10-03T23:44:21.265475",
+  "random_seed": 20261003,
+  "split_ratio": {
+    "train": 0.8,
+    "test": 0.2
+  },
+  "description": "This test partition is cryptographically locked for unbiased model evaluation. It must NEVER be used for training, feature selection, or hyperparameter tuning.",
+  "files": {
+    "customers_test.csv": {
+      "rows": 2000,
+      "sha256": "dff6a41b86945f3b89c5fef62f7f72c2bab66d6eab27bd8245ff5d3a07080e39"
+    },
+    "transactions_test.csv": {
+      "rows": 10000,
+      "sha256": "b57f9d083999c740370353405257b4d59024b88fe46dea16b143becb7943fab3",
+      "fraud_rate": 0.055
+    },
+    "credit_test.csv": {
+      "rows": 2000,
+      "sha256": "f6c27106d4c442e058b1e95eed6687176b09898b07ff30ca6937a2f7c16fe970",
+      "high_risk_rate": 0.1105
+    }
+  }
+}

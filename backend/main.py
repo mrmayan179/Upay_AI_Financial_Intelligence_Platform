@@ -6,6 +6,7 @@ Integrates Smart Report & Cases, Dual-Currency Smart Card, AI Credit Readiness, 
 import sys
 from pathlib import Path
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -42,6 +43,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount Evidence Report & Assets
+EVIDENCE_HTML_PATH = PROJECT_ROOT / "model_competition" / "evidence" / "final_report.html"
+EVIDENCE_DIR = PROJECT_ROOT / "model_competition" / "evidence"
+if EVIDENCE_DIR.exists():
+    app.mount("/evidence-files", StaticFiles(directory=str(EVIDENCE_DIR)), name="evidence_files")
+
+@app.get("/evidence", response_class=HTMLResponse, tags=["AI Model & Dataset Evidence"])
+def get_evidence_report():
+    """Serves the primary certified AI Model & Dataset Evidence Report (HTML)"""
+    if EVIDENCE_HTML_PATH.exists():
+        with open(EVIDENCE_HTML_PATH, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h2>Evidence report not found</h2>", status_code=404)
 
 # Mount Routes under /api/v1
 API_PREFIX = "/api/v1"

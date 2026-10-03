@@ -1,0 +1,129 @@
+{
+  "registry_version": "1.0.0",
+  "last_updated": "2026-10-03T23:44:22.477423",
+  "models": {
+    "fraud_risk_xgboost": {
+      "model_name": "fraud_risk_xgboost",
+      "model_version": "fraud-xgb-1.0.0",
+      "training_dataset_version": "v1.0.0",
+      "training_date": "2026-10-03T23:44:21.605030",
+      "algorithm": "XGBoost Classifier",
+      "features": [
+        "amount_bdt",
+        "amount_deviation",
+        "is_new_recipient",
+        "is_new_device",
+        "is_new_location",
+        "velocity_1h",
+        "velocity_24h",
+        "historical_avg_amount",
+        "is_international",
+        "txn_type_code",
+        "channel_code",
+        "recipient_type_code"
+      ],
+      "hyperparameters": {
+        "n_estimators": 160,
+        "max_depth": 5,
+        "learning_rate": 0.07,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "scale_pos_weight": 8.0,
+        "random_state": 20261003,
+        "eval_metric": "logloss",
+        "n_jobs": -1
+      },
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "confusion_matrix": {
+          "tn": 9450,
+          "fp": 0,
+          "fn": 0,
+          "tp": 550
+        }
+      },
+      "artifact_path": "F:\\model for hackathon compitition\\models\\fraud_xgb.joblib"
+    },
+    "behavioral_anomaly_isolation_forest": {
+      "model_name": "behavioral_anomaly_isolation_forest",
+      "model_version": "anomaly-iforest-1.0.0",
+      "training_dataset_version": "v1.0.0",
+      "training_date": "2026-10-03T23:44:22.281225",
+      "algorithm": "Isolation Forest",
+      "features": [
+        "amount_bdt",
+        "amount_deviation",
+        "velocity_1h",
+        "velocity_24h",
+        "historical_avg_amount",
+        "is_new_device",
+        "is_new_location",
+        "is_international",
+        "hour_of_day"
+      ],
+      "hyperparameters": {
+        "n_estimators": 120,
+        "max_samples": "auto",
+        "contamination": 0.055,
+        "random_state": 20261003,
+        "n_jobs": -1
+      },
+      "metrics": {
+        "status": "trained_ready_for_locked_evaluation"
+      },
+      "artifact_path": "F:\\model for hackathon compitition\\models\\anomaly_iforest.joblib"
+    },
+    "credit_readiness_xgboost": {
+      "model_name": "credit_readiness_xgboost",
+      "model_version": "credit-xgb-1.0.0",
+      "training_dataset_version": "v1.0.0",
+      "training_date": "2026-10-03T23:44:22.477423",
+      "algorithm": "XGBoost Classifier",
+      "features": [
+        "avg_monthly_inflow",
+        "avg_monthly_outflow",
+        "income_consistency",
+        "balance_stability",
+        "cashout_ratio",
+        "transaction_frequency",
+        "account_age_days",
+        "previous_loan_count",
+        "previous_repayment_rate",
+        "late_payment_count",
+        "avg_days_late",
+        "outflow_to_inflow_ratio"
+      ],
+      "hyperparameters": {
+        "n_estimators": 140,
+        "max_depth": 4,
+        "learning_rate": 0.08,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "scale_pos_weight": 6.0,
+        "random_state": 20261003,
+        "eval_metric": "logloss",
+        "n_jobs": -1
+      },
+      "metrics": {
+        "accuracy": 0.946,
+        "precision": 0.6941580756013745,
+        "recall": 0.9140271493212669,
+        "f1": 0.7890625,
+        "roc_auc": 0.9853061992730676,
+        "pr_auc": 0.9013539038285309,
+        "confusion_matrix": {
+          "tn": 1690,
+          "fp": 89,
+          "fn": 19,
+          "tp": 202
+        }
+      },
+      "artifact_path": "F:\\model for hackathon compitition\\models\\credit_xgb.joblib"
+    }
+  }
+}

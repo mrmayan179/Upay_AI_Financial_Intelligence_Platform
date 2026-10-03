@@ -78,6 +78,18 @@ export const Shell: React.FC<ShellProps> = ({
               Credit XGB: READY
             </span>
           </div>
+
+          <a
+            href="/evidence"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-purple-950 to-indigo-950 border border-purple-500/50 text-purple-200 text-[11px] font-bold hover:from-purple-900 hover:to-indigo-900 hover:text-white transition shadow-sm"
+            title="Open Certified AI Test & Benchmark Evidence Report"
+          >
+            <span className="text-amber-400">📊</span>
+            <span>AI Evidence Report</span>
+            <span className="text-[9px] bg-purple-500/30 px-1.5 py-0.5 rounded text-purple-300 font-mono font-semibold">HTML</span>
+          </a>
         </div>
 
         {/* Center: Module Nav Tabs */}

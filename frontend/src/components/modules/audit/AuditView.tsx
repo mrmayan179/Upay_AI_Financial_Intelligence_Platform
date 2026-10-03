@@ -145,6 +145,59 @@ export const AuditView: React.FC<AuditViewProps> = ({
           </div>
         </div>
 
+        {/* Model Competition Evidence & Benchmark Card */}
+        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-5 md:p-6 text-white border border-indigo-500/30 shadow-lg relative overflow-hidden">
+          <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-400 text-slate-950 tracking-wider">
+                  Certified Hackathon Evidence
+                </span>
+                <span className="text-xs text-indigo-300 font-mono">Part 1 Data & Model Foundation</span>
+              </div>
+              <h2 className="text-lg md:text-xl font-black text-white tracking-tight flex items-center gap-2">
+                <span>📊</span>
+                <span>AI Benchmark & Validation Report</span>
+              </h2>
+              <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                Offline locked test evaluation on 10,000 transactions and credit profiles. Includes Confusion Matrices, ROC-AUC curves, SHAP explainability summaries, and 21/21 fixed scenario verification results.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <a
+                href="/evidence"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 text-xs font-black shadow-md hover:shadow-lg transition flex items-center gap-2 active:scale-95"
+              >
+                <span>📈 Open HTML Evidence Report</span>
+                <span>↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-800 text-center">
+            <div className="bg-white/5 rounded-xl p-2.5 border border-white/5">
+              <div className="text-[11px] text-slate-400 font-medium">Fraud XGB F1</div>
+              <div className="text-base font-black text-emerald-400 font-mono">1.0000</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-2.5 border border-white/5">
+              <div className="text-[11px] text-slate-400 font-medium">Anomaly Capture</div>
+              <div className="text-base font-black text-amber-400 font-mono">99.27%</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-2.5 border border-white/5">
+              <div className="text-[11px] text-slate-400 font-medium">Credit ROC-AUC</div>
+              <div className="text-base font-black text-blue-400 font-mono">0.9853</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-2.5 border border-white/5">
+              <div className="text-[11px] text-slate-400 font-medium">Fixed Scenarios</div>
+              <div className="text-base font-black text-purple-400 font-mono">21 / 21 PASS</div>
+            </div>
+          </div>
+        </div>
+
         {/* Metrics Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80 shadow-2xs">

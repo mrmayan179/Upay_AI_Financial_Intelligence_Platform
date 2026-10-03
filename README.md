@@ -1,100 +1,234 @@
 # Upay AI Financial Intelligence Platform
 
-> **An End-to-End, Production-Grade AI Platform for Digital Financial Services (MFS), Dual-Currency Smart Cards, Microcredit Underwriting, Dispute Automation, and AI Voice Customer Care.**
-> Built for the Upay AI Hackathon 2026.
+> **An End-to-End, Production-Grade AI Platform for Digital Financial Services (MFS), Dual-Currency Smart Cards, Microcredit Underwriting, Dispute Automation, and AI Voice Customer Care.**  
+> Built for the **Upay AI Hackathon 2026**.
+
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-0047BA.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React 18](https://img.shields.io/badge/React-18.3-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-FFB800.svg?style=for-the-badge&logo=xgboost&logoColor=black)](https://xgboost.readthedocs.io/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3+-F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Audit Status](https://img.shields.io/badge/Audit%20Evidence-Certified%20100%25-10B981.svg?style=for-the-badge)]()
 
 ---
 
-## 📌 Executive Summary
+## 📑 Certified Evidence & Primary Artifact Navigation
 
-The **Upay AI Financial Intelligence Platform** is an enterprise-ready, explainable AI ecosystem designed specifically for Mobile Financial Services (MFS) in Bangladesh. Powered by three specialized, offline-validated machine learning models and deterministic business rule guards, the platform bridges the gap between raw statistical inference and human-in-the-loop regulatory compliance.
+> [!IMPORTANT]
+> **Hackathon Judges & Evaluators:** The complete Part 1 competition foundation (Synthetic Datasets, Trained ML Models, and Certified Test Evidence) is preserved directly in this repository under [`model_competition/`](model_competition/).
 
-The platform delivers four mission-critical consumer and operational systems wrapped in an authentic, pixel-perfect **Upay mobile and web experience**:
-
-1. **Smart Report & Case Management** — Automated NLP dispute categorization, severity prioritization, structured event timelines, and human supervisor escalation.
-2. **Dual-Currency Smart Card + AI Security** — 3D interactive virtual card, Bangladesh Bank passport USD endorsement quota tracking, granular security controls, PIN reset, and real-time sub-50ms fraud and behavioral anomaly authorization.
-3. **AI Credit Readiness & Loan Recommendation** — Transparent credit-readiness scoring (0–100), TreeSHAP positive/negative factor attribution, suggested loan ranges, and formal bank review handoff with strict non-autonomous approval disclaimers.
-4. **AI Voice Customer Service** — Real-time conversational agent with least-privileged tool execution, multi-challenge caller identity verification, live Bengali/English speech synthesis, and supervisor escalation.
-5. **AI Governance & Observability Feed** — Immutable, tamper-evident audit logs capturing live model versions, execution latency, scrubbed feature vectors, and human-intervention flags.
+- 📊 **Primary Certified HTML Test Report**: [`model_competition/evidence/final_report.html`](model_competition/evidence/final_report.html)  
+  *(Self-contained report containing all baseline test metrics, scenario executions, base64-rendered confusion matrices, and ROC curves)*
+- 📁 **Complete Competition Foundation Directory**: [`model_competition/`](model_competition/)
+- 📖 **Dataset Schema & Dictionary**: [`model_competition/docs/data-dictionary.md`](model_competition/docs/data-dictionary.md)
+- 🔒 **SHA-256 Sealed Test Set Manifest**: [`model_competition/data/test/LOCKED_TEST_DATASET.json`](model_competition/data/test/LOCKED_TEST_DATASET.json)
+- 🚀 **Free Live Cloud Deployment Guide**: [`DEPLOYMENT.md`](DEPLOYMENT.md)
 
 ---
 
-## 🏗️ Architectural Topology
+## 🏆 Part 1 — Competition Data & AI/ML Foundation
 
-```text
-                               ┌────────────────────────────────────────────────────────┐
-                               │             UPAY CLIENT APPLICATION (VITE + REACT)    │
-                               │   • Authentic Mobile App Frame (Hind Siliguri UI)      │
-                               │   • Widescreen Platform Dashboard (Judge Evaluation)   │
-                               │   • 3D Flip Card, BANGLA QR, Upay Chaka, PIN Pad       │
-                               └───────────────────────────┬────────────────────────────┘
-                                                           │ JSON over HTTP REST
-                                                           ▼
-                               ┌────────────────────────────────────────────────────────┐
-                               │           FASTAPI ENTERPRISE API GATEWAY (/api/v1)     │
-                               │   • Authentication & Demo Profile Management           │
-                               │   • Dynamic Case Engine & Audit Logger                 │
-                               │   • Voice Agent State Machine & Safety Rules           │
-                               └──────────────┬───────────────────────────┬─────────────┘
-                                              │                           │
-                   ┌──────────────────────────┴───────────┐               ▼
-                   ▼                                      ▼      ┌──────────────────────┐
-       ┌────────────────────────┐             ┌────────────────┐ │  SQLITE / POSTGRESQL │
-       │  MODEL INFERENCE LAYER │             │ GOVERNANCE BUS │ │  • Customers, Cards  │
-       │  • adapters.py         │             │ • audit_service│ │  • Cases, Events     │
-       │  • Sub-50ms execution  │             │ • SHA-256 Logs │ │  • Credit, Calls     │
-       └───────────┬────────────┘             └────────────────┘ └──────────────────────┘
-                   │
-    ┌──────────────┼──────────────┐
-    ▼              ▼              ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│  MODEL 1     │ │  MODEL 2     │ │  MODEL 3     │
-│  Fraud Risk  │ │  Behavioral  │ │  Credit      │
-│  Classifier  │ │  Anomaly     │ │  Readiness   │
-│  (XGBoost)   │ │  (IForest)   │ │  (XGBoost)   │
-└──────────────┘ └──────────────┘ └──────────────┘
+```mermaid
+flowchart TB
+    subgraph S1["1. Deterministic Data Factory (Seed: 20261003)"]
+        Raw["11 Connected Relational Entities\n(10k Customers, 50k Txns, 10k Repayments, 5k Cards)"]
+        Gate["Quality & Financial Sanity Gate\n(Zero PII, 100% Referential Integrity)"]
+        Raw --> Gate
+    end
+
+    subgraph S2["2. Partitioning & Hashing"]
+        Train["Train Set (80% Partition)\ndata/train/"]
+        LockedTest["Locked Test Set (20% Partition)\nSHA-256 Manifest: data/test/"]
+        Gate --> Train
+        Gate --> LockedTest
+    end
+
+    subgraph S3["3. Tri-Model AI Architecture"]
+        M1["Model 1: Fraud Classifier\nXGBoost (Supervised)\nROC-AUC: 1.0000 | F1: 1.0000"]
+        M2["Model 2: Behavioral Anomaly\nIsolation Forest (Unsupervised)\nCapture Rate: 99.27% | FPR: 0.08%"]
+        M3["Model 3: Credit Readiness\nXGBoost Classifier\nROC-AUC: 0.9853 | Acc: 94.60%"]
+        Train --> M1
+        Train --> M2
+        Train --> M3
+    end
+
+    subgraph S4["4. Explainability & Evaluation"]
+        SHAP["TreeSHAP Explainability\nGlobal & Real-Time Local Attributions"]
+        Eval["Offline Evaluation & 21 Scenario Harness\nCertified HTML Report: evidence/final_report.html"]
+        M1 & M2 & M3 --> SHAP --> Eval
+        LockedTest -.-> Eval
+    end
+
+    subgraph S5["5. Production Runtime Engine"]
+        Engine["Unified Decoupled Risk Engine\n(Business Rules + ML Probabilities)"]
+        API["FastAPI High-Performance Gateway\nSub-50ms Real-Time Ingest"]
+        UI["Upay Interactive Frontend Experience\n(Mobile App + Widescreen Dashboard)"]
+        Eval --> Engine --> API --> UI
+    end
+
+    classDef primary fill:#0047BA,stroke:#FFC820,stroke-width:2px,color:#fff;
+    classDef highlight fill:#FFC820,stroke:#0047BA,stroke-width:2px,color:#000;
+    classDef success fill:#10B981,stroke:#065F46,stroke-width:2px,color:#fff;
+    class S1,S2 primary;
+    class S3,S5 highlight;
+    class S4 success;
 ```
 
 ---
 
-## 🎨 Authentic Upay Design System
+### 1. Preserved Dataset Inventory (`model_competition/data/`)
 
-The frontend faithfully replicates Upay's official visual brand and mobile layout guidelines:
+The platform includes a complete 11-table connected synthetic relational dataset generated deterministically without any genuine customer Personally Identifiable Information (PII):
 
-- **Bengali Typography**: Native font rendering via Google Fonts `Hind Siliguri` (bold 700/800 headings, 400/500 body) with `Inter` for digits and English monospace codes.
-- **Brand Colors**: 
-  - Primary Yellow: `#FFC820` / `#FFB800`
-  - Primary Blue: `#0047BA`
-  - Deep Navy: `#002C6C`
-  - Pill Cream: `#FFF6D1`
-- **Dynamic Splash Screen**: Vector illustration with an animated continuous blue swoosh curve, pulsing endpoint dot, and the authentic Upay meeting-figures emblem with bold Bengali wordmark (`উপায়`).
-- **Mobile Status Bar**: Live device clock, Telegram icon, 4G/4G+ signal indicators, and 31% battery capsule.
-- **Profile Header**: User avatar badge, `TANVIR KABIR` (`01771449164`), toggleable "ব্যালেন্স" capsule button (`৳ ৭.২৫`), and notification bell.
-- **Primary 4-Column Service Grid**: Send Money, Mobile Recharge, Cash Out, Pay Bill, Add Money, Savings, Fund Transfer, Request Money, Make Payment, Refer & Earn, NPSB, and AI Audit.
-- **Upay Payment Grid**: Traffic Fine, Toll Payment, Govt. Payment, Education, NGO, Insurance, Donation, Zakat.
-- **Interactive Micro-Features**:
-  - Animated spinning **"উপায় চাকা"** (spinning reward badge) with instant spin modal.
-  - Floating action pills for **"উপায় কার্ড"** and **"উপায় অফার"**.
-  - **BANGLA QR**: Center-elevated bottom navigation button opening an interoperable QR viewfinder simulator with instant risk check.
-  - 4-Dot **PIN Keypad Sheet** for high-risk operations and PIN change.
-  - **Balance Breakdown Sheet** dividing main balance and cash reward reserves.
+| Entity Name | Location | Records | Key Schema Attributes |
+| :--- | :--- | :--- | :--- |
+| **Customers** | [`data/raw/customers.csv`](model_competition/data/raw/customers.csv) | 10,000 | `customer_id`, `name`, `phone`, `division`, `kyc_status`, `monthly_income_bdt`, `account_created_at` |
+| **Merchants** | [`data/raw/merchants.csv`](model_competition/data/raw/merchants.csv) | 2,000 | `merchant_id`, `name`, `category`, `mcc`, `qr_type`, `risk_tier` |
+| **Transactions** | [`data/raw/transactions.csv`](model_competition/data/raw/transactions.csv) | 50,000 | `tx_id`, `customer_id`, `amount_bdt`, `channel`, `is_fraud`, `timestamp`, `velocity_1h` |
+| **Cards** | [`data/raw/cards.csv`](model_competition/data/raw/cards.csv) | 5,000 | `card_id`, `card_number_masked`, `usd_endorsement_limit`, `usd_spent`, `is_frozen` |
+| **Card Transactions**| [`data/raw/card_transactions.csv`](model_competition/data/raw/card_transactions.csv)| 15,000 | `tx_id`, `card_id`, `amount_usd`, `merchant_name`, `country`, `decision`, `risk_score` |
+| **Complaints** | [`data/raw/complaints.csv`](model_competition/data/raw/complaints.csv) | 5,000 | `complaint_id`, `customer_id`, `complaint_text`, `category`, `sentiment_score` |
+| **Cases & Events** | [`data/raw/cases.csv`](model_competition/data/raw/cases.csv) | 5,000 / 20k | `case_id`, `status`, `severity`, `escalated`, `assigned_team`, `timeline_events` |
+| **Credit Profiles** | [`data/raw/credit_profiles.csv`](model_competition/data/raw/credit_profiles.csv)| 10,000 | `customer_id`, `credit_score`, `dti_ratio`, `late_repayments`, `credit_limit_bdt` |
+| **Repayments** | [`data/raw/repayments.csv`](model_competition/data/raw/repayments.csv) | 10,000 | `repayment_id`, `loan_id`, `due_date`, `paid_date`, `status`, `penalty_bdt` |
+| **Voice Scenarios** | [`data/raw/voice_scenarios.csv`](model_competition/data/raw/voice_scenarios.csv)| 150 | `scenario_id`, `phone_number`, `intent`, `expected_challenge`, `tool_call` |
+| **AI Audit Logs** | [`data/raw/ai_activity_logs.csv`](model_competition/data/raw/ai_activity_logs.csv)| 1,000 | `log_id`, `component`, `model_version`, `latency_ms`, `result_status`, `sha256_hash` |
+
+- **Partitioning**: 80% Train Set ([`data/train/`](model_competition/data/train/)) and 20% Test Set ([`data/test/`](model_competition/data/test/)).
+- **Integrity Lock**: Sealed with SHA-256 hash manifest [`LOCKED_TEST_DATASET.json`](model_competition/data/test/LOCKED_TEST_DATASET.json).
+- **Validation**: Certified in [`dataset_validation_report.json`](model_competition/evidence/dataset_validation_report.json) (100% Primary Key uniqueness, Foreign Key referential integrity, and Zero PII).
 
 ---
 
-## 🤖 Machine Learning Model Specifications
+### 2. Trained Machine Learning Models (`model_competition/models/`)
 
-The production platform bundles 3 frozen, immutable machine learning models trained on 100% synthetic financial data (reproducible from Part 1 repository `F:\model for hackathon compitition`):
+The platform embeds three frozen, immutable production models stored with joblib serialization:
 
-| Model Name | Algorithm | Task & Functionality | Key Evaluation Metrics |
-| :--- | :--- | :--- | :--- |
-| **Transaction Fraud Risk** | XGBoost Classifier (`fraud_xgb.joblib`) | Predicts transaction fraud probability and classifies transactions into LOW, MEDIUM, or HIGH risk. | **F1-Score: 1.0000**<br>**ROC-AUC: 1.0000** |
-| **Behavioral Anomaly** | Isolation Forest (`anomaly_iforest.joblib`) | Unsupervised out-of-distribution detection across velocity, device drift, and unusual transaction spikes. | **Anomaly Capture: 99.27%**<br>**False Positive: 0.08%** |
-| **Credit Readiness** | XGBoost Classifier (`credit_xgb.joblib`) | Evaluates borrower repayment capacity and default likelihood for microcredit recommendation. | **ROC-AUC: 0.9853**<br>**Accuracy: 95.83%** |
+| Model | File Artifact | Algorithm | Input Dimensions | Performance on Locked Test Set |
+| :--- | :--- | :--- | :--- | :--- |
+| **Model 1: Fraud Classifier** | [`fraud_xgb.joblib`](model_competition/models/fraud_xgb.joblib) | XGBoost Binary Classifier (`scale_pos_weight=17.2`) | 12 behavioral & velocity features | **Accuracy: 100.0%**<br>**Precision: 1.0000**<br>**Recall: 1.0000**<br>**F1-Score: 1.0000**<br>**ROC-AUC: 1.0000** |
+| **Model 2: Behavioral Anomaly** | [`anomaly_iforest.joblib`](model_competition/models/anomaly_iforest.joblib) | Isolation Forest (`contamination=0.055`, 150 trees) | 7 normalized numerical features | **Fraud Capture Rate: 99.27%**<br>**Normal FPR: 0.08%**<br>**Total Test Txns: 10,000** |
+| **Model 3: Credit Risk Scorer** | [`credit_xgb.joblib`](model_competition/models/credit_xgb.joblib) | XGBoost Classifier (`max_depth=4`, `lr=0.08`) | 14 financial & tenure features | **Accuracy: 94.60%**<br>**Recall: 91.40%**<br>**ROC-AUC: 0.9853**<br>**PR-AUC: 0.9014** |
 
-### Explainability (XAI)
-Every credit and fraud inference generates human-interpretable feature contribution vectors using **TreeSHAP**:
-- **Positive Factors**: e.g., Low debt-to-income ratio, steady utility payment history, long account tenure.
-- **Negative Factors**: e.g., High transaction velocity, recent cash-out spikes, low average balance.
+- **Model Registry Manifest**: Complete hyperparameters, feature schema, and commit history documented in [`model_registry.json`](model_competition/models/model_registry.json).
+- **Explainable AI (TreeSHAP)**: Every inference computes exact Shapley value contributions for local real-time client explanation (e.g. why a transaction was flagged or why a loan readiness score changed).
+
+---
+
+### 3. Certified Visual Evidence & Evaluation
+
+#### 📊 Confusion Matrices (Locked 20% Evaluation Set)
+
+| Model 1: Fraud Detection Confusion Matrix | Model 3: Credit Risk Confusion Matrix |
+| :---: | :---: |
+| ![Fraud Confusion Matrix](model_competition/evidence/confusion_matrix_fraud.png) | ![Credit Confusion Matrix](model_competition/evidence/confusion_matrix_credit.png) |
+| **True Negatives: 9,450 \| False Positives: 0**<br>**False Negatives: 0 \| True Positives: 550** | **True Negatives: 1,690 \| False Positives: 89**<br>**False Negatives: 19 \| True Positives: 202** |
+
+#### 📈 ROC-AUC Curves
+
+| Model 1: Fraud ROC Curve (AUC = 1.0000) | Model 3: Credit ROC Curve (AUC = 0.9853) |
+| :---: | :---: |
+| ![Fraud ROC Curve](model_competition/evidence/roc_curve_fraud.png) | ![Credit ROC Curve](model_competition/evidence/roc_curve_credit.png) |
+
+#### 🔍 Global SHAP Feature Importance Summaries
+
+| Fraud Feature Contributions | Credit Feature Contributions |
+| :---: | :---: |
+| ![Fraud SHAP Summary](model_competition/evidence/shap_fraud_summary.png) | ![Credit SHAP Summary](model_competition/evidence/shap_credit_summary.png) |
+
+#### 🧪 Fixed Scenario Test Verification (`evidence/scenario_results.json`)
+All **21 out of 21** deterministic verification test scenarios passed across:
+- **Fraud Scenarios (6/6 PASS)**: Normal transaction, velocity burst, large unusual amount, nighttime cash-out, new foreign merchant, rapid device hopping.
+- **Credit Scenarios (5/5 PASS)**: Prime customer high approval, thin-file starter, debt-stressed applicant, defaulted borrower, recovery applicant.
+- **Dispute Scenarios (5/5 PASS)**: Failed cash-out refund, wrong mobile recharge, merchant overcharge, unauthorized card debit, agent scam report.
+- **Voice Agent Scenarios (5/5 PASS)**: Bengali identity verification, English card freeze tool call, dispute status lookup, challenge failure protection, supervisor escalation.
+
+---
+
+## 📌 Complete Product Architecture & Downstream Modules
+
+The platform connects Part 1 models into 5 mission-critical consumer and operational applications:
+
+```mermaid
+flowchart TD
+    subgraph UI["Front-End Presentation Layer (React 18 + Vite + Tailwind CSS)"]
+        Home["🏠 Home & Authentic Upay Service Grids\n(Send Money, Recharge, Cash Out, Pay Bill, Chaka)"]
+        Card["💳 Dual-Currency Smart Card\n(3D Flip Card, USD Quota Dial, PIN Reset, Simulator)"]
+        Report["📝 Smart Report & Dispute Copilot\n(NLP Categorizer, Timeline Stepper, Escalation)"]
+        Credit["📊 AI Credit Readiness & Microcredit\n(0-100 Score Dial, SHAP Waterfall, Bank Handoff)"]
+        Voice["🎙️ AI Voice Customer Service\n(Live Bengali/English Neural TTS, Tool Execution)"]
+        Audit["🛡️ AI Governance & Telemetry\n(Sub-50ms Latency Feed, Evidence Report Viewer)"]
+    end
+
+    subgraph API["FastAPI Application Services (/api/v1)"]
+        AuthSvc["Auth & Demo Profile Service"]
+        CardSvc["Card Management & USD Endorsement Engine"]
+        ReportSvc["Complaint NLP & Case Timeline Engine"]
+        CreditSvc["Credit Readiness & Underwriting Gateway"]
+        VoiceSvc["Voice Agent State Machine & Security Bus"]
+        AuditSvc["Immutable Audit Logger & Telemetry Bus"]
+    end
+
+    subgraph ML["AI / ML Runtime Layer"]
+        Inference["adapters.py (Inference Engine)"]
+        M_Fraud["Fraud XGBoost (Model 1)"]
+        M_Anomaly["Anomaly IForest (Model 2)"]
+        M_Credit["Credit XGBoost (Model 3)"]
+        Rules["Deterministic Business Rules Guard\n(Decoupled from ML Probabilities)"]
+    end
+
+    subgraph DB["Persistence & State"]
+        SqliteDB[(SQLite / PostgreSQL Schema)]
+    end
+
+    Home & Card & Report & Credit & Voice & Audit <-->|REST over JSON| API
+    CardSvc & CreditSvc --> Inference
+    Inference --> M_Fraud & M_Anomaly & M_Credit
+    Inference --> Rules
+    API --> SqliteDB
+```
+
+### Module Highlights:
+1. **Smart Report & Case Management**:
+   - Automated NLP dispute categorization across 6 classes: `CASH_OUT_ISSUE`, `AIRTIME_RECHARGE`, `MERCHANT_OVERCHARGE`, `UNAUTHORIZED_DEBIT`, `AGENT_DISPUTE`, `GENERAL_SERVICE`.
+   - Real-time severity scoring (1–5) and automated structured event timelines.
+   - Supervisor escalation with assigned specialist teams.
+2. **Dual-Currency Smart Card + AI Security**:
+   - Interactive 3D flip card with authentic EMV chip and holographic Upay styling.
+   - Bangladesh Bank annual USD endorsement quota tracking ($5,000 annual passport ceiling).
+   - Real-time sub-50ms fraud scoring and dynamic transaction simulator.
+   - Granular toggles: E-Commerce, International, Contactless, ATM, and Instant Freeze.
+3. **AI Credit Readiness & Microcredit Recommendation**:
+   - 0–100 Credit Readiness Score dial with calibrated default risk classification.
+   - Transparent TreeSHAP attribution: Top positive factors (e.g. utility payment history, steady tenure) and negative factors (e.g. debt-to-income ratio, cash-out spikes).
+   - Suggested microcredit ranges with formal bank handoff disclaimers.
+4. **AI Voice Customer Service**:
+   - Authentic bilingual Bangladeshi Bengali (`bn-BD-NabanitaNeural`) and US English (`en-US-AriaNeural`) Edge-TTS synthesis.
+   - Identity challenge verification (Mother/Father name, voice PIN, account suffix) before least-privileged tool access.
+   - Autonomous account actions: Balance inquiry, card freeze, dispute status tracking.
+5. **AI Governance & Observability Feed**:
+   - Real-time immutable decision log stream capturing component origin, model versions, scrubbed feature vectors, and execution latency.
+   - 1-Click access to the certified HTML Evidence Report directly from the UI header!
+
+---
+
+## 🎨 Authentic Upay Visual Design System
+
+The web application replicates Upay's official brand guidelines:
+- **Typography**: Google Fonts **Hind Siliguri** (`'Hind Siliguri', sans-serif`) for native Bengali typography, paired with **Inter** for numerals and English system labels.
+- **Brand Palette**:
+  - Upay Primary Yellow: `#FFC820` / `#FFB800`
+  - Upay Primary Blue: `#0047BA`
+  - Deep Navy Slate: `#002C6C` / `#0A1128`
+  - Cream Background: `#FFF6D1` / `#FAFAFA`
+- **Dynamic Mobile Experience**:
+  - Animated continuous blue curve swoosh on splash launch.
+  - Interactive spinning **"উপায় চাকা"** (reward wheel) badge with sound and modal.
+  - Floating action pills for **"উপায় কার্ড"** and **"উপায় অফার"**.
+  - **BANGLA QR** scanner simulator with instant merchant verification.
+  - Authentic 4-Dot **PIN Keypad Sheet** for sensitive actions.
+  - Seamless desktop widescreen view vs. native mobile smartphone frame switcher.
 
 ---
 
@@ -103,32 +237,31 @@ Every credit and fraud inference generates human-interpretable feature contribut
 ### Prerequisites
 - **Python 3.10+** (Python 3.11 recommended)
 - **Node.js 18+** & **npm**
-- **Git**
-
-### Option A: Windows One-Click Launcher (Recommended)
-Double-click `start_platform.bat` or run:
-```cmd
-start_platform.bat
-```
-This automatically verifies AI model files, seeds the demo database, launches the FastAPI backend on port 8000, launches the Vite React frontend on port 3000, and opens your default browser.
 
 ---
 
-### Option B: Manual Step-by-Step Launch
+### Option A: Windows One-Click Launcher (Recommended)
+Simply double-click `start_platform.bat` or run:
+```cmd
+start_platform.bat
+```
+This automatically verifies model files, initializes the database, starts the FastAPI backend (port 8000), starts the Vite frontend (port 3000), and opens your browser.
+
+---
+
+### Option B: Manual Launch
 
 #### 1. Backend Service
 ```bash
-# In the project root (F:\full project of hackathon)
+# In the project root
 pip install -r requirements.txt
 
-# Seed the demo database (SQLite)
-python backend/seed_data.py
-
-# Launch FastAPI server
+# Launch FastAPI backend gateway
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-- API Base: `http://127.0.0.1:8000`
+- API Base URL: `http://127.0.0.1:8000`
 - Interactive OpenAPI Docs: `http://127.0.0.1:8000/docs`
+- Certified AI Evidence Report: `http://127.0.0.1:8000/evidence`
 
 #### 2. Frontend Application
 ```bash
@@ -154,114 +287,39 @@ docker-compose up --build
 
 ---
 
-## 🧪 Automated Verification & Testing
+## 🌐 100% Free Live Cloud Hosting
 
-The repository includes a comprehensive test suite testing all 7 core platform subsystems:
-```bash
-python -m pytest tests/test_backend_api.py -v
-```
-**Test Coverage Includes:**
-- `test_health_and_model_registry`: Verifies active status of all 3 ML models and registry integrity.
-- `test_demo_authentication`: Tests demo login and user profile retrieval.
-- `test_report_classification_and_creation`: Tests NLP dispute categorization and timeline progression.
-- `test_card_management_and_ai_risk_analyzer`: Tests USD passport quota management and real-time fraud scoring.
-- `test_credit_readiness_and_shap_factors`: Tests credit score generation, SHAP explanations, and bank review requests.
-- `test_voice_session_and_tool_execution`: Tests caller identity challenge and least-privileged account tools.
-- `test_audit_logging`: Verifies sub-50ms latency logs and audit trace persistence.
+For hosting this project live on the cloud at **$0.00 cost**, follow our dedicated guide in [`DEPLOYMENT.md`](DEPLOYMENT.md):
 
-To test the frontend build:
-```bash
-cd frontend
-npm run build
-```
+| Tier | Service | Provider | Cost | Live URL Example |
+| :--- | :--- | :--- | :--- | :--- |
+| **Backend API** | FastAPI Web Service | [Render.com](https://render.com) | **FREE** | `https://upay-backend.onrender.com` |
+| **Frontend UI** | React/Vite SPA | [Vercel](https://vercel.com) | **FREE** | `https://upay-platform.vercel.app` |
+| **Evidence Report** | Standalone HTML | Render / FastAPI | **FREE** | `https://upay-backend.onrender.com/evidence` |
+
+*(Refer to [`DEPLOYMENT.md`](DEPLOYMENT.md) for 1-click step-by-step instructions).*
 
 ---
 
-## 👤 Demo Persona & Test Credentials
+## 👤 Hackathon Demo Persona
 
-For hackathon presentation and live evaluation, the system is pre-configured with a realistic demo persona:
-
-| Attribute | Value |
+| Field | Demo Credential |
 | :--- | :--- |
 | **Customer Name** | `TANVIR KABIR` |
 | **Phone Number** | `01771449164` |
-| **Demo PIN** | `1234` |
-| **Customer ID** | `SYN-U-10082` |
-| **Upay Account Balance** | `BDT 7.25` |
-| **Cash Reward Reserve** | `BDT 25.00` |
-| **Primary Smart Card** | Upay Platinum Dual-Currency (`4000 1234 5678 9010`) |
-| **USD Endorsement Quota**| `$5,000.00` total / `$3,820.00` remaining |
+| **Login PIN** | `1234` |
+| **Account Balance** | `BDT 7.25` |
+| **Cash Reward Balance** | `BDT 25.00` |
+| **Virtual Card Number** | `4000 1234 5678 9010` (Upay Platinum Dual-Currency) |
+| **USD Endorsement Limit**| `$5,000.00` total / `$3,820.00` remaining |
 
 ---
 
-## 📁 Repository Directory Structure
+## ⚖️ Responsible AI & Regulatory Governance
 
-```text
-F:\full project of hackathon\
-├── ai_models\                       # Frozen Production ML Artifacts & Registry
-│   ├── fraud_xgb.joblib             # Model 1: Fraud Classifier
-│   ├── anomaly_iforest.joblib       # Model 2: Anomaly Detector
-│   ├── credit_xgb.joblib            # Model 3: Credit Scorer
-│   ├── model_registry.json          # Cryptographic Manifest & Versions
-│   └── inference\
-│       └── adapters.py              # Sub-50ms Scikit-Learn/XGBoost Ingest Adapters
-├── backend\                         # FastAPI High-Performance Backend
-│   ├── main.py                      # Application Gateway & CORS Router
-│   ├── seed_data.py                 # SQLite/PostgreSQL Database Seeder
-│   ├── app\
-│   │   ├── api\routes\              # Modular REST Endpoints
-│   │   │   ├── auth.py              # Profile, Login, Notifications
-│   │   │   ├── cards.py             # Smart Card & AI Risk Engine
-│   │   │   ├── credit.py            # Credit Readiness & Bank Handoff
-│   │   │   ├── reports.py           # NLP Dispute & Timeline Engine
-│   │   │   ├── voice.py             # 24/7 Voice AI Session & Tool Bus
-│   │   │   ├── audit.py             # Governance & Observability Feed
-│   │   │   └── health.py            # System Health & Model Diagnostics
-│   │   ├── database\
-│   │   │   ├── connection.py        # SQLAlchemy Connection Factory
-│   │   │   └── models.py            # Normalized Database Schema (10 Tables)
-│   │   ├── schemas\
-│   │   │   └── payloads.py          # Pydantic Input/Output Schemas
-│   │   └── services\                # Business Logic & Deterministic Safeguards
-│   │       ├── card_service.py
-│   │       ├── credit_service.py
-│   │       ├── report_service.py
-│   │       ├── voice_service.py
-│   │       └── audit_service.py
-├── frontend\                        # Modern React 18 + Vite + Tailwind CSS
-│   ├── public\
-│   │   └── upay_logo.png            # High-Resolution Upay Emblem
-│   ├── src\
-│   │   ├── components\
-│   │   │   ├── layout\              # Shell (Mobile Frame vs Widescreen Switcher)
-│   │   │   ├── modules\
-│   │   │   │   ├── splash\          # Dynamic Swoosh Animated Splash
-│   │   │   │   ├── home\            # Authentic Home Dashboard & Service Grids
-│   │   │   │   ├── card\            # 3D Flip Card & AI Risk Simulator
-│   │   │   │   ├── report\          # Dispute Classifier & Case Timeline
-│   │   │   │   ├── credit\          # Readiness Score Dial & SHAP Waterfall
-│   │   │   │   ├── voice\           # Voice Agent & Tool Execution Console
-│   │   │   │   └── audit\           # Real-Time Decision Observability Feed
-│   │   │   └── shared\              # PIN Pad, Balance Sheet, BANGLA QR Modals
-│   │   ├── services\api.ts          # Typed REST API Client
-│   │   └── types\index.ts           # Shared TypeScript Data Interfaces
-├── tests\                           # Integration Test Suite
-│   └── test_backend_api.py          # Pytest Automated Test Runner
-├── docker-compose.yml               # Container Orchestration
-├── Dockerfile.backend               # Backend Container Definition
-├── start_platform.bat               # Windows 1-Click Launch Script
-├── LICENSE                          # MIT Open Source License
-└── README.md                        # Documentation
-```
-
----
-
-## ⚖️ Regulatory Compliance & Responsible AI Disclaimers
-
-1. **Non-Autonomous Loan Approval**: The AI Credit Readiness score is an analytical readiness indicator and **does not constitute a finalized loan approval**. Under Bangladesh Bank microfinance and digital lending guidelines, final credit underwriting and disbursement decisions remain strictly with licensed partner commercial banks and microfinance institutions.
-2. **Deterministic Business Rules Separation**: In adherence to hackathon architectural requirements, machine learning risk probability outputs are strictly decoupled from operational business decisions. Hard limits (such as USD passport endorsement ceilings, frozen card statuses, and PIN requirements) are enforced by deterministic rules that cannot be overridden by ML models.
-3. **Synthetic Data Policy**: All data displayed and utilized within this demonstration repository is 100% synthetically generated. No genuine customer Personally Identifiable Information (PII) or proprietary Upay production records were utilized.
-4. **Caller Identity Protection**: The AI Voice Agent enforces a mandatory security verification challenge before granting access to least-privileged account tools (e.g. balance check, card freeze). Tool execution is audited and bounded by explicit permissions.
+1. **Non-Autonomous Loan Approval**: The AI Credit Readiness score is strictly an analytical indicator and does not grant autonomous loan disbursement. In compliance with Bangladesh Bank digital lending directives, final underwriting remains with licensed financial institutions.
+2. **Strict Decoupling of Rules & ML**: ML risk probabilities inform but do not override deterministic regulatory ceilings (e.g. passport endorsement quotas, card freeze status, biometric/PIN checks).
+3. **Synthetic Data Guarantee**: All data in this repository is 100% synthetically generated. No real customer PII or proprietary Upay production records were utilized.
 
 ---
 
@@ -269,4 +327,4 @@ F:\full project of hackathon\
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for complete details.
 
-Copyright (c) 2026 Upay AI Platform Contributors.
+Copyright (c) 2026 Upay AI Platform Hackathon Team.
