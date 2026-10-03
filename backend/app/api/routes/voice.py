@@ -2,7 +2,9 @@
 AI Voice Customer Service Routes
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+import io
+import edge_tts
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List
 from backend.app.database.connection import get_db
@@ -18,9 +20,30 @@ from backend.app.services.voice_service import (
 
 router = APIRouter(prefix="/voice", tags=["AI Voice Customer Service"])
 
+@router.get("/tts")
+async def text_to_speech(text: str, lang: str = "bn"):
+    """
+    High-fidelity Neural Text-To-Speech for authentic Bangladeshi Bengali & US English
+    """
+    cleaned_text = text.strip()
+    if not cleaned_text:
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+        
+    voice = "bn-BD-NabanitaNeural" if lang == "bn" else "en-US-AriaNeural"
+    try:
+        communicate = edge_tts.Communicate(cleaned_text, voice)
+        mp3_buffer = io.BytesIO()
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                mp3_buffer.write(chunk["data"])
+        mp3_buffer.seek(0)
+        return Response(content=mp3_buffer.read(), media_type="audio/mpeg")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"TTS synthesis error: {str(e)}")
+
 @router.post("/session/start", response_model=VoiceSessionStartResponse)
 def start_session(payload: VoiceSessionStartRequest, db: Session = Depends(get_db)):
-    result = start_voice_call(db, payload.phone_number)
+    result = start_voice_call(db, payload.phone_number, payload.lang or "bn")
     return result
 
 @router.post("/verify", response_model=VoiceVerifyResponse)
@@ -31,7 +54,8 @@ def verify_caller(payload: VoiceVerifyRequest, db: Session = Depends(get_db)):
         father_name=payload.father_name,
         account_suffix=payload.account_suffix,
         dob=payload.dob,
-        voice_pin=payload.voice_pin
+        voice_pin=payload.voice_pin,
+        lang=payload.lang or "bn"
     )
     return result
 

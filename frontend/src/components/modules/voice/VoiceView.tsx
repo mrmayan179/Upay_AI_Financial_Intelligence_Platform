@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { api } from '../../../services/api';
 import { useApp } from '../../../context/AppContext';
 import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
@@ -35,38 +35,90 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
   const [verifyFatherName, setVerifyFatherName] = useState("");
   const [toastMsg, setToastMsg] = useState("");
 
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3500);
   };
 
-  // Speak text with Web Speech API
-  const speakBengali = (text: string) => {
-    if (!audioEnabled || !('speechSynthesis' in window)) return;
+  // High-Fidelity Hybrid Neural TTS (Backend Edge-TTS Nabanita/Aria + Browser Web Speech Smart Fallback)
+  const speakResponse = (text: string) => {
+    if (!audioEnabled) return;
+
+    // 1. Cancel previous audio or speech
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+      currentAudioRef.current = null;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const lang = isBn ? 'bn' : 'en';
+
+    // 2. Try Backend Neural TTS first (Authentic Bangladeshi NabanitaNeural / US AriaNeural)
+    try {
+      const ttsUrl = api.getVoiceTtsUrl(text, lang);
+      const audio = new Audio(ttsUrl);
+      currentAudioRef.current = audio;
+
+      audio.play().catch((err) => {
+        console.warn("Backend Neural TTS fallback to browser Web Speech:", err);
+        fallbackBrowserSpeak(text, lang);
+      });
+    } catch {
+      fallbackBrowserSpeak(text, lang);
+    }
+  };
+
+  const fallbackBrowserSpeak = (text: string, lang: string) => {
+    if (!('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = isBn ? 'bn-BD' : 'en-US';
-      utterance.rate = 1.0;
+      utterance.lang = lang === 'bn' ? 'bn-BD' : 'en-US';
+      utterance.rate = lang === 'bn' ? 0.9 : 0.95;
+      utterance.pitch = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      if (lang === 'bn') {
+        const bnVoice = voices.find(v => 
+          v.lang.toLowerCase().includes('bn-bd') || 
+          v.lang.toLowerCase().includes('bn') ||
+          v.name.toLowerCase().includes('bangla') ||
+          v.name.toLowerCase().includes('bengali')
+        );
+        if (bnVoice) utterance.voice = bnVoice;
+      } else {
+        const enVoice = voices.find(v => 
+          v.lang.toLowerCase().includes('en-us') && 
+          (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Aria') || v.name.includes('Jenny'))
+        ) || voices.find(v => v.lang.toLowerCase().includes('en'));
+        if (enVoice) utterance.voice = enVoice;
+      }
+
       window.speechSynthesis.speak(utterance);
     } catch {}
   };
 
   const handleStartCall = async () => {
     try {
-      const res: any = await api.startVoiceSession('01771449164');
+      const lang = isBn ? 'bn' : 'en';
+      const res: any = await api.startVoiceSession('01771449164', lang);
       setCallId(res.call_id);
       setCallActive(true);
       setVerified(res.verified);
       const newT = [{
         speaker: 'AI_AGENT',
-        text: isBn 
-          ? (res.welcome_message || 'স্বাগতম উপায় ১৬২৪৭ হেল্পলাইনে। আমি আপনার এআই কেয়ার অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?')
-          : 'Welcome to Upay 16247 AI Helpline. I am your automated care assistant. How may I assist you today?',
+        text: res.welcome_message || (isBn 
+          ? 'স্বাগতম উপায় ১৬২৪৭ হেল্পলাইনে। আমি আপনার এআই কেয়ার অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?'
+          : 'Welcome to Upay 16247 AI Helpline. I am your automated care assistant. How may I assist you today?'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }];
       setTranscripts(newT);
-      speakBengali(newT[0].text);
+      speakResponse(newT[0].text);
       showToast(isBn ? "ভয়েস সেশন শুরু হয়েছে" : "Voice helpline session started");
     } catch (e: any) {
       showToast(e.message || (isBn ? "কল শুরু করা যায়নি" : "Failed to start call"));
@@ -77,6 +129,11 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
     setCallActive(false);
     setCallId(null);
     setVerified(false);
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+      currentAudioRef.current = null;
+    }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
@@ -91,7 +148,8 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
       const res: any = await api.verifyVoiceCaller({
         call_id: callId,
         voice_pin: verifyPin,
-        father_name: verifyFatherName
+        father_name: verifyFatherName,
+        lang: isBn ? 'bn' : 'en'
       });
 
       if (res.verified) {
@@ -99,11 +157,11 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
         setIsVerifyModalOpen(false);
         const t = {
           speaker: 'AI_AGENT',
-          text: isBn ? res.message : 'Identity successfully verified. You now have access to balance and confidential services.',
+          text: res.message || (isBn ? 'ভেরিফিকেশন সফল হয়েছে।' : 'Identity successfully verified. You now have access to balance and confidential services.'),
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         setTranscripts(prev => [...prev, t]);
-        speakBengali(t.text);
+        speakResponse(t.text);
         showToast(isBn ? "কলার ভেরিফিকেশন সম্পন্ন হয়েছে!" : "Caller identity verified successfully!");
       } else {
         showToast(res.message);
@@ -128,7 +186,7 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
       const res: any = await api.executeVoiceTool({
         call_id: callId,
         tool_name: toolName,
-        arguments: args
+        arguments: { ...args, lang: isBn ? 'bn' : 'en' }
       });
 
       const aiT = {
@@ -137,7 +195,7 @@ export const VoiceView: React.FC<VoiceViewProps> = ({
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setTranscripts(prev => [...prev, aiT]);
-      speakBengali(res.ai_spoken_response);
+      speakResponse(res.ai_spoken_response);
 
       if (res.should_escalate) {
         showToast(isBn ? "কলটি সিনিয়র স্পেশালিস্টে এসকেলেট করা হয়েছে!" : "Call escalated to senior supervisor queue!");

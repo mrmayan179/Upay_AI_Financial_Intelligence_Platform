@@ -11,7 +11,7 @@ from backend.app.database.models import VoiceCall, VoiceTranscript, Customer, Ca
 from backend.app.services.audit_service import log_ai_activity
 from backend.app.services.report_service import create_report_and_case, escalate_case
 
-def start_voice_call(db: Session, phone_number: str = "01771449164") -> Dict[str, Any]:
+def start_voice_call(db: Session, phone_number: str = "01771449164", lang: str = "bn") -> Dict[str, Any]:
     call_id = f"CALL-{uuid.uuid4().hex[:8].upper()}"
     
     cust = db.query(Customer).filter(
@@ -33,7 +33,11 @@ def start_voice_call(db: Session, phone_number: str = "01771449164") -> Dict[str
     )
     db.add(call)
     
-    welcome_text = "স্বাগতম উপায় কাস্টমার কেয়ারে! আমি উপায় এআই ভয়েস অ্যাসিস্ট্যান্ট। আপনাকে কীভাবে সাহায্য করতে পারি?"
+    welcome_text = (
+        "Welcome to Upay 16247 AI Helpline. I am your automated care assistant. How may I assist you today?"
+        if lang == "en"
+        else "স্বাগতম উপায় কাস্টমার কেয়ারে! আমি উপায় এআই ভয়েস অ্যাসিস্ট্যান্ট। আপনাকে কীভাবে সাহায্য করতে পারি?"
+    )
     t1 = VoiceTranscript(
         transcript_id=f"TR-{uuid.uuid4().hex[:8].upper()}",
         call_id=call_id,
@@ -71,7 +75,8 @@ def verify_caller_identity(
     father_name: str = None,
     account_suffix: str = None,
     dob: str = None,
-    voice_pin: str = None
+    voice_pin: str = None,
+    lang: str = "bn"
 ) -> Dict[str, Any]:
     """Verification challenge before unlocking sensitive account tools."""
     call = db.query(VoiceCall).filter(VoiceCall.call_id == call_id).first()
@@ -94,7 +99,11 @@ def verify_caller_identity(
         
     if passed:
         call.verified = True
-        msg = "ভেরিফিকেশন সফল হয়েছে। আপনার অ্যাকাউন্ট অ্যাক্সেস সক্রিয় করা হয়েছে।"
+        msg = (
+            "Identity verified successfully. Your confidential account access is now active."
+            if lang == "en"
+            else "ভেরিফিকেশন সফল হয়েছে। আপনার অ্যাকাউন্ট অ্যাক্সেস সক্রিয় করা হয়েছে।"
+        )
         t = VoiceTranscript(
             transcript_id=f"TR-{uuid.uuid4().hex[:8].upper()}",
             call_id=call_id,
@@ -104,7 +113,11 @@ def verify_caller_identity(
         )
         db.add(t)
     else:
-        msg = "দুঃখিত, তথ্য যাচাই করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+        msg = (
+            "Verification failed. Provided details did not match records. Please try again."
+            if lang == "en"
+            else "দুঃখিত, তথ্য যাচাই করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+        )
         
     log_ai_activity(
         db=db,
@@ -139,12 +152,17 @@ def dispatch_voice_tool(
         return {"error": "Call not found"}
         
     args = arguments or {}
+    lang = args.get("lang", "bn")
     cust = db.query(Customer).filter(Customer.customer_id == call.customer_id).first()
     
     # 1. Unverified Guard: Protected tools cannot run if call is unverified!
     protected_tools = ["get_account_summary", "get_recent_transactions", "get_card_status", "get_case_status", "create_case"]
     if tool_name in protected_tools and not call.verified:
-        spoken = "নিরাপত্তাজনিত কারণে আপনার অ্যাকাউন্ট দেখার পূর্বে ভেরিফিকেশন সম্পন্ন করতে হবে।"
+        spoken = (
+            "For security reasons, please complete identity verification before accessing confidential account services."
+            if lang == "en"
+            else "নিরাপত্তাজনিত কারণে আপনার অ্যাকাউন্ট দেখার পূর্বে ভেরিফিকেশন সম্পন্ন করতে হবে।"
+        )
         return {
             "tool_name": tool_name,
             "result": {"error": "UNAUTHORIZED_UNVERIFIED_SESSION"},
@@ -162,7 +180,11 @@ def dispatch_voice_tool(
             "balance_bdt": cust.account_balance_bdt,
             "status": cust.status
         }
-        spoken = f"আপনার বর্তমান অ্যাকাউন্ট ব্যালেন্স ৳ {cust.account_balance_bdt:,.2f} টাকা। অ্যাকাউন্ট স্ট্যাটাস সক্রিয় রয়েছে।"
+        spoken = (
+            f"Your current Upay account balance is BDT {cust.account_balance_bdt:,.2f}. Your account status is active and verified."
+            if lang == "en"
+            else f"আপনার বর্তমান অ্যাকাউন্ট ব্যালেন্স ৳ {cust.account_balance_bdt:,.2f} টাকা। অ্যাকাউন্ট স্ট্যাটাস সক্রিয় রয়েছে।"
+        )
         
     elif tool_name == "get_recent_transactions":
         result_data = {
@@ -172,7 +194,11 @@ def dispatch_voice_tool(
                 {"type": "CASH_IN", "amount": 5000.0, "recipient": "Agent #402", "status": "COMPLETED"}
             ]
         }
-        spoken = "আপনার সর্বশেষ লেনদেন ছিল মীনা বাজারে ১৪০০ টাকা পেমেন্ট এবং ২০০ টাকা মোবাইল রিচার্জ।"
+        spoken = (
+            "Your recent transactions include a payment of BDT 1,400 to Meena Bazar and a mobile recharge of BDT 200."
+            if lang == "en"
+            else "আপনার সর্বশেষ লেনদেন ছিল মীনা বাজারে ১৪০০ টাকা পেমেন্ট এবং ২০০ টাকা মোবাইল রিচার্জ।"
+        )
         
     elif tool_name == "get_card_status":
         card = db.query(Card).filter(Card.customer_id == cust.customer_id).first()
@@ -186,10 +212,14 @@ def dispatch_voice_tool(
                 "available_usd": avail,
                 "online_enabled": card.online_enabled
             }
-            spoken = f"আপনার স্মার্ট কার্ড স্ট্যাটাস {card.status}। মোট এনডোর্সমেন্ট ${card.endorsement_usd:.0f} USD, যার মধ্যে অবশিষ্ট আছে ${avail:.0f} USD।"
+            spoken = (
+                f"Your smart card status is {card.status}. Total endorsement quota is ${card.endorsement_usd:.0f} USD, with ${avail:.0f} USD remaining available."
+                if lang == "en"
+                else f"আপনার স্মার্ট কার্ড স্ট্যাটাস {card.status}। মোট এনডোর্সমেন্ট ${card.endorsement_usd:.0f} USD, যার মধ্যে অবশিষ্ট আছে ${avail:.0f} USD।"
+            )
         else:
             result_data = {"message": "No active card"}
-            spoken = "আপনার কোনো সক্রিয় কার্ড পাওয়া যায়নি।"
+            spoken = "No active card was found on your account." if lang == "en" else "আপনার কোনো সক্রিয় কার্ড পাওয়া যায়নি।"
             
     elif tool_name == "get_case_status":
         cases = db.query(Case).filter(Case.customer_id == cust.customer_id).order_by(Case.created_at.desc()).limit(3).all()
@@ -201,9 +231,13 @@ def dispatch_voice_tool(
         }
         if cases:
             c = cases[0]
-            spoken = f"আপনার সাম্প্রতিক কেস নম্বর {c.case_id}। এর বর্তমান অবস্থা: {c.status}, অগ্রগতি {c.progress_percent}%।"
+            spoken = (
+                f"Your recent case number {c.case_id} is currently under {c.status} status with {c.progress_percent}% progress completed."
+                if lang == "en"
+                else f"আপনার সাম্প্রতিক কেস নম্বর {c.case_id}। এর বর্তমান অবস্থা: {c.status}, অগ্রগতি {c.progress_percent}%।"
+            )
         else:
-            spoken = "আপনার বর্তমানে কোনো সক্রিয় অভিযোগ বা কেস নেই।"
+            spoken = "You have no active disputes or cases recorded at this time." if lang == "en" else "আপনার বর্তমানে কোনো সক্রিয় অভিযোগ বা কেস নেই।"
             
     elif tool_name == "create_case":
         text = args.get("complaint_text", "Voice customer reported service dispute")
@@ -214,14 +248,22 @@ def dispatch_voice_tool(
             "priority": new_case.priority,
             "status": new_case.status
         }
-        spoken = f"আপনার অভিযোগটি নথিভুক্ত করা হয়েছে। আপনার কেস আইডি {new_case.case_id}। তদন্তের অগ্রগতি অ্যাপে দেখতে পারবেন।"
+        spoken = (
+            f"Your complaint has been successfully registered. Your case ID is {new_case.case_id}. You can track investigation progress in the Upay app."
+            if lang == "en"
+            else f"আপনার অভিযোগটি নথিভুক্ত করা হয়েছে। আপনার কেস আইডি {new_case.case_id}। তদন্তের অগ্রগতি অ্যাপে দেখতে পারবেন।"
+        )
         
     elif tool_name == "escalate_case":
         should_esc = True
         call.escalated = True
         call.escalation_team = "SENIOR_FRAUD_SPECIALIST"
         call.status = "ESCALATED"
-        spoken = "আমি আপনাকে অবিলম্বে আমাদের সিনিয়র স্পেশালিস্ট দলের সাথে যুক্ত করছি। অনুগ্রহ করে লাইনে থাকুন।"
+        spoken = (
+            "I am connecting you with our senior operations specialist team immediately. Please hold the line."
+            if lang == "en"
+            else "আমি আপনাকে অবিলম্বে আমাদের সিনিয়র স্পেশালিস্ট দলের সাথে যুক্ত করছি। অনুগ্রহ করে লাইনে থাকুন।"
+        )
         result_data = {
             "escalated": True,
             "queue": "SENIOR_FRAUD_SPECIALIST",

@@ -82,13 +82,15 @@ export const api = {
   requestCreditReview: (): Promise<any> => fetchJson('/credit/review-request', { method: 'POST' }),
 
   // Voice AI
-  startVoiceSession: (phone = '01771449164'): Promise<{ call_id: string; greeting: string; challenge_type: string; status: string }> =>
-    fetchJson('/voice/session/start', { method: 'POST', body: JSON.stringify({ phone_number: phone }) }),
-  verifyVoiceCaller: (payload: { call_id: string; father_name?: string; voice_pin?: string; account_suffix?: string }): Promise<any> =>
+  startVoiceSession: (phone = '01771449164', lang = 'bn'): Promise<{ call_id: string; greeting: string; challenge_type: string; status: string; welcome_message?: string; verified?: boolean }> =>
+    fetchJson('/voice/session/start', { method: 'POST', body: JSON.stringify({ phone_number: phone, lang }) }),
+  verifyVoiceCaller: (payload: { call_id: string; father_name?: string; voice_pin?: string; account_suffix?: string; lang?: string }): Promise<any> =>
     fetchJson('/voice/verify', { method: 'POST', body: JSON.stringify(payload) }),
   executeVoiceTool: (payload: { call_id: string; tool_name: string; arguments?: any }): Promise<any> =>
     fetchJson('/voice/tools/execute', { method: 'POST', body: JSON.stringify(payload) }),
   getVoiceCallSummary: (callId: string): Promise<any> => fetchJson(`/voice/calls/${callId}/summary`),
+  getVoiceTtsUrl: (text: string, lang = 'bn'): string =>
+    `${API_BASE}/voice/tts?text=${encodeURIComponent(text)}&lang=${lang}`,
 
   // AI Activity Logs
   getAuditLogs: (component?: string): Promise<AIActivityLog[]> =>

@@ -144,6 +144,7 @@ class CreditReadinessResponse(BaseModel):
 # ==============================================================================
 class VoiceSessionStartRequest(BaseModel):
     phone_number: str = Field("01771449164", example="01771449164")
+    lang: Optional[str] = "bn"
 
 class VoiceSessionStartResponse(BaseModel):
     call_id: str
@@ -157,6 +158,7 @@ class VoiceVerifyRequest(BaseModel):
     account_suffix: Optional[str] = None
     dob: Optional[str] = None
     voice_pin: Optional[str] = None
+    lang: Optional[str] = "bn"
 
 class VoiceVerifyResponse(BaseModel):
     verified: bool
