@@ -4,6 +4,7 @@ import { api } from '../../../services/api';
 import { useApp } from '../../../context/AppContext';
 import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { UpayPageHeader } from '../../shared/UpayPageHeader';
+import { StackingReportCards } from './StackingReportCards';
 import { 
   FileText, PlusCircle, AlertCircle, Clock, CheckCircle2, 
   ArrowRight, ShieldAlert, Sparkles, X, ChevronRight, Send, AlertTriangle
@@ -93,7 +94,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
   };
 
   return (
-    <div className={`w-full flex flex-col bg-white text-slate-800 ${isDesktop ? 'rounded-3xl shadow-xl overflow-hidden pb-12' : 'pb-28'}`}>
+    <div className={`w-full flex flex-col bg-white text-slate-800 ${isDesktop ? 'rounded-3xl shadow-xl pb-12' : 'pb-28'}`}>
       
       {/* Toast Notification */}
       {toastMsg && (
@@ -117,8 +118,8 @@ export const ReportView: React.FC<ReportViewProps> = ({
         {/* Desktop 2-Column Responsive Layout */}
         <div className={`grid grid-cols-1 ${isDesktop ? 'lg:grid-cols-12 gap-8 items-start' : 'gap-5'}`}>
           
-          {/* LEFT COLUMN: Hero & Create Form */}
-          <div className={`${isDesktop ? 'lg:col-span-5 space-y-6' : 'space-y-5'}`}>
+          {/* LEFT COLUMN: Hero & Create Form (Sticky on Desktop) */}
+          <div className={`${isDesktop ? 'lg:col-span-4 space-y-6 sticky top-24' : 'space-y-5'}`}>
             
             {/* Header Hero & Create Button */}
             <div className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-3xl p-6 shadow-sm relative overflow-hidden">
@@ -175,13 +176,13 @@ export const ReportView: React.FC<ReportViewProps> = ({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Active Cases List */}
-          <div className={`${isDesktop ? 'lg:col-span-7 space-y-4' : 'space-y-3'}`}>
+          {/* RIGHT COLUMN: Active Cases List (Stacking Deck from it farm web) */}
+          <div className={`${isDesktop ? 'lg:col-span-8 space-y-4' : 'space-y-3'}`}>
             
-            <div className="flex items-center justify-between px-1">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span>{isBn ? 'সক্রিয় বিরোধ ও কেসসমূহ' : 'Active Disputes & Investigations'}</span>
-                <span className="bg-blue-100 text-[#0047BA] text-xs font-mono font-bold px-2 py-0.5 rounded-full">
+            <div className="flex items-center justify-between px-1 mb-2">
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>{isBn ? 'রিপোর্ট' : 'Report'}</span>
+                <span className="bg-blue-100 text-[#0047BA] text-xs font-mono font-bold px-2.5 py-0.5 rounded-full">
                   {cases.length}
                 </span>
               </h3>
@@ -201,57 +202,11 @@ export const ReportView: React.FC<ReportViewProps> = ({
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {cases.map((c) => {
-                  const isCrit = c.priority === 'CRITICAL';
-                  const isHigh = c.priority === 'HIGH';
-                  return (
-                    <div
-                      key={c.case_id}
-                      onClick={() => setSelectedCase(c)}
-                      className="bg-white rounded-2xl p-4.5 shadow-2xs border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition cursor-pointer group active:scale-98"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-upayBlue bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
-                            #{c.case_id}
-                          </span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            isCrit ? 'bg-rose-100 text-rose-700' : isHigh ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'
-                          }`}>
-                            {c.priority}
-                          </span>
-                        </div>
-
-                        <span className="text-xs font-bold text-slate-700 font-mono">
-                          {c.progress_percent}%
-                        </span>
-                      </div>
-
-                      <h4 className="text-sm font-bold text-slate-900 mb-1.5 group-hover:text-upayBlue transition">
-                        {c.case_title}
-                      </h4>
-
-                      {/* Progress Bar */}
-                      <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-3">
-                        <div 
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            c.status === 'ESCALATED' ? 'bg-rose-500' : 'bg-upayBlue'
-                          }`}
-                          style={{ width: `${c.progress_percent}%` }}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100">
-                        <span>{isBn ? 'স্ট্যাটাস:' : 'Status:'} <strong className="text-slate-800">{c.status}</strong></span>
-                        <span className="text-[11px] text-upayBlue font-semibold flex items-center gap-1 group-hover:translate-x-1 transition">
-                          {isBn ? 'বিস্তারিত দেখুন' : 'View Details'} <ChevronRight className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <StackingReportCards
+                cases={cases}
+                onSelectCase={setSelectedCase}
+                isBn={isBn}
+              />
             )}
           </div>
         </div>
