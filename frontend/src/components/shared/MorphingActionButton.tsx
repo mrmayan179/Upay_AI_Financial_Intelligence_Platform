@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface MorphingActionButtonProps {
   icon?: React.ReactNode;
@@ -18,86 +18,155 @@ export const MorphingActionButton: React.FC<MorphingActionButtonProps> = ({
   badge,
   onClick,
   variant = 'card',
+  align = 'left',
   title
 }) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const [autoPeek, setAutoPeek] = useState(false);
+
+  // Periodic subtle auto-peek animation so user discovers the morphing animation without touching
+  useEffect(() => {
+    // Initial peek after 2.5 seconds
+    const timer = setTimeout(() => {
+      setAutoPeek(true);
+      setTimeout(() => setAutoPeek(false), 2400);
+    }, 2500);
+
+    // Recurring peek every 11 seconds
+    const interval = setInterval(() => {
+      setAutoPeek(true);
+      setTimeout(() => setAutoPeek(false), 2400);
+    }, 11000);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const expanded = isHovered || isTouched || autoPeek;
+
+  const isCard = variant === 'card';
 
   return (
     <div
-      onClick={onClick}
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
-      onTouchStart={() => setIsActive(true)}
-      onTouchEnd={() => setTimeout(() => setIsActive(false), 2200)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => {
+        setIsTouched(true);
+        setTimeout(() => setIsTouched(false), 3200);
+      }}
       title={title || label}
-      className={`pointer-events-auto flex-1 py-2 px-3 rounded-2xl bg-white border-2 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-between select-none shadow-sm hover:shadow-md ${
-        isActive ? 'border-amber-400 shadow-md bg-amber-50/20' : 'border-amber-300/80'
+      className={`group pointer-events-auto relative cursor-pointer select-none transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) flex items-center overflow-hidden active:scale-95 shadow-lg hover:shadow-2xl ${
+        expanded
+          ? isCard
+            ? 'w-48 sm:w-56 h-13 rounded-2xl bg-white border-2 border-[#0047BA] ring-4 ring-blue-100 px-3'
+            : 'w-48 sm:w-56 h-13 rounded-2xl bg-white border-2 border-[#FFB800] ring-4 ring-amber-100 px-3'
+          : isCard
+          ? 'w-13 h-13 rounded-full bg-white border-2 border-[#0047BA] ring-2 ring-blue-500/20 p-0 justify-center hover:scale-105 animate-[pulse_4s_ease-in-out_infinite]'
+          : 'w-13 h-13 rounded-full bg-white border-2 border-[#FFB800] ring-2 ring-amber-500/20 p-0 justify-center hover:scale-105 animate-[pulse_4s_ease-in-out_infinite]'
+      } ${
+        align === 'left' ? 'justify-start' : 'justify-end'
       }`}
     >
-      {variant === 'card' ? (
-        <>
-          {/* Left Text details */}
-          <div className="flex flex-col text-left">
+      {/* Shimmer sweep effect when expanded */}
+      {expanded && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 animate-[shimmer_1.4s_infinite]" />
+        </div>
+      )}
+
+      {/* LEFT-ALIGNED (CARD): Icon on Left, Text on Right */}
+      {align === 'left' ? (
+        <div className="flex items-center gap-2.5 w-full">
+          {/* Round-to-Square Morphing Icon Badge */}
+          <div
+            className={`transition-all duration-500 flex items-center justify-center shrink-0 shadow-sm ${
+              expanded
+                ? 'w-9 h-9 rounded-xl bg-gradient-to-tr from-[#002C6C] via-[#0047BA] to-blue-500 text-white scale-105 rotate-3'
+                : 'w-10 h-10 rounded-full bg-gradient-to-tr from-[#002C6C] via-[#0047BA] to-blue-500 text-white scale-100 rotate-0'
+            }`}
+          >
+            {icon ? (
+              icon
+            ) : (
+              <span className="text-base">💳</span>
+            )}
+          </div>
+
+          {/* Text Details (Smooth reveal when expanded) */}
+          <div
+            className={`flex flex-col text-left z-10 transition-all duration-400 ease-out whitespace-nowrap overflow-hidden ${
+              expanded
+                ? 'opacity-100 translate-x-0 max-w-[150px]'
+                : 'opacity-0 -translate-x-3 max-w-0 pointer-events-none'
+            }`}
+          >
             <div className="flex items-center gap-1.5">
-              <span className="text-[12.5px] font-extrabold text-slate-950 font-bengali leading-none">
+              <span className="text-[12.5px] font-extrabold text-[#0047BA] font-bengali leading-none">
                 {label}
               </span>
               {badge && (
-                <span className="text-[8px] font-mono font-bold bg-[#0047BA] text-white px-1.5 py-0.5 rounded-full uppercase">
+                <span className="text-[8px] font-mono font-bold bg-[#0047BA] text-white px-1.5 py-0.5 rounded-full uppercase shadow-xs">
                   {badge}
                 </span>
               )}
             </div>
             {sublabel && (
-              <span className="text-[9.5px] font-medium text-slate-500 mt-0.5 leading-none">
+              <span className="text-[9.5px] font-medium text-slate-500 mt-1 leading-none">
                 {sublabel}
               </span>
             )}
           </div>
-
-          {/* Morphing element: round -> square on hover/touch */}
-          <div
-            className={`w-9 h-9 transition-all duration-300 ease-out flex items-center justify-center text-white shadow-xs ${
-              isActive
-                ? 'rounded-xl scale-110 rotate-6 bg-gradient-to-r from-blue-700 via-sky-600 to-[#0047BA] ring-2 ring-amber-300'
-                : 'rounded-full scale-100 rotate-0 bg-gradient-to-r from-blue-700 to-[#0047BA]'
-            }`}
-          >
-            {icon || <span className="text-base">💳</span>}
-          </div>
-        </>
+        </div>
       ) : (
-        <>
-          {/* Morphing element: round -> square on hover/touch */}
+        /* RIGHT-ALIGNED (OFFERS): Text on Left, Icon on Right */
+        <div className="flex items-center justify-end gap-2.5 w-full">
+          {/* Text Details (Smooth reveal when expanded) */}
           <div
-            className={`w-9 h-9 transition-all duration-300 ease-out flex items-center justify-center text-slate-950 shadow-xs ${
-              isActive
-                ? 'rounded-xl scale-110 -rotate-6 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 ring-2 ring-[#0047BA]'
-                : 'rounded-full scale-100 rotate-0 bg-gradient-to-r from-amber-400 to-yellow-400'
+            className={`flex flex-col text-right z-10 transition-all duration-400 ease-out whitespace-nowrap overflow-hidden ${
+              expanded
+                ? 'opacity-100 translate-x-0 max-w-[150px]'
+                : 'opacity-0 translate-x-3 max-w-0 pointer-events-none'
             }`}
           >
-            {icon || <span className="text-base">🎁</span>}
-          </div>
-
-          {/* Right Text details */}
-          <div className="flex flex-col text-right">
             <div className="flex items-center justify-end gap-1.5">
               {badge && (
-                <span className="text-[8px] font-mono font-bold bg-amber-400 text-slate-950 px-1.5 py-0.5 rounded-full uppercase">
+                <span className="text-[8px] font-mono font-bold bg-[#FFB800] text-slate-950 px-1.5 py-0.5 rounded-full uppercase shadow-xs">
                   {badge}
                 </span>
               )}
-              <span className="text-[12.5px] font-extrabold text-slate-950 font-bengali leading-none">
+              <span className="text-[12.5px] font-extrabold text-amber-700 font-bengali leading-none">
                 {label}
               </span>
             </div>
             {sublabel && (
-              <span className="text-[9.5px] font-medium text-slate-500 mt-0.5 leading-none">
+              <span className="text-[9.5px] font-medium text-slate-500 mt-1 leading-none">
                 {sublabel}
               </span>
             )}
           </div>
-        </>
+
+          {/* Round-to-Square Morphing Icon Badge */}
+          <div
+            className={`transition-all duration-500 flex items-center justify-center shrink-0 shadow-sm ${
+              expanded
+                ? 'w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-[#FFB800] text-slate-950 scale-105 -rotate-3'
+                : 'w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-[#FFB800] text-slate-950 scale-100 rotate-0'
+            }`}
+          >
+            {icon ? (
+              icon
+            ) : (
+              <span className="text-base">🎁</span>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

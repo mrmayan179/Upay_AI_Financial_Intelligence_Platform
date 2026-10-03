@@ -27,6 +27,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [showWheelModal, setShowWheelModal] = useState<boolean>(false);
   const [showOfferModal, setShowOfferModal] = useState<boolean>(false);
   const [showChakaBadge, setShowChakaBadge] = useState<boolean>(true);
+  const [activeDemoTooltip, setActiveDemoTooltip] = useState<string | null>(null);
+
+  const handleTouchDemo = (id: string) => {
+    setActiveDemoTooltip(id);
+    setTimeout(() => {
+      setActiveDemoTooltip(prev => prev === id ? null : prev);
+    }, 2200);
+  };
 
   // Live status bar clock
   useEffect(() => {
@@ -198,73 +206,247 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <section className={`pt-3.5 pb-2 ${isDesktop ? 'px-6 max-w-5xl mx-auto w-full' : 'px-3'}`} aria-label="প্রধান সেবাসমূহ">
         <div className={`grid gap-y-4 gap-x-2 text-center ${isDesktop ? 'grid-cols-6' : 'grid-cols-4'}`}>
           {/* 1. Send Money */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs hover:border-[#0047BA] transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('send_money')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('send_money')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('send_money');
+            }}
+          >
+            {/* Floating Demo Tooltip */}
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'send_money'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs group-hover/demo:border-[#0047BA] group-hover/demo:scale-105 transition">
               <div className="w-7 h-5 rounded border-2 border-[#0047BA] flex items-center justify-center font-bold text-[10px]">
                 ৳
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Send Money</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'সেন্ড মানি' : 'Send Money'}
+            </span>
           </div>
 
           {/* 2. Mobile Recharge */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs hover:border-[#0047BA] transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('recharge')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('recharge')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('recharge');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'recharge'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs group-hover/demo:border-[#0047BA] group-hover/demo:scale-105 transition">
               <div className="relative w-6 h-8 border-2 border-[#0047BA] rounded-md flex items-center justify-center">
                 <span className="text-[7.5px] font-bold">৳</span>
                 <div className="w-2 h-0.5 bg-[#0047BA] absolute bottom-0.5"></div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Mobile Recharge</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'মোবাইল রিচার্জ' : 'Mobile Recharge'}
+            </span>
           </div>
 
           {/* 3. Cash Out */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs hover:border-[#0047BA] transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('cash_out')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('cash_out')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('cash_out');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'cash_out'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs group-hover/demo:border-[#0047BA] group-hover/demo:scale-105 transition">
               <div className="relative flex items-center justify-center">
                 <div className="w-5 h-7 border-2 border-[#0047BA] rounded-sm bg-white"></div>
                 <div className="w-4 h-5 bg-amber-500 rounded-sm absolute -right-1.5 -bottom-0.5 border border-amber-600 shadow-xs"></div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Cash Out</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'ক্যাশ আউট' : 'Cash Out'}
+            </span>
           </div>
 
           {/* 4. Pay Bill */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs hover:border-[#0047BA] transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('pay_bill')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('pay_bill')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('pay_bill');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'pay_bill'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#E8F1FC] border border-[#D0E2F9] flex items-center justify-center text-[#0047BA] shadow-xs group-hover/demo:border-[#0047BA] group-hover/demo:scale-105 transition">
               <div className="w-6 h-7 border-2 border-[#0047BA] rounded p-0.5 flex flex-col justify-between">
                 <div className="w-full h-0.5 bg-[#0047BA]"></div>
                 <div className="w-full h-0.5 bg-[#0047BA]"></div>
                 <div className="w-3/4 h-0.5 bg-[#0047BA]"></div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Pay Bill</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'পে বিল' : 'Pay Bill'}
+            </span>
           </div>
 
           {/* 5. Add Money */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#EAE8F8] border border-[#DDD8F4] flex items-center justify-center text-indigo-700 shadow-xs hover:border-indigo-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('add_money')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('add_money')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('add_money');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'add_money'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#EAE8F8] border border-[#DDD8F4] flex items-center justify-center text-indigo-700 shadow-xs group-hover/demo:border-indigo-400 group-hover/demo:scale-105 transition">
               <div className="w-6 h-5 bg-indigo-200 border-2 border-indigo-700 rounded flex items-center justify-center">
                 <span className="text-indigo-900 font-extrabold text-[11px] -mt-0.5">+</span>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Add Money</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'অ্যাড মানি' : 'Add Money'}
+            </span>
           </div>
 
           {/* 6. Savings */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#FFF5E5] border border-[#FFE4BA] flex items-center justify-center text-amber-700 shadow-xs hover:border-amber-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('savings')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('savings')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('savings');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'savings'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#FFF5E5] border border-[#FFE4BA] flex items-center justify-center text-amber-700 shadow-xs group-hover/demo:border-amber-400 group-hover/demo:scale-105 transition">
               <div className="relative w-7 h-5 bg-amber-400 border border-amber-600 rounded flex items-center justify-center text-[9px] font-bold text-amber-950">
                 ৳
                 <div className="absolute -top-1 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white"></div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Savings</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'সেভিংস' : 'Savings'}
+            </span>
           </div>
 
           {/* 7. Fund Transfer */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#E8F8F5] border border-[#CCF0E8] flex items-center justify-center text-teal-700 shadow-xs hover:border-teal-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('fund_transfer')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('fund_transfer')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('fund_transfer');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'fund_transfer'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#E8F8F5] border border-[#CCF0E8] flex items-center justify-center text-teal-700 shadow-xs group-hover/demo:border-teal-400 group-hover/demo:scale-105 transition">
               <div className="flex items-end gap-0.5">
                 <div className="w-3 h-5 border border-teal-700 rounded-xs"></div>
                 <div className="w-4 h-6 border-2 border-teal-700 rounded-t-sm flex flex-col justify-between p-0.5">
@@ -272,32 +454,107 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Fund Transfer</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'ফান্ড ট্রান্সফার' : 'Fund Transfer'}
+            </span>
           </div>
 
           {/* 8. Request Money */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#EAF8FC] border border-[#CEF0F8] flex items-center justify-center text-cyan-700 shadow-xs hover:border-cyan-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('request_money')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('request_money')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('request_money');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'request_money'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#EAF8FC] border border-[#CEF0F8] flex items-center justify-center text-cyan-700 shadow-xs group-hover/demo:border-cyan-400 group-hover/demo:scale-105 transition">
               <div className="w-6 h-6 rounded-full bg-cyan-200 border-2 border-cyan-700 flex items-center justify-center font-bold text-cyan-900 text-xs">
                 ৳
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Request Money</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'রিকোয়েস্ট মানি' : 'Request Money'}
+            </span>
           </div>
 
           {/* 9. Make Payment */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#EBF5FB] border border-[#D4EBF7] flex items-center justify-center text-sky-700 shadow-xs hover:border-sky-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('make_payment')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('make_payment')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('make_payment');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'make_payment'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#EBF5FB] border border-[#D4EBF7] flex items-center justify-center text-sky-700 shadow-xs group-hover/demo:border-sky-400 group-hover/demo:scale-105 transition">
               <svg className="w-6 h-6 text-sky-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
               </svg>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Make Payment</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'পেমেন্ট' : 'Make Payment'}
+            </span>
           </div>
 
           {/* 10. Refer & Earn */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#F6EEF8] border border-[#E9D6F0] flex items-center justify-center text-purple-700 shadow-xs hover:border-purple-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('refer_earn')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('refer_earn')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('refer_earn');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'refer_earn'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#F6EEF8] border border-[#E9D6F0] flex items-center justify-center text-purple-700 shadow-xs group-hover/demo:border-purple-400 group-hover/demo:scale-105 transition">
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-purple-300 border border-purple-700"></div>
                 <div className="w-3.5 h-5 bg-white border border-purple-700 rounded-sm -ml-1 flex items-center justify-center text-[7px] font-bold">
@@ -305,25 +562,57 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">Refer &amp; Earn</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'রেফার করুন' : 'Refer & Earn'}
+            </span>
           </div>
 
           {/* 11. NPSB */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-[#FDF0ED] border border-[#F8D8CF] flex items-center justify-center text-rose-700 shadow-xs hover:border-rose-400 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('npsb')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('npsb')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('npsb');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'npsb'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-[#FDF0ED] border border-[#F8D8CF] flex items-center justify-center text-rose-700 shadow-xs group-hover/demo:border-rose-400 group-hover/demo:scale-105 transition">
               <span className="font-extrabold italic text-[11px] tracking-tighter text-[#002A6A]">
                 =N<span className="text-rose-600">P</span>SB
               </span>
             </div>
-            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">NPSB</span>
+            <span className="text-[11px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'এনপিএসবি' : 'NPSB'}
+            </span>
           </div>
 
-          {/* 12. AI Governance Audit */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onNavigateTab('audit')}>
-            <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-amber-400 shadow-xs hover:border-amber-400 transition">
+          {/* 12. AI Governance Audit (Active Navigation) */}
+          <div
+            className="flex flex-col items-center cursor-pointer active:scale-95 transition group/audit"
+            onClick={() => onNavigateTab('audit')}
+          >
+            <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-amber-400 shadow-xs group-hover/audit:border-amber-400 group-hover/audit:scale-105 transition">
               <span className="text-sm">🛡️</span>
             </div>
-            <span className="text-[11px] font-bold text-slate-900 mt-1 leading-tight">AI Audit</span>
+            <span className="text-[11px] font-bold text-slate-900 mt-1 leading-tight">
+              {isBn ? 'এআই অডিট' : 'AI Audit'}
+            </span>
           </div>
         </div>
       </section>
@@ -497,20 +786,68 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
         <div className={`grid gap-y-4 gap-x-2 text-center ${isDesktop ? 'grid-cols-8' : 'grid-cols-4'}`}>
           {/* 1. Traffic Fine */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('traffic_fine')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('traffic_fine')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('traffic_fine');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'traffic_fine'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="w-5 h-7 bg-emerald-100 border border-emerald-500 rounded p-0.5 flex flex-col justify-between items-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Traffic Fine</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'ট্রাফিক ফাইন' : 'Traffic Fine'}
+            </span>
           </div>
 
           {/* 2. Toll Payment */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('toll')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('toll')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('toll');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'toll'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="flex flex-col items-center">
                 <div className="w-6 h-1 bg-amber-500 rounded-full mb-1"></div>
                 <div className="w-4 h-4 bg-sky-200 border border-sky-500 rounded-xs flex items-center justify-center text-[7px] font-bold">
@@ -518,24 +855,74 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Toll Payment</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'টোল পেমেন্ট' : 'Toll Payment'}
+            </span>
           </div>
 
           {/* 3. Govt. Payment */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('govt_pay')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('govt_pay')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('govt_pay');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'govt_pay'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="w-7 h-7 rounded-full border-2 border-red-500 bg-emerald-50 p-0.5 flex items-center justify-center">
                 <div className="w-3.5 h-3.5 rounded-full bg-red-500 flex items-center justify-center text-[6px] text-white font-bold">
                   ★
                 </div>
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Govt. Payment</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'সরকারি ফি' : 'Govt. Payment'}
+            </span>
           </div>
 
           {/* 4. Education */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('education')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('education')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('education');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'education'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="flex flex-col items-center">
                 <span className="text-xs -mb-1">🎓</span>
                 <div className="w-6 h-3.5 bg-rose-100 border border-rose-400 rounded-xs flex items-center justify-center text-[6px] font-bold">
@@ -543,48 +930,150 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Education</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'শিক্ষা প্রতিষ্ঠান' : 'Education'}
+            </span>
           </div>
 
           {/* 5. NGO */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('ngo')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('ngo')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('ngo');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'ngo'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="w-6 h-6 rounded bg-sky-100 border border-sky-500 flex items-center justify-center text-[8px] font-bold text-sky-800">
                 NGO
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">NGO</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'এনজিও' : 'NGO'}
+            </span>
           </div>
 
           {/* 6. Insurance */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('insurance')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('insurance')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('insurance');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'insurance'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="w-6 h-7 rounded-t-sm rounded-b-xl bg-teal-100 border-2 border-teal-500 flex items-center justify-center text-teal-800 text-xs">
                 🛡️
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Insurance</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'বীমা' : 'Insurance'}
+            </span>
           </div>
 
           {/* 7. Donation */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('donation')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('donation')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('donation');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'donation'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="flex flex-col items-center">
                 <span className="text-[10px] -mb-1">🤲</span>
                 <div className="w-6 h-3 bg-amber-100 border border-amber-400 rounded-xs"></div>
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Donation</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'দান-অনুদান' : 'Donation'}
+            </span>
           </div>
 
           {/* 8. Zakat Payment */}
-          <div className="flex flex-col items-center cursor-pointer active:scale-95 transition" onClick={() => onOpenBalanceSheet()}>
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 hover:border-slate-300 transition">
+          <div
+            className="group/demo relative flex flex-col items-center select-none cursor-pointer active:scale-95 transition"
+            onMouseEnter={() => setActiveDemoTooltip('zakat')}
+            onMouseLeave={() => setActiveDemoTooltip(null)}
+            onTouchStart={() => handleTouchDemo('zakat')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTouchDemo('zakat');
+            }}
+          >
+            <div
+              className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out transform ${
+                activeDemoTooltip === 'zakat'
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-1.5 scale-90 group-hover/demo:opacity-100 group-hover/demo:translate-y-0 group-hover/demo:scale-100'
+              }`}
+            >
+              <span className="bg-slate-900/95 text-amber-300 border border-amber-400/50 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1 backdrop-blur-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {isBn ? 'ডেমো' : 'Demo'}
+              </span>
+            </div>
+
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-700 group-hover/demo:border-slate-400 group-hover/demo:scale-105 transition">
               <div className="w-7 h-7 rounded-full bg-emerald-100 border border-emerald-500 flex items-center justify-center text-emerald-800 text-xs">
                 🕌
               </div>
             </div>
-            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">Zakat</span>
+            <span className="text-[10.5px] font-medium text-slate-800 mt-1 leading-tight">
+              {isBn ? 'যাকাত' : 'Zakat'}
+            </span>
           </div>
         </div>
       </section>
@@ -621,12 +1110,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* Kept in authentic position with authentic Upay colors & interactive round-to-square morphing animation */}
       <div className={`inset-x-0 z-30 pointer-events-none ${
         isDesktop
-          ? 'py-4 px-6 max-w-5xl mx-auto w-full flex justify-between gap-4'
-          : 'fixed md:absolute bottom-[68px] px-4 flex justify-between gap-3'
+          ? 'py-6 px-6 max-w-5xl mx-auto w-full flex justify-between items-center'
+          : 'fixed md:absolute bottom-[72px] px-4 flex justify-between items-center'
       }`}>
         {/* Left Action Box: উপায় কার্ড */}
         <MorphingActionButton
           variant="card"
+          align="left"
           label={isBn ? 'উপায় কার্ড' : 'Upay Card'}
           sublabel={isBn ? 'ডুয়েল কারেন্সি' : 'Smart Card'}
           badge="AI"
@@ -637,6 +1127,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         {/* Right Action Box: উপায় অফার */}
         <MorphingActionButton
           variant="offer"
+          align="right"
           label={isBn ? 'উপায় অফার' : 'Upay Offers'}
           sublabel={isBn ? 'ক্যাশব্যাক' : 'Special Deals'}
           badge={isBn ? '৬৫% ছাড়' : 'DEALS'}
