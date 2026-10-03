@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card as CardType } from '../../../types';
+import { useApp } from '../../../context/AppContext';
 import { RotateCw, ShieldCheck, Wifi } from 'lucide-react';
 
 interface UpaySmartCardVisualProps {
@@ -7,6 +8,8 @@ interface UpaySmartCardVisualProps {
 }
 
 export const UpaySmartCardVisual: React.FC<UpaySmartCardVisualProps> = ({ card }) => {
+  const { language } = useApp();
+  const isBn = language === 'bn';
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -15,7 +18,7 @@ export const UpaySmartCardVisual: React.FC<UpaySmartCardVisualProps> = ({ card }
       <div 
         className="w-full max-w-[420px] aspect-[1.586/1] perspective-1000 cursor-pointer select-none group"
         onClick={() => setIsFlipped(!isFlipped)}
-        title="ক্লিক করে কার্ড উল্টান (Click to Flip)"
+        title={isBn ? "ক্লিক করে কার্ড উল্টান (Click to Flip)" : "Click to flip card"}
       >
         <div 
           className={`relative w-full h-full rounded-[24px] transition-transform duration-700 transform-style-preserve-3d shadow-2xl ${
@@ -150,7 +153,11 @@ export const UpaySmartCardVisual: React.FC<UpaySmartCardVisualProps> = ({ card }
         className="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-upayBlue transition font-semibold"
       >
         <RotateCw className="w-3.5 h-3.5" />
-        <span>কার্ডের অপর পাশ দেখতে ক্লিক করুন ({isFlipped ? 'সামনের পাশ' : 'পেছনের পাশ'})</span>
+        <span>
+          {isBn
+            ? `কার্ডের অপর পাশ দেখতে ক্লিক করুন (${isFlipped ? 'সামনের পাশ' : 'পেছনের পাশ'})`
+            : `Click to flip card (${isFlipped ? 'Front side' : 'Back side'})`}
+        </span>
       </button>
     </div>
   );

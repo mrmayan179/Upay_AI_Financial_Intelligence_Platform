@@ -112,15 +112,51 @@ export const App: React.FC = () => {
           />
         );
       case 'card':
-        return <CardView card={card} onRefresh={fetchCardData} />;
+        return (
+          <CardView
+            card={card}
+            onRefresh={fetchCardData}
+            profile={profile}
+            onOpenBalanceSheet={() => setIsBalanceOpen(true)}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+          />
+        );
       case 'report':
-        return <ReportView cases={cases} onRefresh={fetchCasesData} />;
+        return (
+          <ReportView
+            cases={cases}
+            onRefresh={fetchCasesData}
+            profile={profile}
+            onOpenBalanceSheet={() => setIsBalanceOpen(true)}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+          />
+        );
       case 'credit':
-        return <CreditView credit={credit} onRefresh={fetchCreditData} />;
+        return (
+          <CreditView
+            credit={credit}
+            onRefresh={fetchCreditData}
+            profile={profile}
+            onOpenBalanceSheet={() => setIsBalanceOpen(true)}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+          />
+        );
       case 'voice':
-        return <VoiceView />;
+        return (
+          <VoiceView
+            profile={profile}
+            onOpenBalanceSheet={() => setIsBalanceOpen(true)}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+          />
+        );
       case 'audit':
-        return <AuditView />;
+        return (
+          <AuditView
+            profile={profile}
+            onOpenBalanceSheet={() => setIsBalanceOpen(true)}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+          />
+        );
       default:
         return null;
     }
