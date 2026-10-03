@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../../services/api';
+import { useApp } from '../../../context/AppContext';
+import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { 
   Phone, PhoneOff, Mic, Volume2, ShieldCheck, ShieldAlert, 
   Sparkles, KeyRound, ArrowRight, UserCheck, AlertTriangle, CheckCircle2, MessageSquare
 } from 'lucide-react';
 
 export const VoiceView: React.FC = () => {
+  const { language, t } = useApp();
+  const isBn = language === 'bn';
   const [callActive, setCallActive] = useState(false);
   const [callId, setCallId] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
@@ -178,41 +182,56 @@ export const VoiceView: React.FC = () => {
             </div>
           )}
 
-          <h3 className="text-base font-bold font-bengali mt-3">
-            {callActive ? "উপায় এআই ভয়েস অ্যাসিস্ট্যান্ট (সক্রিয়)" : "উপায় ১৬২৪৭ ভয়েস সাপোর্ট"}
+          <h3 className="text-base font-bold mt-3 flex items-center justify-center gap-2">
+            <span>
+              {callActive
+                ? (isBn ? 'উপায় এআই ভয়েস অ্যাসিস্ট্যান্ট (সক্রিয়)' : 'Upay Voice Assistant (Active)')
+                : (isBn ? 'উপায় ১৬২৪৭ ভয়েস সাপোর্ট' : 'Upay 16247 Voice Support')}
+            </span>
+            <DemoBadge label="VOICE AI" size="sm" />
           </h3>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
-            {callActive ? (verified ? "🟢 কলার যাচাইকৃত (Verified Session)" : "🟡 যাচাই বাকি (Verification Challenge Pending)") : "কল শুরু করতে নিচের বাটনে চাপ দিন"}
+            {callActive
+              ? (verified
+                  ? (isBn ? '🟢 কলার যাচাইকৃত (Verified Session)' : '🟢 Caller Verified (Authorized Session)')
+                  : (isBn ? '🟡 যাচাই বাকি (Verification Challenge Pending)' : '🟡 Verification Pending'))
+              : (isBn ? 'কল শুরু করতে নিচের বাটনে চাপ দিন' : 'Press button below to simulate incoming/outgoing call')}
           </p>
         </div>
 
         {/* Call Action Button */}
         {!callActive ? (
-          <button
-            onClick={handleStartCall}
-            className="w-full max-w-[280px] py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm tracking-wide shadow-lg transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer font-bengali mx-auto"
-          >
-            <Phone className="w-5 h-5" />
-            <span>১৬২৪৭ হেল্পলাইনে কল করুন</span>
-          </button>
+          <DemoWrapper tooltipText={isBn ? '১৬২৪৭ ভয়েস এজেন্টের সাথে কল শুরু করুন (ডেমো)' : 'Simulate 16247 Voice Session (Demo)'}>
+            <button
+              onClick={handleStartCall}
+              className="w-full max-w-[280px] py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm tracking-wide shadow-lg transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer mx-auto"
+            >
+              <Phone className="w-5 h-5" />
+              <span>{isBn ? '১৬২৪৭ হেল্পলাইনে কল করুন' : 'Call 16247 Helpline'}</span>
+              <DemoBadge label="DEMO" size="sm" pulse={false} />
+            </button>
+          </DemoWrapper>
         ) : (
           <div className="flex items-center justify-center gap-3">
             {!verified && (
-              <button
-                onClick={() => setIsVerifyModalOpen(true)}
-                className="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer font-bengali"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>পরিচয় নিশ্চিত করুন</span>
-              </button>
+              <DemoWrapper tooltipText={isBn ? 'নিরাপত্তা পিন দিয়ে কলার যাচাই করুন' : 'Verify caller identity with PIN challenge'}>
+                <button
+                  onClick={() => setIsVerifyModalOpen(true)}
+                  className="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{isBn ? 'পরিচয় নিশ্চিত করুন' : 'Verify Identity'}</span>
+                  <DemoBadge label="CHALLENGE" size="sm" pulse={false} />
+                </button>
+              </DemoWrapper>
             )}
 
             <button
               onClick={handleEndCall}
-              className="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5 cursor-pointer font-bengali"
+              className="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5 cursor-pointer"
             >
               <PhoneOff className="w-4 h-4" />
-              <span>কল শেষ করুন</span>
+              <span>{isBn ? 'কল শেষ করুন' : 'End Call'}</span>
             </button>
           </div>
         )}

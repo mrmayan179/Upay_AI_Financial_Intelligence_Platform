@@ -3,6 +3,8 @@ import { Card as CardType, CardTransaction } from '../../../types';
 import { UpaySmartCardVisual } from './UpaySmartCardVisual';
 import { PinKeypadModal } from '../../shared/PinKeypadModal';
 import { api } from '../../../services/api';
+import { useApp } from '../../../context/AppContext';
+import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { 
   ShieldCheck, ShieldAlert, Wifi, Globe, ShoppingBag, 
   Lock, KeyRound, Radio, PlayCircle, CheckCircle2, AlertTriangle, X
@@ -14,6 +16,8 @@ interface CardViewProps {
 }
 
 export const CardView: React.FC<CardViewProps> = ({ card, onRefresh }) => {
+  const { language, t } = useApp();
+  const isBn = language === 'bn';
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [isSimModalOpen, setIsSimModalOpen] = useState(false);
   const [simTxnResult, setSimTxnResult] = useState<CardTransaction | null>(null);
@@ -252,61 +256,80 @@ export const CardView: React.FC<CardViewProps> = ({ card, onRefresh }) => {
 
       {/* 4. ACTIONS: PIN RESET, NFC DEMO & AI TRANSACTION TESTER */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        
         {/* Action 1: PIN Reset */}
-        <button
-          onClick={() => setIsPinModalOpen(true)}
-          className="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-            <KeyRound className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-slate-900 font-bengali">পিন রিসেট করুন</div>
-            <div className="text-[11px] text-slate-500 font-bengali">নিরাপদ ডেমো পিন সেটআপ</div>
-          </div>
-        </button>
+        <DemoWrapper tooltipText={isBn ? 'নিরাপদ ডেমো পিন পরিবর্তন' : 'Mock Card PIN Reset'} className="w-full">
+          <button
+            onClick={() => setIsPinModalOpen(true)}
+            className="w-full p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+              <KeyRound className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <span>{isBn ? 'পিন পরিবর্তন করুন' : 'Reset Card PIN'}</span>
+                <DemoBadge label="DEMO" size="sm" pulse={false} />
+              </div>
+              <div className="text-[11px] text-slate-500">
+                {isBn ? 'নিরাপদ ডেমো পিন সেটআপ' : 'Secure Enclave Simulation'}
+              </div>
+            </div>
+          </button>
+        </DemoWrapper>
 
         {/* Action 2: NFC Tap Simulator */}
-        <button
-          onClick={handleNfcTapDemo}
-          disabled={simLoading}
-          className="p-4 rounded-2xl bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200/80 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-            <Radio className="w-5 h-5 animate-pulse" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-teal-950 font-bengali">NFC ফোন-ট্যাপ সিমুলেশন</div>
-            <div className="text-[11px] text-teal-700 font-bengali">POS টার্মিনালে $12.50 ট্যাপ টেস্ট</div>
-          </div>
-        </button>
+        <DemoWrapper tooltipText={isBn ? 'POS মেশিনে ফোন স্পর্শ সিমুলেশন' : 'POS Contactless Tap Simulation'} className="w-full">
+          <button
+            onClick={handleNfcTapDemo}
+            disabled={simLoading}
+            className="w-full p-4 rounded-2xl bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200/80 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+              <Radio className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
+                <span>{isBn ? 'NFC ফোন-ট্যাপ টেস্ট' : 'NFC Tap Simulation'}</span>
+                <DemoBadge label="DEMO" size="sm" pulse={false} />
+              </div>
+              <div className="text-[11px] text-teal-700">
+                {isBn ? 'POS টার্মিনালে $12.50 ট্যাপ টেস্ট' : 'Simulate $12.50 POS Tap'}
+              </div>
+            </div>
+          </button>
+        </DemoWrapper>
 
         {/* Action 3: AI Fraud Risk Tester */}
-        <button
-          onClick={() => {
-            setSimTxnResult(null);
-            setIsSimModalOpen(true);
-          }}
-          className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-upayBlue text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-            <PlayCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-blue-950 font-bengali">AI রিয়েলটাইম রিস্ক টেস্টার</div>
-            <div className="text-[11px] text-blue-700 font-bengali">XGBoost ও অ্যানোমালি টেস্ট করুন</div>
-          </div>
-        </button>
-
+        <DemoWrapper tooltipText={isBn ? 'XGBoost ও Isolation Forest রিয়েলটাইম রিস্ক টেস্ট' : 'Test Real-Time Fraud & Anomaly Inferences'} className="w-full">
+          <button
+            onClick={() => {
+              setSimTxnResult(null);
+              setIsSimModalOpen(true);
+            }}
+            className="w-full p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 shadow-sm hover:shadow-md transition text-left flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[#0047BA] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+              <PlayCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-blue-950 flex items-center gap-1.5">
+                <span>{isBn ? 'AI রিয়েলটাইম রিস্ক টেস্টার' : 'AI Risk Evaluator'}</span>
+                <DemoBadge label="AI LIVE" size="sm" />
+              </div>
+              <div className="text-[11px] text-blue-700">
+                {isBn ? 'XGBoost ও অ্যানোমালি টেস্ট' : 'XGBoost & IForest Test'}
+              </div>
+            </div>
+          </button>
+        </DemoWrapper>
       </section>
 
       {/* PIN RESET MODAL */}
       <PinKeypadModal
         isOpen={isPinModalOpen}
         onClose={() => setIsPinModalOpen(false)}
-        title="নতুন কার্ড পিন লিখুন"
-        subtitle="আপনার স্মার্ট কার্ডের জন্য ৪ সংখ্যার ডেমো পিন সেট করুন"
+        title={isBn ? 'নতুন কার্ড পিন লিখুন' : 'Enter New Card PIN'}
+        subtitle={isBn ? 'আপনার স্মার্ট কার্ডের জন্য ৪ সংখ্যার ডেমো পিন সেট করুন' : 'Set a 4-digit demo PIN for your smart card'}
         onSuccess={handlePinResetSuccess}
       />
 

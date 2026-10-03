@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Case, CaseEvent } from '../../../types';
 import { api } from '../../../services/api';
+import { useApp } from '../../../context/AppContext';
+import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { 
   FileText, PlusCircle, AlertCircle, Clock, CheckCircle2, 
   ArrowRight, ShieldAlert, Sparkles, X, ChevronRight, Send, AlertTriangle
@@ -12,6 +14,8 @@ interface ReportViewProps {
 }
 
 export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
+  const { language, t } = useApp();
+  const isBn = language === 'bn';
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [complaintText, setComplaintText] = useState("");
@@ -91,20 +95,25 @@ export const ReportView: React.FC<ReportViewProps> = ({ cases, onRefresh }) => {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-[11px] font-bold tracking-wider uppercase mb-2">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            AI Dispute Copilot
+            <span>AI Dispute Copilot</span>
+            <DemoBadge label="NLP LIVE" size="sm" />
           </div>
-          <h2 className="text-xl font-bold font-bengali leading-tight">স্মার্ট রিপোর্ট ও কেস ট্র্যাকিং</h2>
-          <p className="text-xs text-white/80 font-bengali mt-1 max-w-[340px]">
-            যেকোনো লেনদেন বা সেবা সংক্রান্ত সমস্যা রিপোর্ট করুন এবং রিয়েলটাইমে তদন্তের অগ্রগতি ট্র্যাক করুন।
+          <h2 className={`text-xl font-bold leading-tight ${isBn ? 'font-bengali' : 'font-sans'}`}>
+            {t('report.title')}
+          </h2>
+          <p className="text-xs text-white/80 mt-1 max-w-[420px]">
+            {t('report.subtitle')}
           </p>
 
-          <button
-            onClick={() => setIsCreateOpen(true)}
-            className="mt-4 px-5 py-2.5 rounded-full bg-upayYellow text-slate-950 hover:bg-amber-400 font-bold text-xs font-bengali shadow-md transition active:scale-95 flex items-center gap-2 cursor-pointer"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>নতুন অভিযোগ করুন</span>
-          </button>
+          <DemoWrapper tooltipText={isBn ? 'নতুন বিরোধ বা লেনদেনের অভিযোগ করুন (ডেমো)' : 'File a new dispute (Demo)'}>
+            <button
+              onClick={() => setIsCreateOpen(true)}
+              className="mt-4 px-5 py-2.5 rounded-full bg-[#FFC820] text-slate-950 hover:bg-amber-400 font-bold text-xs shadow-md transition active:scale-95 flex items-center gap-2 cursor-pointer"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>{t('report.btn_new')}</span>
+            </button>
+          </DemoWrapper>
         </div>
       </div>
 

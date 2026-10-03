@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { CreditProfile } from '../../../types';
 import { api } from '../../../services/api';
+import { useApp } from '../../../context/AppContext';
+import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { 
   Sparkles, CheckCircle2, AlertCircle, ArrowUpRight, 
   Send, ShieldCheck, HelpCircle, Building2, Clock
@@ -12,13 +14,15 @@ interface CreditViewProps {
 }
 
 export const CreditView: React.FC<CreditViewProps> = ({ credit, onRefresh }) => {
+  const { language, t } = useApp();
+  const isBn = language === 'bn';
   const [requesting, setRequesting] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
 
   if (!credit) {
     return (
-      <div className="p-8 text-center text-slate-500 font-bengali">
-        ক্রেডিট তথ্য লোড হচ্ছে...
+      <div className="p-8 text-center text-slate-500 font-sans">
+        {isBn ? 'ক্রেডিট তথ্য লোড হচ্ছে...' : 'Loading credit profile...'}
       </div>
     );
   }
@@ -160,24 +164,37 @@ export const CreditView: React.FC<CreditViewProps> = ({ credit, onRefresh }) => 
         </div>
 
         {credit.review_requested ? (
-          <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-center gap-2 mb-2 font-bengali">
-            <Clock className="w-4 h-4 text-upayBlue shrink-0" />
-            <span>আপনার প্রোফাইলটি বর্তমানে ইউনাইটেড কমার্শিয়াল ব্যাংক (UCB) ক্রেডিট দলের পর্যালোচনায় রয়েছে।</span>
+          <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-center gap-2 mb-2">
+            <Clock className="w-4 h-4 text-[#0047BA] shrink-0" />
+            <span>
+              {isBn
+                ? 'আপনার প্রোফাইলটি বর্তমানে ইউনাইটেড কমার্শিয়াল ব্যাংক (UCB) ক্রেডিট দলের পর্যালোচনায় রয়েছে।'
+                : 'Your profile has been forwarded to United Commercial Bank (UCB) Credit Committee.'}
+            </span>
+            <DemoBadge label="PENDING" size="sm" />
           </div>
         ) : (
-          <button
-            onClick={handleRequestReview}
-            disabled={requesting}
-            className="w-full py-3 rounded-2xl bg-upayBlue hover:bg-upayNavy text-white font-bold text-xs tracking-wide shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer font-bengali mb-2"
-          >
-            <Send className="w-4 h-4" />
-            <span>{requesting ? "অনুরোধ জমা হচ্ছে..." : "পার্টনার ব্যাংকে ফর্মাল রিভিউর আবেদন করুন"}</span>
-          </button>
+          <DemoWrapper tooltipText={isBn ? 'ব্যাংকে আনুষ্ঠানিক ঋণ আবেদনের ডেমো সিমুলেশন' : 'Formal bank review application (Demo)'} className="w-full">
+            <button
+              onClick={handleRequestReview}
+              disabled={requesting}
+              className="w-full py-3 rounded-2xl bg-[#0047BA] hover:bg-[#002C6C] text-white font-bold text-xs tracking-wide shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mb-2"
+            >
+              <Send className="w-4 h-4" />
+              <span>
+                {requesting
+                  ? (isBn ? 'অনুরোধ জমা হচ্ছে...' : 'Submitting to Bank...')
+                  : (isBn ? 'পার্টনার ব্যাংকে ফর্মাল রিভিউর আবেদন করুন' : 'Submit Application to Partner Bank')}
+              </span>
+              <DemoBadge label="DEMO" size="sm" pulse={false} />
+            </button>
+          </DemoWrapper>
         )}
 
         {/* Mandatory Regulatory Notice (SRS Section 11.1) */}
         <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 mt-3 font-sans leading-relaxed">
-          <strong>Mandatory Regulatory Notice:</strong> The readiness score is an AI decision-support indicator and does not constitute a legal loan guarantee. Final underwriting and disbursement decisions reside exclusively with partner financial institutions.
+          <strong>{isBn ? 'বাধ্যতামূলক রেগুলেটরি সতর্কতা:' : 'Mandatory Regulatory Notice:'}</strong>{' '}
+          {t('credit.disclaimer')}
         </div>
       </section>
 

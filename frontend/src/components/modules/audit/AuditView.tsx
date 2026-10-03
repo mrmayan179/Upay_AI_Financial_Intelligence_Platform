@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../../services/api';
 import { AIActivityLog } from '../../../types';
+import { useApp } from '../../../context/AppContext';
+import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 
 export const AuditView: React.FC = () => {
+  const { language, t } = useApp();
+  const isBn = language === 'bn';
   const [logs, setLogs] = useState<AIActivityLog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedComponent, setSelectedComponent] = useState<string>('ALL');
@@ -85,11 +89,12 @@ export const AuditView: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
             <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-              AI Governance & Decision Observability
+              {t('audit.title')}
             </h1>
+            <DemoBadge label="LOGS" size="sm" pulse={false} />
           </div>
           <p className="text-xs md:text-sm text-slate-500 mt-1">
-            Immutable, tamper-evident audit logs capturing live inference latency, confidence scores, features, and tool calls.
+            {t('audit.subtitle')}
           </p>
         </div>
 
@@ -99,28 +104,30 @@ export const AuditView: React.FC = () => {
               type="checkbox"
               checked={autoRefresh}
               onChange={(e) => setAutoRefresh(e.target.checked)}
-              className="rounded text-upayBlue focus:ring-upayBlue h-4 w-4"
+              className="rounded text-[#0047BA] focus:ring-[#0047BA] h-4 w-4"
             />
-            Live Stream
+            <span>{isBn ? 'লাইভ স্ট্রিম' : 'Live Stream'}</span>
           </label>
-          <button
-            onClick={() => { setLoading(true); fetchLogs(); }}
-            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center gap-1.5"
-          >
-            <span>↻</span> Refresh
-          </button>
+          <DemoWrapper tooltipText={isBn ? 'সর্বশেষ এআই সিদ্ধান্ত ও লেটেন্সি রিফ্রেশ করুন' : 'Refresh recent AI traces'}>
+            <button
+              onClick={() => { setLoading(true); fetchLogs(); }}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center gap-1.5"
+            >
+              <span>↻</span> {isBn ? 'রিফ্রেশ' : 'Refresh'}
+            </button>
+          </DemoWrapper>
         </div>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
-          <div className="text-[11px] font-bold uppercase text-slate-400">Total AI Decisions</div>
+          <div className="text-[11px] font-bold uppercase text-slate-400">{t('audit.total_decisions')}</div>
           <div className="text-2xl font-black text-slate-900 mt-1">{totalLogs}</div>
           <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">● Real-time logged</div>
         </div>
         <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
-          <div className="text-[11px] font-bold uppercase text-slate-400">Average Latency</div>
+          <div className="text-[11px] font-bold uppercase text-slate-400">{t('audit.avg_latency')}</div>
           <div className="text-2xl font-black text-slate-900 mt-1">{avgLatency} ms</div>
           <div className="text-[10px] text-blue-600 font-semibold mt-0.5">Sub-50ms target met</div>
         </div>
