@@ -92,7 +92,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }
   };
 
-  const displayName = profile?.display_name || 'NAKIB MD. ASHIK';
+  const displayName = profile?.display_name || 'TANVIR KABIR';
   const displayPhone = profile?.phone_masked || '01771449164';
   const balanceBDT = profile?.account_balance_bdt ?? 7.25;
 

@@ -72,7 +72,7 @@ export const UpaySmartCardVisual: React.FC<UpaySmartCardVisualProps> = ({ card }
               <div>
                 <div className="text-[8px] uppercase tracking-widest text-white/70">Cardholder Name</div>
                 <div className="text-sm md:text-base font-bold tracking-wider uppercase font-sans">
-                  NAKIB MD. ASHIK
+                  TANVIR KABIR
                 </div>
               </div>
 

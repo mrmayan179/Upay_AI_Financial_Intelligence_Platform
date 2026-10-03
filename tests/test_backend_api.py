@@ -28,7 +28,7 @@ def test_all_backend_modules():
     res = client.get("/api/v1/me")
     assert res.status_code == 200, res.text
     profile = res.json()
-    assert profile["display_name"] == "NAKIB MD. ASHIK"
+    assert profile["display_name"] == "TANVIR KABIR"
     print(f"[PASS] Auth /me: {profile['display_name']} ({profile['phone_masked']}), Balance: BDT {profile['account_balance_bdt']:,.2f}")
     
     # 3. Smart Report & Cases

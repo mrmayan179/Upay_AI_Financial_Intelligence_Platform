@@ -69,7 +69,7 @@ The frontend faithfully replicates Upay's official visual brand and mobile layou
   - Pill Cream: `#FFF6D1`
 - **Dynamic Splash Screen**: Vector illustration with an animated continuous blue swoosh curve, pulsing endpoint dot, and the authentic Upay meeting-figures emblem with bold Bengali wordmark (`উপায়`).
 - **Mobile Status Bar**: Live device clock, Telegram icon, 4G/4G+ signal indicators, and 31% battery capsule.
-- **Profile Header**: User avatar badge, `NAKIB MD. ASHIK` (`01771449164`), toggleable "ব্যালেন্স" capsule button (`৳ ৭.২৫`), and notification bell.
+- **Profile Header**: User avatar badge, `TANVIR KABIR` (`01771449164`), toggleable "ব্যালেন্স" capsule button (`৳ ৭.২৫`), and notification bell.
 - **Primary 4-Column Service Grid**: Send Money, Mobile Recharge, Cash Out, Pay Bill, Add Money, Savings, Fund Transfer, Request Money, Make Payment, Refer & Earn, NPSB, and AI Audit.
 - **Upay Payment Grid**: Traffic Fine, Toll Payment, Govt. Payment, Education, NGO, Insurance, Donation, Zakat.
 - **Interactive Micro-Features**:
@@ -183,7 +183,7 @@ For hackathon presentation and live evaluation, the system is pre-configured wit
 
 | Attribute | Value |
 | :--- | :--- |
-| **Customer Name** | `NAKIB MD. ASHIK` |
+| **Customer Name** | `TANVIR KABIR` |
 | **Phone Number** | `01771449164` |
 | **Demo PIN** | `1234` |
 | **Customer ID** | `SYN-U-10082` |

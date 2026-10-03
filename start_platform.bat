@@ -37,7 +37,7 @@ echo  Platform is now LIVE!
 echo  - Frontend Web and Mobile UI:  http://localhost:3000
 echo  - Backend API Gateway:         http://127.0.0.1:8000
 echo  - Interactive Swagger Docs:    http://127.0.0.1:8000/docs
-echo  - Demo User:                   NAKIB MD. ASHIK (01771449164, PIN 1234)
+echo  - Demo User:                   TANVIR KABIR (01771449164, PIN 1234)
 echo ========================================================================
 echo.
 echo Opening browser in 3 seconds...

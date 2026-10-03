@@ -31,7 +31,7 @@ export const App: React.FC = () => {
       console.warn('Using default demo profile:', err);
       setProfile({
         customer_id: 'SYN-U-10082',
-        display_name: 'NAKIB MD. ASHIK',
+        display_name: 'TANVIR KABIR',
         phone_masked: '01771449164',
         raw_phone: '01771449164',
         account_number: '01771449164',

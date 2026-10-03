@@ -33,10 +33,10 @@ def seed_database():
         db.close()
         return
         
-    print("[1/6] Seeding Customer Profile (NAKIB MD. ASHIK)...")
+    print("[1/6] Seeding Customer Profile (TANVIR KABIR)...")
     customer = Customer(
         customer_id="SYN-U-10082",
-        display_name="NAKIB MD. ASHIK",
+        display_name="TANVIR KABIR",
         phone_masked="01771 ••• 164",
         raw_phone="01771449164",
         dob="1994-08-15",
