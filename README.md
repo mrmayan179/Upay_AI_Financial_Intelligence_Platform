@@ -110,7 +110,7 @@ Double-click `start_platform.bat` or run:
 ```cmd
 start_platform.bat
 ```
-This automatically verifies AI model files, seeds the demo database, launches the FastAPI backend on port 8000, launches the Vite React frontend on port 5173, and opens your default browser.
+This automatically verifies AI model files, seeds the demo database, launches the FastAPI backend on port 8000, launches the Vite React frontend on port 3000, and opens your default browser.
 
 ---
 
@@ -141,7 +141,7 @@ npm install
 # Start Vite dev server
 npm run dev
 ```
-- Web Application: `http://127.0.0.1:5173`
+- Web Application: `http://localhost:3000`
 
 ---
 
