@@ -280,56 +280,9 @@ export const Shell: React.FC<ShellProps> = ({
             </nav>
           </div>
         ) : (
-          /* Desktop Widescreen Layout (Executive Dashboard) */
-          <div className="w-full max-w-7xl bg-slate-900 text-slate-100 rounded-3xl border border-slate-800 shadow-2xl p-5 md:p-8 min-h-[88vh] overflow-y-auto">
-            {/* Top Workspace Header */}
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-5">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <span className="text-2xl">{tabs.find((t) => t.id === currentTab)?.icon}</span>
-                  <h2 className="text-2xl font-black text-white tracking-tight">
-                    {t(tabs.find((t) => t.id === currentTab)?.labelKey || 'nav.home')}
-                  </h2>
-                  <DemoBadge label="LIVE DEMO" size="md" />
-                </div>
-                <p className="text-xs md:text-sm text-slate-400 mt-1">
-                  Upay AI Financial Intelligence Platform — Evaluation &amp; Underwriting Workspace
-                </p>
-              </div>
-
-              {/* Fast Action Shortcuts */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsBalanceOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm active:scale-95"
-                  title="ব্যালেন্স বিবরণী দেখুন"
-                >
-                  <span>৳</span>
-                  <span>{t('header.balance')}</span>
-                </button>
-                <button
-                  onClick={() => setIsNotificationsOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition flex items-center gap-1.5 shadow-sm active:scale-95"
-                  title="বিজ্ঞপ্তি ও এলার্ট"
-                >
-                  <span>🔔</span>
-                  <span>{t('header.notifications')}</span>
-                </button>
-                <button
-                  onClick={() => setIsQrOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-[#0047BA] hover:bg-blue-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm active:scale-95"
-                  title="বাংলা কিউআর সিমুলেটর"
-                >
-                  <span>⛶</span>
-                  <span>BANGLA QR</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Widescreen Module Canvas */}
-            <div className="bg-white text-slate-900 rounded-3xl p-4 md:p-8 shadow-2xl border border-slate-200">
-              {children}
-            </div>
+          /* Desktop Widescreen Layout (Enterprise Dashboard Website) */
+          <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 space-y-8 animate-in fade-in duration-200">
+            {children}
           </div>
         )}
       </main>
