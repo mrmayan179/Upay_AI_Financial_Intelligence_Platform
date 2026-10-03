@@ -175,17 +175,17 @@ export const ReportView: React.FC<ReportViewProps> = ({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Active Cases List (Glassy Transparent Cards) */}
+          {/* RIGHT COLUMN: Active Cases List (Glassy Light Sea Color Cards) */}
           <div className={`${isDesktop ? 'lg:col-span-7 space-y-4' : 'space-y-3'} relative`}>
             
-            {/* Ambient soft glow to enhance frosted glass transparency */}
-            <div className="absolute -top-10 -right-10 w-72 h-72 bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-10 -left-10 w-72 h-72 bg-amber-100/30 rounded-full blur-3xl pointer-events-none" />
+            {/* Ambient soft glow to enhance frosted sea glass transparency */}
+            <div className="absolute -top-10 -right-10 w-72 h-72 bg-cyan-200/35 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-10 -left-10 w-72 h-72 bg-teal-200/25 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex items-center justify-between px-1 mb-2 relative z-10">
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>{isBn ? 'রিপোর্ট' : 'Report'}</span>
-                <span className="bg-blue-100 text-[#0047BA] text-xs font-mono font-bold px-2.5 py-0.5 rounded-full">
+                <span className="bg-cyan-100/90 text-teal-800 text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border border-teal-200/60">
                   {cases.length}
                 </span>
               </h3>
@@ -195,7 +195,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
             </div>
 
             {cases.length === 0 ? (
-              <div className="p-12 text-center bg-white/50 backdrop-blur-md rounded-3xl border border-white/70 shadow-xs relative z-10">
+              <div className="p-12 text-center bg-gradient-to-br from-cyan-50/60 to-teal-50/40 backdrop-blur-md rounded-3xl border border-cyan-200/70 shadow-xs relative z-10">
                 <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-2 opacity-80" />
                 <h4 className="text-sm font-bold text-slate-800">
                   {isBn ? 'কোনো সক্রিয় কেস নেই' : 'No active cases'}
@@ -213,16 +213,16 @@ export const ReportView: React.FC<ReportViewProps> = ({
                     <div
                       key={c.case_id}
                       onClick={() => setSelectedCase(c)}
-                      className="relative overflow-hidden bg-white/50 hover:bg-white/80 backdrop-blur-xl border border-white/70 hover:border-blue-400/50 rounded-2xl md:rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgba(0,71,186,0.12)] transition-all duration-300 cursor-pointer group active:scale-[0.99] hover:-translate-y-0.5"
+                      className="relative overflow-hidden bg-gradient-to-br from-cyan-50/75 via-teal-50/45 to-sky-50/60 hover:from-cyan-50/95 hover:via-teal-50/70 hover:to-sky-50/85 backdrop-blur-xl border border-cyan-200/75 hover:border-cyan-400/80 rounded-2xl md:rounded-3xl p-5 shadow-[0_8px_30px_rgba(8,145,178,0.06)] hover:shadow-[0_12px_36px_rgba(8,145,178,0.15)] transition-all duration-300 cursor-pointer group active:scale-[0.99] hover:-translate-y-0.5"
                     >
-                      {/* Glass light sheen highlight */}
-                      <div className="absolute -top-12 -right-12 w-36 h-36 bg-gradient-to-br from-blue-400/15 via-sky-300/10 to-transparent rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/5 to-transparent pointer-events-none rounded-2xl md:rounded-3xl" />
+                      {/* Glass sea light sheen highlight */}
+                      <div className="absolute -top-12 -right-12 w-36 h-36 bg-gradient-to-br from-cyan-400/25 via-teal-300/15 to-transparent rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-cyan-50/15 to-transparent pointer-events-none rounded-2xl md:rounded-3xl" />
 
                       {/* Header: Case ID, Priority, Progress */}
                       <div className="flex items-start justify-between mb-2.5 relative z-10">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-[#0047BA] bg-blue-500/10 px-2.5 py-0.5 rounded-lg border border-blue-500/20 shadow-2xs backdrop-blur-xs">
+                          <span className="text-xs font-mono font-bold text-teal-800 bg-teal-500/15 px-2.5 py-0.5 rounded-lg border border-teal-500/25 shadow-2xs backdrop-blur-xs">
                             #{c.case_id}
                           </span>
                           <span
@@ -244,27 +244,27 @@ export const ReportView: React.FC<ReportViewProps> = ({
                       </div>
 
                       {/* Case Title */}
-                      <h4 className="text-sm md:text-base font-bold text-slate-900 mb-2.5 group-hover:text-[#0047BA] transition-colors relative z-10">
+                      <h4 className="text-sm md:text-base font-bold text-slate-900 mb-2.5 group-hover:text-cyan-800 transition-colors relative z-10">
                         {c.case_title}
                       </h4>
 
                       {/* Progress Bar */}
-                      <div className="w-full h-2 rounded-full bg-slate-200/60 backdrop-blur-xs overflow-hidden mb-3 border border-white/50 relative z-10">
+                      <div className="w-full h-2 rounded-full bg-cyan-900/10 backdrop-blur-xs overflow-hidden mb-3 border border-cyan-200/50 relative z-10">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${
-                            c.status === 'ESCALATED' ? 'bg-rose-500 shadow-sm' : 'bg-gradient-to-r from-blue-500 to-[#0047BA] shadow-sm'
+                            c.status === 'ESCALATED' ? 'bg-rose-500 shadow-sm' : 'bg-gradient-to-r from-teal-500 via-cyan-600 to-[#0047BA] shadow-sm'
                           }`}
                           style={{ width: `${Math.max(5, c.progress_percent)}%` }}
                         />
                       </div>
 
                       {/* Footer: Status & View Details */}
-                      <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-white/60 relative z-10">
+                      <div className="flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-cyan-200/60 relative z-10">
                         <span>
                           {isBn ? 'স্ট্যাটাস:' : 'Status:'}{' '}
                           <strong className="text-slate-800 font-mono font-semibold">{c.status}</strong>
                         </span>
-                        <span className="text-[11px] text-[#0047BA] font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        <span className="text-[11px] text-teal-700 group-hover:text-teal-900 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                           {isBn ? 'বিস্তারিত দেখুন' : 'View Details'} <ChevronRight className="w-3.5 h-3.5" />
                         </span>
                       </div>
