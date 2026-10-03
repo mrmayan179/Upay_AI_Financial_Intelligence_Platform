@@ -29,6 +29,35 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [showChakaBadge, setShowChakaBadge] = useState<boolean>(true);
   const [activeDemoTooltip, setActiveDemoTooltip] = useState<string | null>(null);
 
+  // Animated Campaign Offers Carousel state (3 slides with auto-rotation)
+  const [currentOfferSlide, setCurrentOfferSlide] = useState<number>(0);
+  const [isHoveringBanner, setIsHoveringBanner] = useState<boolean>(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  // Auto-advance campaign banner every 3.5 seconds
+  useEffect(() => {
+    if (isHoveringBanner) return;
+    const interval = setInterval(() => {
+      setCurrentOfferSlide((prev) => (prev + 1) % 3);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isHoveringBanner]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (diff > 40) {
+      setCurrentOfferSlide((prev) => (prev + 1) % 3);
+    } else if (diff < -40) {
+      setCurrentOfferSlide((prev) => (prev === 0 ? 2 : prev - 1));
+    }
+    setTouchStartX(null);
+  };
+
   const handleTouchDemo = (id: string) => {
     setActiveDemoTooltip(id);
     setTimeout(() => {
@@ -617,63 +646,224 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* ================= 3B. GOZAYAAN PROMOTIONAL BANNER ================= */}
+      {/* ================= 3B. ANIMATED CAMPAIGN BANNERS (3 SLIDES CAROUSEL) ================= */}
       <section className={`py-2 ${isDesktop ? 'px-6 max-w-5xl mx-auto w-full' : 'px-4'}`} aria-label="প্রমোশনাল ব্যানার">
-        <div className="w-full rounded-2xl bg-gradient-to-r from-[#00A3E0] via-[#5AC8FA] to-[#FFCC00] p-3 text-slate-900 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between relative z-10">
-            {/* Left Banner: Phone app mockup & headline */}
-            <div className="flex items-center gap-2">
-              <div className="relative w-12 h-16 bg-white rounded-lg border-2 border-slate-900 shadow p-0.5 flex flex-col items-center justify-between shrink-0">
-                <div className="w-3 h-0.5 bg-slate-400 rounded-full"></div>
-                <div className="w-full h-8 bg-sky-600 rounded flex items-center justify-center text-white text-[7px] font-bold">
-                  GoZayaan
-                </div>
-                <div className="w-2 h-2 rounded-full border border-slate-400"></div>
-              </div>
+        <div 
+          className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 group/banner select-none"
+          onMouseEnter={() => setIsHoveringBanner(true)}
+          onMouseLeave={() => setIsHoveringBanner(false)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Slider Track with Smooth Cubic-Bezier Transition */}
+          <div 
+            className="flex transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] w-full"
+            style={{ transform: `translateX(-${currentOfferSlide * 100}%)` }}
+          >
+            {/* SLIDE 1: GoZayaan Campaign Banner */}
+            <div className="min-w-full shrink-0">
+              <div className="w-full min-h-[136px] md:h-36 bg-gradient-to-r from-[#00A3E0] via-[#5AC8FA] to-[#FFCC00] p-3.5 md:p-4 text-slate-900 flex items-center justify-between relative overflow-hidden">
+                {/* Left Promo Graphic: Luggage & Phone mockup & Headline */}
+                <div className="flex items-center gap-2.5 md:gap-3.5 relative z-10">
+                  <div className="relative w-12 h-16 md:w-14 md:h-18 bg-white rounded-xl border-2 border-slate-900 shadow-md p-0.5 flex flex-col items-center justify-between shrink-0">
+                    <div className="w-3 h-0.5 bg-slate-400 rounded-full" />
+                    <div className="w-full h-8 md:h-9 bg-sky-600 rounded-md flex items-center justify-center text-white text-[7px] md:text-[8px] font-bold shadow-2xs">
+                      GoZayaan
+                    </div>
+                    <div className="w-2 h-2 rounded-full border border-slate-400" />
+                  </div>
 
-              <div>
-                <div className="text-[11px] md:text-xs font-bold text-slate-900 leading-tight">
-                  {isBn ? 'পাহাড়' : 'Mountains'}<br />{isBn ? 'নাকি সমুদ্র?' : 'or Ocean?'}<br />
-                  <span className="text-[10px] md:text-[11px] font-semibold text-slate-800">
-                    {isBn ? 'ডেস্টিনেশন এবার কোথায়?' : 'Where is your next destination?'}
-                  </span>
+                  <div>
+                    <div className="text-xs md:text-sm font-bold text-slate-900 leading-tight">
+                      {isBn ? 'পাহাড় নাকি সমুদ্র?' : 'Mountains or Ocean?'}<br />
+                      <span className="text-[10px] md:text-xs font-semibold text-slate-800">
+                        {isBn ? 'ডেস্টিনেশন এবার কোথায়?' : 'Where is your next destination?'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Right: Action Badge & Discount Tags */}
+                <div className="text-right space-y-1 relative z-10 flex flex-col items-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowOfferModal(true)}
+                    className="inline-block bg-[#002C6C] hover:bg-[#001D47] text-white text-[9px] md:text-[10px] font-bold px-3 py-1 rounded-full shadow-xs cursor-pointer active:scale-95 transition"
+                  >
+                    {isBn ? 'ক্লিক করুন' : 'Click Here'}
+                  </button>
+                  <div className="text-[9px] md:text-[10px] text-slate-900 font-medium">
+                    {isBn ? 'উপায় থেকে GoZayaan-এ পেমেন্ট করলেই' : 'Special discounts with Upay on GoZayaan'}
+                  </div>
+
+                  <div className="flex items-center gap-1.5 justify-end pt-0.5">
+                    {/* Flight Booking tag */}
+                    <div className="bg-amber-300 border border-amber-400 text-slate-900 px-2 py-0.5 rounded-lg text-center shadow-2xs">
+                      <div className="text-[7.5px] md:text-[8px] font-semibold">{isBn ? 'ফ্লাইট বুকিং-এ' : 'Flights'}</div>
+                      <div className="text-[12px] md:text-[14px] font-extrabold leading-none text-[#002C6C]">
+                        ১০%<span className="text-[7px]"> {isBn ? 'পর্যন্ত ছাড়*' : 'OFF*'}</span>
+                      </div>
+                    </div>
+                    {/* Hotel Booking tag */}
+                    <div className="bg-amber-300 border border-amber-400 text-slate-900 px-2 py-0.5 rounded-lg text-center shadow-2xs">
+                      <div className="text-[7.5px] md:text-[8px] font-semibold">{isBn ? 'হোটেল বুকিং-এ' : 'Hotels'}</div>
+                      <div className="text-[12px] md:text-[14px] font-extrabold leading-none text-[#002C6C]">
+                        ৬৫%<span className="text-[7px]"> {isBn ? 'পর্যন্ত ছাড়*' : 'OFF*'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Decorative soft highlight */}
+                <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/20 blur-md pointer-events-none" />
               </div>
             </div>
 
-            {/* Right: Action Badge & Flight / Hotel Discount Tags */}
-            <div className="text-right space-y-1">
-              <div
-                onClick={() => setShowOfferModal(true)}
-                className="inline-block bg-[#002C6C] text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs cursor-pointer active:scale-95"
+            {/* SLIDE 2: Cirkle Recharge Unlimited Cashback Offer */}
+            <div className="min-w-full shrink-0">
+              <div className="w-full min-h-[136px] md:h-36 bg-gradient-to-r from-[#1E293B] via-[#0F172A] to-[#881337] p-3.5 md:p-4 text-white flex items-center justify-between relative overflow-hidden">
+                <div className="flex flex-col justify-center h-full z-10 space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] md:text-xs text-amber-400 font-bold font-mono tracking-wider uppercase px-2 py-0.5 bg-amber-400/15 rounded-md border border-amber-400/30">
+                      cirkle
+                    </span>
+                    <span className="bg-blue-600/90 text-white text-[9px] md:text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs">
+                      {isBn ? 'আনলিমিটেড ক্যাশব্যাক' : 'Unlimited Cashback'}
+                    </span>
+                  </div>
+                  <div className="text-xs md:text-sm font-bold text-white leading-tight">
+                    {isBn ? 'উপায় থেকে cirkle রিচার্জে' : 'Recharge Cirkle with Upay'}
+                  </div>
+                  <p className="text-[9px] md:text-[10px] text-slate-300">
+                    {isBn ? 'নির্দিষ্ট প্যাক রিচার্জেই নিশ্চিত ক্যাশব্যাক' : 'Instant cashback on selected data & combo packs'}
+                  </p>
+                </div>
+
+                {/* Right: Badges & Button */}
+                <div className="text-right space-y-1 z-10 flex flex-col items-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowOfferModal(true)}
+                    className="inline-block bg-white hover:bg-slate-100 text-slate-900 text-[9px] md:text-[10px] font-bold px-3 py-1 rounded-full shadow-xs cursor-pointer active:scale-95 transition"
+                  >
+                    {isBn ? 'ক্লিক করুন' : 'Click Here'}
+                  </button>
+                  <div className="text-[9px] md:text-[10px] text-slate-300 font-medium">
+                    {isBn ? 'নির্দিষ্ট প্যাক রিচার্জেই বিশেষ বোনাস' : 'Instant bonus on app recharge'}
+                  </div>
+                  <div className="flex items-center gap-1.5 justify-end pt-0.5">
+                    <div className="bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-lg text-center shadow-2xs">
+                      <div className="text-[7.5px] md:text-[8px] font-semibold">{isBn ? 'ক্যাশব্যাক' : 'Cashback'}</div>
+                      <div className="text-[12px] md:text-[14px] font-extrabold leading-none">৳১০</div>
+                    </div>
+                    <div className="bg-rose-600 text-white px-2.5 py-0.5 rounded-lg text-center shadow-2xs">
+                      <div className="text-[7.5px] md:text-[8px] font-semibold">{isBn ? 'বোনাস' : 'Bonus'}</div>
+                      <div className="text-[12px] md:text-[14px] font-extrabold leading-none">২০GB</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Soft glow highlight */}
+                <div className="absolute right-12 top-0 w-36 h-full bg-rose-500/15 rounded-full blur-2xl pointer-events-none" />
+              </div>
+            </div>
+
+            {/* SLIDE 3: Upay Dual Currency Card & Festival Special Offer */}
+            <div className="min-w-full shrink-0">
+              <div className="w-full min-h-[136px] md:h-36 bg-gradient-to-r from-[#0C3B82] via-[#0E489E] to-[#14B8A6] p-3.5 md:p-4 text-white flex items-center justify-between relative overflow-hidden">
+                <div className="flex flex-col justify-center h-full z-10 space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] md:text-xs text-amber-300 font-bold px-2 py-0.5 bg-amber-400/15 rounded-md border border-amber-300/30">
+                      upay CARD
+                    </span>
+                    <span className="bg-teal-400/20 text-teal-200 text-[9px] md:text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-teal-300/30">
+                      {isBn ? 'ডুয়েল কারেন্সি' : 'Dual Currency'}
+                    </span>
+                  </div>
+                  <div className="text-xs md:text-sm font-extrabold text-white leading-tight">
+                    {isBn ? '৭২% পর্যন্ত মার্চেন্ট ডিসকাউন্ট' : 'Up to 72% Merchant Discount'}
+                  </div>
+                  <p className="text-[9px] md:text-[10px] text-teal-100">
+                    {isBn ? 'কোনো ব্যাংক অ্যাকাউন্ট ছাড়াই সরাসরি অ্যাপ থেকে' : 'Instant in-app virtual & physical card activation'}
+                  </p>
+                </div>
+
+                {/* Right: Card Mockup & Button */}
+                <div className="text-right space-y-1.5 z-10 flex flex-col items-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowOfferModal(true)}
+                    className="inline-block bg-[#FFB800] hover:bg-amber-400 text-slate-950 text-[9px] md:text-[10px] font-bold px-3 py-1 rounded-full shadow-xs cursor-pointer active:scale-95 transition"
+                  >
+                    {isBn ? 'ক্লিক করুন' : 'Click Here'}
+                  </button>
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <div className="w-16 h-10 md:w-20 md:h-12 rounded-lg bg-gradient-to-tr from-amber-400 via-amber-300 to-amber-100 shadow-md border border-white/50 flex flex-col justify-between p-1.5 font-mono text-[7px] md:text-[8px] text-slate-950 font-bold shrink-0">
+                      <div className="flex justify-between items-center">
+                        <div className="w-3 h-2 rounded bg-amber-700/60 shadow-2xs" />
+                        <span className="text-[6px] md:text-[7px] text-[#0047BA] font-extrabold">upay</span>
+                      </div>
+                      <div className="flex justify-between items-end">
+                        <span className="tracking-widest text-[6px] md:text-[7px]">•••• 8829</span>
+                        <span className="text-[6px] md:text-[7px] font-extrabold">VISA</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Soft ambient highlight */}
+                <div className="absolute left-1/3 top-0 w-44 h-full bg-teal-300/15 rounded-full blur-2xl pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Carousel Pagination Dots (Middle Point) */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
+            {[0, 1, 2].map((idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentOfferSlide(idx);
+                }}
+                className={`rounded-full transition-all duration-300 cursor-pointer ${
+                  currentOfferSlide === idx
+                    ? (currentOfferSlide === 0 ? 'w-5 h-2 bg-[#0047BA] shadow-xs' : 'w-5 h-2 bg-amber-400 shadow-xs')
+                    : 'w-2 h-2 bg-white/70 hover:bg-white shadow-2xs'
+                }`}
+                aria-label={`Slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Navigation Arrows for Desktop */}
+          {isDesktop && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentOfferSlide((prev) => (prev === 0 ? 2 : prev - 1));
+                }}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition opacity-0 group-hover/banner:opacity-100 z-20 text-xs cursor-pointer shadow-md backdrop-blur-xs"
+                aria-label="Previous Offer"
               >
-                {isBn ? 'ক্লিক করুন' : 'Click Here'}
-              </div>
-              <div className="text-[9px] text-slate-900 font-medium">
-                {isBn ? 'উপায় থেকে GoZayaan-এ পেমেন্ট করলেই' : 'Special discounts with Upay on GoZayaan'}
-              </div>
-
-              <div className="flex items-center gap-1 justify-end pt-0.5">
-                {/* Flight Booking tag */}
-                <div className="bg-amber-300 border border-amber-400 text-slate-900 px-1.5 py-0.5 rounded text-center">
-                  <div className="text-[7.5px] font-semibold">{isBn ? 'ফ্লাইট বুকিং-এ' : 'Flights'}</div>
-                  <div className="text-[13px] font-extrabold leading-none">১০%<span className="text-[7px]"> {isBn ? 'পর্যন্ত ছাড়*' : 'OFF*'}</span></div>
-                </div>
-                {/* Hotel Booking tag */}
-                <div className="bg-amber-300 border border-amber-400 text-slate-900 px-1.5 py-0.5 rounded text-center">
-                  <div className="text-[7.5px] font-semibold">{isBn ? 'হোটেল বুকিং-এ' : 'Hotels'}</div>
-                  <div className="text-[13px] font-extrabold leading-none">৬৫%<span className="text-[7px]"> {isBn ? 'পর্যন্ত ছাড়*' : 'OFF*'}</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Carousel Indicator Dots */}
-          <div className="flex justify-center items-center gap-1.5 mt-2">
-            <span className="w-2.5 h-2 rounded-full bg-[#0047BA]"></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400/60"></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400/60"></span>
-          </div>
+                ❮
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentOfferSlide((prev) => (prev === 2 ? 0 : prev + 1));
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition opacity-0 group-hover/banner:opacity-100 z-20 text-xs cursor-pointer shadow-md backdrop-blur-xs"
+                aria-label="Next Offer"
+              >
+                ❯
+              </button>
+            </>
+          )}
         </div>
       </section>
 
