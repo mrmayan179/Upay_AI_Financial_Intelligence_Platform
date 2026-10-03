@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Hide scrollbars for authentic mobile experience */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Upay Chaka Continuous Rotation */
+@keyframes wheelRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-chaka {
+  animation: wheelRotate 14s linear infinite;
+}
+
+/* Splash Keyframe Animations */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes drawSwoosh {
+  0% { stroke-dashoffset: 1400; opacity: 0; }
+  20% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.8; }
+}
+
+@keyframes subtleBreathing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.splash-container {
+  animation: fadeInScale 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.swoosh-path {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 0;
+  animation: drawSwoosh 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.swoosh-dot {
+  transform-origin: 395px 238px;
+  animation: pulseDot 2.4s ease-in-out infinite 1.2s;
+}
+
+.logo-figures {
+  animation: subtleBreathing 3.6s ease-in-out infinite;
+}
+
+/* 3D Flip Card Perspectives */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Upay Card Theme Styles matching User Concept Code */
+.upay-card-gradient {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(37, 96, 220, 0.65), transparent 30%),
+    linear-gradient(135deg, #16004b, #260075 45%, #063d9b);
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.22);
+}
+
+.upay-back-card-gradient {
+  background:
+    radial-gradient(circle at 85% 90%, rgba(30, 100, 220, 0.55), transparent 25%),
+    linear-gradient(135deg, #17004e, #270078 50%, #061f72);
+}
+
+/* EMV Chip Style */
+.chip-gradient {
+  background: linear-gradient(135deg, #fff2a0, #d8ae36, #fff0a0);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Micro-interaction tap effect */
+.icon-touch {
+  transition: transform 0.12s ease;
+}
+.icon-touch:active {
+  transform: scale(0.92);
+}
