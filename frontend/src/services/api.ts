@@ -39,8 +39,8 @@ async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> 
 
 export const api = {
   // Auth & Profile
-  login: (phone = '01771449164', pin = '1234'): Promise<{ token: string; customer_id: string }> =>
-    fetchJson('/auth/demo-login', { method: 'POST', body: JSON.stringify({ phone_number: phone, pin }) }),
+  login: (phone = '01771449164', pin = '1234'): Promise<UserProfile> =>
+    fetchJson<UserProfile>('/auth/demo-login', { method: 'POST', body: JSON.stringify({ phone_number: phone, pin }) }),
   getProfile: (): Promise<UserProfile> => fetchJson<UserProfile>('/me'),
   getNotifications: (): Promise<AppNotification[]> => fetchJson<AppNotification[]>('/notifications'),
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SplashView } from './components/modules/splash/SplashView';
+import { LoginView } from './components/modules/login/LoginView';
 import { Shell, ActiveTab } from './components/layout/Shell';
 import { HomeView } from './components/modules/home/HomeView';
 import { CardView } from './components/modules/card/CardView';
@@ -14,6 +15,7 @@ import { UserProfile, Card as CardType, Case, CreditProfile, AppNotification } f
 
 export const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('home');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [card, setCard] = useState<CardType | null>(null);
@@ -88,6 +90,17 @@ export const App: React.FC = () => {
     fetchNotifications();
   };
 
+  const handleLoginSuccess = (loggedProfile: UserProfile) => {
+    setProfile(loggedProfile);
+    setIsAuthenticated(true);
+    refreshAll();
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('upay_authenticated');
+  };
+
   useEffect(() => {
     refreshAll();
     const timer = setTimeout(() => {
@@ -98,6 +111,10 @@ export const App: React.FC = () => {
 
   if (showSplash) {
     return <SplashView onComplete={() => setShowSplash(false)} />;
+  }
+
+  if (!isAuthenticated) {
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
   }
 
   const renderActiveModule = () => {
@@ -170,6 +187,7 @@ export const App: React.FC = () => {
         profile={profile}
         notifications={notifications}
         onRefreshProfile={refreshAll}
+        onLogout={handleLogout}
       >
         {renderActiveModule()}
       </Shell>

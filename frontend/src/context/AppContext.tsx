@@ -24,6 +24,20 @@ const translations: Record<Language, Record<string, string>> = {
     'header.welcome': 'স্বাগতম',
     'header.phone': 'মোবাইল নম্বর',
 
+    // Auth & Login
+    'auth.welcome_title': 'স্বাগতম উপায়-এ',
+    'auth.welcome_subtitle': 'স্মার্ট ও সুরক্ষিত এআই মোবাইল ফাইন্যান্সিয়াল সার্ভিস',
+    'auth.phone_label': 'উপায় মোবাইল নম্বর',
+    'auth.pin_label': '৪ সংখ্যার গোপন পিন লিখুন',
+    'auth.pin_helper': 'ডেমো পিন: ১২৩৪',
+    'auth.login_btn': 'লগইন করুন',
+    'auth.fast_demo_login': '⚡ ১-ক্লিক ডেমো লগইন (তানভীর কবির)',
+    'auth.biometric_login': 'বায়োমেট্রিক লগইন',
+    'auth.forgot_pin': 'পিন ভুলে গেছেন?',
+    'auth.new_account': 'নতুন উপায় অ্যাকাউন্ট খুলুন',
+    'auth.error_pin': 'ভুল পিন! ডেমো অ্যাকাউন্টের পিন হলো ১২৩৪',
+    'auth.logout': 'লগআউট',
+
     // Nav & Tabs
     'nav.home': 'হোম',
     'nav.card': 'স্মার্ট কার্ড',
@@ -153,6 +167,20 @@ const translations: Record<Language, Record<string, string>> = {
     'header.notifications': 'Notifications',
     'header.welcome': 'Welcome',
     'header.phone': 'Mobile Number',
+
+    // Auth & Login
+    'auth.welcome_title': 'Welcome to Upay',
+    'auth.welcome_subtitle': 'Smart & Secure AI Mobile Financial Service',
+    'auth.phone_label': 'Upay Mobile Number',
+    'auth.pin_label': 'Enter 4-Digit Secret PIN',
+    'auth.pin_helper': 'Demo PIN: 1234',
+    'auth.login_btn': 'Log In',
+    'auth.fast_demo_login': '⚡ 1-Click Fast Login (TANVIR KABIR)',
+    'auth.biometric_login': 'Biometric Login',
+    'auth.forgot_pin': 'Forgot PIN?',
+    'auth.new_account': 'Open New Upay Account',
+    'auth.error_pin': 'Incorrect PIN! Demo PIN is 1234',
+    'auth.logout': 'Log Out',
 
     // Nav & Tabs
     'nav.home': 'Home',

@@ -15,6 +15,7 @@ interface ShellProps {
   profile: UserProfile | null;
   notifications?: AppNotification[];
   onRefreshProfile: () => void;
+  onLogout?: () => void;
   children: React.ReactNode;
 }
 
@@ -24,6 +25,7 @@ export const Shell: React.FC<ShellProps> = ({
   profile,
   notifications = [],
   onRefreshProfile,
+  onLogout,
   children
 }) => {
   const { language, toggleLanguage, viewMode, toggleViewMode, setViewMode, t, isMobileDevice } = useApp();
@@ -141,12 +143,26 @@ export const Shell: React.FC<ShellProps> = ({
           {/* PIN Pad Trigger */}
           <button
             onClick={() => setIsPinOpen(true)}
-            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1 active:scale-95"
+            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1 active:scale-95 cursor-pointer"
             title="উপায় পিন কিপ্যাড টেস্ট (ডেমো)"
           >
             <span>🔢</span>
             <span className="hidden md:inline">PIN</span>
           </button>
+
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="px-2.5 py-1.5 rounded-xl bg-rose-950/70 hover:bg-rose-900 border border-rose-800/80 text-rose-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+              title={language === 'bn' ? 'লগআউট করুন' : 'Log Out'}
+            >
+              <span>🚪</span>
+              <span className="hidden sm:inline font-bengali">
+                {language === 'bn' ? 'লগআউট' : 'Logout'}
+              </span>
+            </button>
+          )}
         </div>
       </header>
 
