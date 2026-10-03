@@ -22,6 +22,17 @@
 
 ---
 
+## 🌐 Live Production Cloud Deployment
+
+> [!TIP]
+> **Experience the fully integrated Upay AI Platform live on the web:**
+> - 📱 **Live Web Application (Frontend)**: **[https://upay-ai-financial-intelligence-plat.vercel.app/](https://upay-ai-financial-intelligence-plat.vercel.app/)**
+> - ⚡ **Live Backend API Gateway**: **[https://upay-ai-financial-intelligence-platform.onrender.com](https://upay-ai-financial-intelligence-platform.onrender.com)**
+> - 📖 **Interactive Swagger API Docs**: **[https://upay-ai-financial-intelligence-platform.onrender.com/docs](https://upay-ai-financial-intelligence-platform.onrender.com/docs)**
+> - 📊 **Certified AI Benchmark & Evidence Report**: **[https://upay-ai-financial-intelligence-platform.onrender.com/evidence](https://upay-ai-financial-intelligence-platform.onrender.com/evidence)**
+
+---
+
 ## 📑 Certified Evidence & Primary Artifact Navigation
 
 > [!IMPORTANT]
@@ -29,11 +40,13 @@
 
 | Resource | Direct Link | Description |
 | :--- | :--- | :--- |
-| 📊 **Certified HTML Evidence Report** | [`model_competition/evidence/final_report.html`](model_competition/evidence/final_report.html) | **Self-contained certified evaluation report** with all metrics, base64 confusion matrices, ROC curves, and scenario runs. |
+| 📱 **Live Frontend App** | [upay-ai-financial-intelligence-plat.vercel.app](https://upay-ai-financial-intelligence-plat.vercel.app/) | **Official Production Web App** hosted live on Vercel. |
+| ⚡ **Live Backend Gateway** | [upay-ai-financial-intelligence-platform.onrender.com](https://upay-ai-financial-intelligence-platform.onrender.com) | **Official FastAPI Backend** hosted live on Render. |
+| 📊 **Certified HTML Evidence Report** | [Live Evidence Report](https://upay-ai-financial-intelligence-platform.onrender.com/evidence) &bull; [`local file`](model_competition/evidence/final_report.html) | **Certified evaluation report** with all metrics, base64 confusion matrices, ROC curves, and scenario runs. |
 | 📁 **Competition Foundation Root** | [`model_competition/`](model_competition/) | Full dataset, training pipeline, model registry, and offline validation suite. |
 | 📖 **Dataset Schema & Dictionary** | [`model_competition/docs/data-dictionary.md`](model_competition/docs/data-dictionary.md) | 11 relational entity schemas, foreign keys, data types, and value distributions. |
 | 🔒 **SHA-256 Locked Test Manifest** | [`model_competition/data/test/LOCKED_TEST_DATASET.json`](model_competition/data/test/LOCKED_TEST_DATASET.json) | Sealed 20% test partition hash manifest preventing data leakage. |
-| 🌐 **100% Free Cloud Deployment** | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Step-by-step instructions for hosting Backend (Render) and Frontend (Vercel) live for free. |
+| 🌐 **Cloud Deployment Guide** | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Complete step-by-step free hosting documentation. |
 
 ---
 
@@ -446,13 +459,14 @@ python run_pipeline.py
 
 For hosting this project live on the cloud at **$0.00 cost**, follow our dedicated guide in [`DEPLOYMENT.md`](DEPLOYMENT.md):
 
-| Component | Platform | Plan | Live URL Example |
+| Component | Platform | Plan | Live Production URL |
 | :--- | :--- | :--- | :--- |
-| **Backend API Gateway** | [Render.com](https://render.com) | **Free Web Service** | `https://upay-backend.onrender.com` |
-| **Frontend Web App** | [Vercel](https://vercel.com) | **Free Hobby Tier** | `https://upay-platform.vercel.app` |
-| **Certified Evidence Report** | Render / FastAPI | **Free (Included)** | `https://upay-backend.onrender.com/evidence` |
+| **Frontend Web App** | [Vercel](https://vercel.com) | **Free Hobby Tier** | **[https://upay-ai-financial-intelligence-plat.vercel.app/](https://upay-ai-financial-intelligence-plat.vercel.app/)** |
+| **Backend API Gateway** | [Render.com](https://render.com) | **Free Web Service** | **[https://upay-ai-financial-intelligence-platform.onrender.com](https://upay-ai-financial-intelligence-platform.onrender.com)** |
+| **Interactive API Docs** | Render / Swagger | **Live Swagger** | **[https://upay-ai-financial-intelligence-platform.onrender.com/docs](https://upay-ai-financial-intelligence-platform.onrender.com/docs)** |
+| **Certified Evidence Report** | Render / FastAPI | **Live HTML** | **[https://upay-ai-financial-intelligence-platform.onrender.com/evidence](https://upay-ai-financial-intelligence-platform.onrender.com/evidence)** |
 
-*(Refer to [`DEPLOYMENT.md`](DEPLOYMENT.md) for 1-click step-by-step instructions).*
+*(Refer to [`DEPLOYMENT.md`](DEPLOYMENT.md) for full deployment documentation).*
 
 ---
 

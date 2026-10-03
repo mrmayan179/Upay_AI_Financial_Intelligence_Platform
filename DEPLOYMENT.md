@@ -4,15 +4,26 @@ This guide details the best **100% FREE** solutions to deploy both the **FastAPI
 
 ---
 
-## 🏆 Recommended Solution: Render (Backend) + Vercel (Frontend)
+## 🌐 Official Live Production Deployment
 
-This is the industry standard for fullstack web apps. Both platforms offer generous free tiers with automatic HTTPS (SSL), continuous deployment from GitHub, and global CDN.
+The platform is officially deployed and accessible at:
+
+| Service | Platform | Live URL |
+| :--- | :--- | :--- |
+| **Frontend Web App** | Vercel (Free Hobby Tier) | **[https://upay-ai-financial-intelligence-plat.vercel.app/](https://upay-ai-financial-intelligence-plat.vercel.app/)** |
+| **Backend API Gateway** | Render.com (Free Web Service) | **[https://upay-ai-financial-intelligence-platform.onrender.com](https://upay-ai-financial-intelligence-platform.onrender.com)** |
+| **Interactive API Documentation**| FastAPI / Swagger UI | **[https://upay-ai-financial-intelligence-platform.onrender.com/docs](https://upay-ai-financial-intelligence-platform.onrender.com/docs)** |
+| **Certified AI Evidence Report** | Standalone HTML | **[https://upay-ai-financial-intelligence-platform.onrender.com/evidence](https://upay-ai-financial-intelligence-platform.onrender.com/evidence)** |
+
+---
+
+## 🏆 Recommended Architecture: Render (Backend) + Vercel (Frontend)
 
 ```mermaid
 flowchart LR
     Client([User Browser])
-    Vercel["Frontend (Vercel)\nhttps://upay-platform.vercel.app"]
-    Render["Backend API (Render)\nhttps://upay-backend.onrender.com"]
+    Vercel["Frontend (Vercel)\nhttps://upay-ai-financial-intelligence-plat.vercel.app"]
+    Render["Backend API (Render)\nhttps://upay-ai-financial-intelligence-platform.onrender.com"]
     DB[(SQLite / PostgreSQL)]
     Models[AI XGBoost Models]
 
