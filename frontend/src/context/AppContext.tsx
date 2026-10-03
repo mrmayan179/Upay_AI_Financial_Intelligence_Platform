@@ -27,7 +27,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav & Tabs
     'nav.home': 'হোম',
     'nav.card': 'স্মার্ট কার্ড',
-    'nav.report': 'রিপোর্ট ও কেস',
+    'nav.report': 'রিপোর্ট',
     'nav.credit': 'লোন ও ক্রেডিট',
     'nav.voice': 'ভয়েস এআই',
     'nav.audit': 'এআই অডিট ও লগ',
@@ -157,7 +157,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav & Tabs
     'nav.home': 'Home',
     'nav.card': 'Smart Card',
-    'nav.report': 'Disputes & Cases',
+    'nav.report': 'Report',
     'nav.credit': 'Credit & Loans',
     'nav.voice': 'Voice AI Care',
     'nav.audit': 'AI Governance',

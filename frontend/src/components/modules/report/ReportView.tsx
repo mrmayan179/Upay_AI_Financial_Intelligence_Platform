@@ -4,7 +4,6 @@ import { api } from '../../../services/api';
 import { useApp } from '../../../context/AppContext';
 import { DemoBadge, DemoWrapper } from '../../shared/DemoBadge';
 import { UpayPageHeader } from '../../shared/UpayPageHeader';
-import { StackingReportCards } from './StackingReportCards';
 import { 
   FileText, PlusCircle, AlertCircle, Clock, CheckCircle2, 
   ArrowRight, ShieldAlert, Sparkles, X, ChevronRight, Send, AlertTriangle
@@ -176,10 +175,14 @@ export const ReportView: React.FC<ReportViewProps> = ({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Active Cases List (Stacking Deck from it farm web) */}
-          <div className={`${isDesktop ? 'lg:col-span-7 space-y-4' : 'space-y-3'}`}>
+          {/* RIGHT COLUMN: Active Cases List (Glassy Transparent Cards) */}
+          <div className={`${isDesktop ? 'lg:col-span-7 space-y-4' : 'space-y-3'} relative`}>
             
-            <div className="flex items-center justify-between px-1 mb-2">
+            {/* Ambient soft glow to enhance frosted glass transparency */}
+            <div className="absolute -top-10 -right-10 w-72 h-72 bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-10 -left-10 w-72 h-72 bg-amber-100/30 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex items-center justify-between px-1 mb-2 relative z-10">
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>{isBn ? 'রিপোর্ট' : 'Report'}</span>
                 <span className="bg-blue-100 text-[#0047BA] text-xs font-mono font-bold px-2.5 py-0.5 rounded-full">
@@ -192,7 +195,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
             </div>
 
             {cases.length === 0 ? (
-              <div className="p-12 text-center bg-slate-50/70 rounded-3xl border border-slate-200/80 shadow-xs">
+              <div className="p-12 text-center bg-white/50 backdrop-blur-md rounded-3xl border border-white/70 shadow-xs relative z-10">
                 <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-2 opacity-80" />
                 <h4 className="text-sm font-bold text-slate-800">
                   {isBn ? 'কোনো সক্রিয় কেস নেই' : 'No active cases'}
@@ -202,11 +205,73 @@ export const ReportView: React.FC<ReportViewProps> = ({
                 </p>
               </div>
             ) : (
-              <StackingReportCards
-                cases={cases}
-                onSelectCase={setSelectedCase}
-                isBn={isBn}
-              />
+              <div className="space-y-3.5 relative z-10">
+                {cases.map((c) => {
+                  const isCrit = c.priority === 'CRITICAL';
+                  const isHigh = c.priority === 'HIGH';
+                  return (
+                    <div
+                      key={c.case_id}
+                      onClick={() => setSelectedCase(c)}
+                      className="relative overflow-hidden bg-white/50 hover:bg-white/80 backdrop-blur-xl border border-white/70 hover:border-blue-400/50 rounded-2xl md:rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgba(0,71,186,0.12)] transition-all duration-300 cursor-pointer group active:scale-[0.99] hover:-translate-y-0.5"
+                    >
+                      {/* Glass light sheen highlight */}
+                      <div className="absolute -top-12 -right-12 w-36 h-36 bg-gradient-to-br from-blue-400/15 via-sky-300/10 to-transparent rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/5 to-transparent pointer-events-none rounded-2xl md:rounded-3xl" />
+
+                      {/* Header: Case ID, Priority, Progress */}
+                      <div className="flex items-start justify-between mb-2.5 relative z-10">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-[#0047BA] bg-blue-500/10 px-2.5 py-0.5 rounded-lg border border-blue-500/20 shadow-2xs backdrop-blur-xs">
+                            #{c.case_id}
+                          </span>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border backdrop-blur-xs ${
+                              isCrit
+                                ? 'bg-rose-500/10 text-rose-700 border-rose-500/20'
+                                : isHigh
+                                ? 'bg-amber-500/10 text-amber-800 border-amber-500/20'
+                                : 'bg-slate-500/10 text-slate-700 border-slate-500/20'
+                            }`}
+                          >
+                            {c.priority}
+                          </span>
+                        </div>
+
+                        <span className="text-xs font-bold text-slate-700 font-mono">
+                          {c.progress_percent}%
+                        </span>
+                      </div>
+
+                      {/* Case Title */}
+                      <h4 className="text-sm md:text-base font-bold text-slate-900 mb-2.5 group-hover:text-[#0047BA] transition-colors relative z-10">
+                        {c.case_title}
+                      </h4>
+
+                      {/* Progress Bar */}
+                      <div className="w-full h-2 rounded-full bg-slate-200/60 backdrop-blur-xs overflow-hidden mb-3 border border-white/50 relative z-10">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            c.status === 'ESCALATED' ? 'bg-rose-500 shadow-sm' : 'bg-gradient-to-r from-blue-500 to-[#0047BA] shadow-sm'
+                          }`}
+                          style={{ width: `${Math.max(5, c.progress_percent)}%` }}
+                        />
+                      </div>
+
+                      {/* Footer: Status & View Details */}
+                      <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-white/60 relative z-10">
+                        <span>
+                          {isBn ? 'স্ট্যাটাস:' : 'Status:'}{' '}
+                          <strong className="text-slate-800 font-mono font-semibold">{c.status}</strong>
+                        </span>
+                        <span className="text-[11px] text-[#0047BA] font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                          {isBn ? 'বিস্তারিত দেখুন' : 'View Details'} <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
