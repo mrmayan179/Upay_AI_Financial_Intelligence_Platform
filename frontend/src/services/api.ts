@@ -129,4 +129,7 @@ export const api = {
   // AI Activity Logs
   getAuditLogs: (component?: string): Promise<AIActivityLog[]> =>
     fetchJson<AIActivityLog[]>(`/audit/logs${component ? `?component=${component}` : ''}`),
+
+  // Supabase Cloud Integration
+  getSupabaseStatus: (): Promise<any> => fetchJson('/supabase/status'),
 };

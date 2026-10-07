@@ -10,3 +10,11 @@ services:
         value: 3.11.9
       - key: ENVIRONMENT
         value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_JWKS_URL
+        sync: false

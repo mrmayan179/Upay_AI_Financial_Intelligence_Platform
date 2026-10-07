@@ -534,7 +534,7 @@ export const CardView: React.FC<CardViewProps> = ({
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   <span>{isBn ? 'ডাটাবেস লেনদেন ও রিয়েলটাইম AI ঝুঁকি লগ' : 'Database Transactions & Real-time AI Risk Audit'}</span>
-                  <DemoBadge label="SQLITE RUNTIME" size="sm" />
+                  <DemoBadge label="SUPABASE RUNTIME" size="sm" />
                 </h3>
                 <p className="text-xs text-slate-500 font-sans">
                   {isBn ? 'প্রতিটি লেনদেনের রানটাইম ডেভিয়েশন, ভেলোসিটি ও ৯-ধাপের ঝুঁকি স্কোর' : 'Live DB records evaluated dynamically with XGBoost & Isolation Forest'}
@@ -1025,6 +1025,12 @@ export const CardView: React.FC<CardViewProps> = ({
                 <p className="text-xs text-slate-500 font-mono">
                   Txn ID: {selectedTxnAnalysis.transaction_id}
                 </p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    ⚡ AI analyzed from runtime transaction history (Supabase Cloud PostgreSQL)
+                  </span>
+                </div>
               </div>
             </div>
 

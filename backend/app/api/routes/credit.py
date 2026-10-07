@@ -1,5 +1,6 @@
 """
 AI Credit Readiness & Loan Recommendation Routes
+Fully secured with route-level authentication and customer-context isolation.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,19 +10,24 @@ from backend.app.database.connection import get_db
 from backend.app.database.models import Customer
 from backend.app.schemas.payloads import CreditReadinessResponse
 from backend.app.services.credit_service import get_or_create_credit_readiness, request_formal_credit_review
+from backend.app.services.security_service import get_current_user_from_token
 
 router = APIRouter(prefix="/credit", tags=["Credit Readiness & Loan"])
 
 @router.get("/readiness", response_model=CreditReadinessResponse)
-def get_readiness_profile(db: Session = Depends(get_db)):
-    cust = db.query(Customer).first()
-    customer_id = cust.customer_id if cust else "SYN-U-10082"
-    result = get_or_create_credit_readiness(db, customer_id)
+def get_readiness_profile(
+    current_user: Customer = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db)
+):
+    """Computes and returns credit readiness evaluation for authenticated customer."""
+    result = get_or_create_credit_readiness(db, current_user.customer_id)
     return result
 
 @router.post("/review-request")
-def submit_review_request(db: Session = Depends(get_db)):
-    cust = db.query(Customer).first()
-    customer_id = cust.customer_id if cust else "SYN-U-10082"
-    result = request_formal_credit_review(db, customer_id)
+def submit_review_request(
+    current_user: Customer = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db)
+):
+    """Submits formal partner bank credit evaluation request for authenticated customer."""
+    result = request_formal_credit_review(db, current_user.customer_id)
     return result

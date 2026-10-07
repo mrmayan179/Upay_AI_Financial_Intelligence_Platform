@@ -83,23 +83,32 @@ def get_current_user_from_token(
     credentials: Optional[HTTPAuthorizationCredentials] = Security(security_bearer),
     db: Session = Depends(get_db)
 ) -> Customer:
-    """Dependency for strictly protected routes requiring a valid Bearer token."""
+    """Strict dependency for protected routes requiring a valid Bearer token."""
     if not credentials or not credentials.credentials:
-        # Check for demo default fallback if no authorization header present
-        cust = db.query(Customer).first()
-        if cust:
-            return cust
-        raise HTTPException(status_code=401, detail="Missing authorization header. Please authenticate.")
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication required. Missing Bearer authorization token."
+        )
         
     token = credentials.credentials
     payload = verify_access_token(token)
     customer_id = payload.get("customer_id")
-    
+    if not customer_id:
+        raise HTTPException(status_code=401, detail="Malformed token: missing customer identity")
+        
     cust = db.query(Customer).filter(Customer.customer_id == customer_id).first()
     if not cust:
         raise HTTPException(status_code=404, detail="Customer account not found")
         
     return cust
+
+def verify_customer_authorization(resource_customer_id: str, authenticated_customer_id: str) -> None:
+    """Enforces server-side tenant/customer authorization boundary."""
+    if resource_customer_id != authenticated_customer_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Forbidden: You do not have permission to access resources belonging to another customer context."
+        )
 
 # ==============================================================================
 # In-Memory Rate Limiter

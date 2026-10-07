@@ -30,6 +30,14 @@ def update_card_toggles(db: Session, card_id: str, updates: Dict[str, Any]) -> C
             
     db.commit()
     db.refresh(card)
+    
+    # Sync update to Supabase Cloud PostgreSQL
+    try:
+        from backend.app.services.supabase_service import update_supabase_card
+        update_supabase_card(card_id, updates)
+    except Exception:
+        pass
+        
     return card
 
 def freeze_card_toggle(db: Session, card_id: str) -> Card:
@@ -40,6 +48,14 @@ def freeze_card_toggle(db: Session, card_id: str) -> Card:
     card.card_enabled = (card.status == "ACTIVE")
     db.commit()
     db.refresh(card)
+    
+    # Sync freeze status to Supabase Cloud PostgreSQL
+    try:
+        from backend.app.services.supabase_service import update_supabase_card
+        update_supabase_card(card_id, {"status": card.status, "card_enabled": card.card_enabled})
+    except Exception:
+        pass
+        
     return card
 
 def reset_mock_pin(db: Session, card_id: str, current_pin: str, new_pin: str) -> Dict[str, Any]:
@@ -256,6 +272,45 @@ def process_card_authorization(
     
     db.commit()
     db.refresh(card_txn)
+    
+    # 7. Mirror to Supabase Cloud PostgreSQL (Primary Runtime)
+    try:
+        from backend.app.services.supabase_service import insert_supabase_transaction, insert_supabase_notification
+        insert_supabase_transaction({
+            "transaction_id": txn_id,
+            "card_id": card_id,
+            "customer_id": customer_id,
+            "amount_usd": amount_usd,
+            "amount_bdt": amount_bdt,
+            "merchant_name": merchant_name,
+            "channel": channel,
+            "country": country,
+            "risk_score": risk_score,
+            "risk_level": risk_level,
+            "decision": decision,
+            "reasons": json.dumps(reasons),
+            "risk_breakdown": json.dumps(risk_res["risk"]),
+            "fraud_score": fraud_s,
+            "anomaly_score": anom_s,
+            "device_id": device_id,
+            "recommended_action": recommended_action,
+            "model_version": risk_res["model_version"],
+            "status": txn_status,
+            "created_at": card_txn.created_at.isoformat()
+        })
+        if decision != "ALLOW":
+            insert_supabase_notification({
+                "notification_id": notif.notification_id,
+                "customer_id": customer_id,
+                "title": notif.title,
+                "message": notif.message,
+                "type": notif.type,
+                "read": False,
+                "action_url": notif.action_url,
+                "created_at": notif.created_at.isoformat()
+            })
+    except Exception:
+        pass
     
     return {
         "transaction_id": txn_id,

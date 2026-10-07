@@ -1,5 +1,6 @@
 """
 Shared AI Governance & Activity Audit Routes
+Fully secured with route-level authentication.
 """
 
 from fastapi import APIRouter, Depends
@@ -7,8 +8,9 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any, Optional
 import json
 from backend.app.database.connection import get_db
-from backend.app.database.models import AIActivityLog
+from backend.app.database.models import Customer, AIActivityLog
 from backend.app.schemas.payloads import AIActivityLogSchema
+from backend.app.services.security_service import get_current_user_from_token
 
 router = APIRouter(prefix="/audit", tags=["Governance & Observability"])
 
@@ -16,10 +18,12 @@ router = APIRouter(prefix="/audit", tags=["Governance & Observability"])
 def get_audit_logs(
     component: Optional[str] = None,
     limit: int = 50,
+    current_user: Customer = Depends(get_current_user_from_token),
     db: Session = Depends(get_db)
 ):
+    """Retrieves immutable AI decision logs and governance trails for authenticated session."""
     query = db.query(AIActivityLog)
-    if component:
+    if component and component != "ALL":
         query = query.filter(AIActivityLog.component == component)
     logs = query.order_by(AIActivityLog.created_at.desc()).limit(limit).all()
     

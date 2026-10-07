@@ -78,8 +78,17 @@ def get_current_user(current_user: Customer = Depends(get_current_user_from_toke
     }
 
 @router.get("/notifications")
-def get_notifications(db: Session = Depends(get_db)):
-    notifs = db.query(Notification).order_by(Notification.created_at.desc()).limit(15).all()
+def get_notifications(
+    current_user: Customer = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db)
+):
+    notifs = (
+        db.query(Notification)
+        .filter(Notification.customer_id == current_user.customer_id)
+        .order_by(Notification.created_at.desc())
+        .limit(15)
+        .all()
+    )
     return [
         {
             "notification_id": n.notification_id,

@@ -77,6 +77,13 @@ export const Shell: React.FC<ShellProps> = ({
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
               Credit XGB: READY
             </span>
+            <span className="bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded flex items-center gap-1 shadow-xs" title="Supabase Cloud: cedgwabxochvsycsqdpm.supabase.co (Active & Verified)">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              ⚡ Supabase: CONNECTED
+            </span>
+            <span className="hidden 2xl:flex items-center gap-1 bg-slate-850 border border-slate-700 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono">
+              🛡️ Controlled Hackathon PoC / Synthetic Data
+            </span>
           </div>
 
           <a

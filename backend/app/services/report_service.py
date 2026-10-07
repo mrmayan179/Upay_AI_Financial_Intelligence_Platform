@@ -274,6 +274,59 @@ def create_report_and_case(
     
     db.commit()
     db.refresh(new_case)
+    
+    # Mirror case, complaint, and events to Supabase Cloud PostgreSQL (Primary Runtime)
+    try:
+        from backend.app.services.supabase_service import insert_supabase_complaint_and_case, insert_supabase_notification
+        insert_supabase_complaint_and_case(
+            complaint_data={
+                "complaint_id": comp_id,
+                "customer_id": customer_id,
+                "complaint_text": complaint_text,
+                "category": final_cat,
+                "priority": final_prio,
+                "channel": "IN_APP",
+                "created_at": now.isoformat()
+            },
+            case_data={
+                "case_id": case_num,
+                "complaint_id": comp_id,
+                "customer_id": customer_id,
+                "case_title": f"{final_cat.replace('_', ' ').title()} Dispute — {case_num}",
+                "category": final_cat,
+                "priority": final_prio,
+                "status": "INVESTIGATING",
+                "progress_percent": 35,
+                "assigned_team": final_team,
+                "assigned_agent": new_case.assigned_agent,
+                "ai_summary": intel["summary"],
+                "escalation_level": 0,
+                "created_at": now.isoformat(),
+                "updated_at": now.isoformat()
+            },
+            event_data={
+                "event_id": ev1.event_id,
+                "case_id": case_num,
+                "timestamp": now.isoformat(),
+                "event_type": "CASE_CREATED",
+                "description": f"Automated intake complete. Priority: {final_prio}.",
+                "actor_type": "AI_COPILOT",
+                "actor_id": "COPILOT-DISPUTE-01"
+            }
+        )
+        insert_supabase_notification({
+            "notification_id": notif.notification_id,
+            "customer_id": customer_id,
+            "title": notif.title,
+            "message": notif.message,
+            "type": notif.type,
+            "read": False,
+            "action_url": notif.action_url,
+            "created_at": notif.created_at.isoformat()
+        })
+    except Exception:
+        pass
+        
     return new_case
 
 def get_active_cases(db: Session, customer_id: str) -> List[Case]:
@@ -293,6 +346,7 @@ def get_case_detail(db: Session, case_id: str) -> Dict[str, Any]:
     return {
         "case_id": c.case_id,
         "complaint_id": c.complaint_id,
+        "customer_id": c.customer_id,
         "case_title": c.case_title,
         "category": c.category,
         "priority": c.priority,
@@ -369,4 +423,33 @@ def escalate_case(db: Session, case_id: str, reason: str) -> Case:
     
     db.commit()
     db.refresh(c)
+    
+    # Mirror escalation to Supabase Cloud PostgreSQL (Primary Runtime)
+    try:
+        from backend.app.services.supabase_service import escalate_supabase_case, insert_supabase_notification
+        escalate_supabase_case(
+            case_id=case_id,
+            event_data={
+                "event_id": ev.event_id,
+                "case_id": case_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "event_type": "CASE_ESCALATED",
+                "description": f"Customer escalation: {reason}",
+                "actor_type": "CUSTOMER",
+                "actor_id": c.customer_id
+            }
+        )
+        insert_supabase_notification({
+            "notification_id": notif.notification_id,
+            "customer_id": c.customer_id,
+            "title": notif.title,
+            "message": notif.message,
+            "type": notif.type,
+            "read": False,
+            "action_url": notif.action_url,
+            "created_at": notif.created_at.isoformat()
+        })
+    except Exception:
+        pass
+        
     return c

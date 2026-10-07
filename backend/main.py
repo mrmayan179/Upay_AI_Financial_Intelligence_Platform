@@ -21,6 +21,7 @@ from backend.app.api.routes.credit import router as credit_router
 from backend.app.api.routes.voice import router as voice_router
 from backend.app.api.routes.audit import router as audit_router
 from backend.app.api.routes.health import router as health_router
+from backend.app.api.routes.supabase_route import router as supabase_router
 from backend.seed_data import seed_database
 
 # Initialize database schema and demo records
@@ -86,6 +87,7 @@ app.include_router(cards_router, prefix=API_PREFIX)
 app.include_router(credit_router, prefix=API_PREFIX)
 app.include_router(voice_router, prefix=API_PREFIX)
 app.include_router(audit_router, prefix=API_PREFIX)
+app.include_router(supabase_router, prefix=API_PREFIX)
 
 @app.get("/api")
 def api_info():

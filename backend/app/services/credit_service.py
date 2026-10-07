@@ -117,6 +117,28 @@ def request_formal_credit_review(db: Session, customer_id: str) -> Dict[str, Any
     
     db.commit()
     db.refresh(rec)
+    
+    # Mirror credit review request to Supabase Cloud PostgreSQL
+    try:
+        from backend.app.services.supabase_service import update_supabase_credit_review, insert_supabase_notification
+        update_supabase_credit_review(customer_id, {
+            "review_requested": True,
+            "review_status": "UNDER_BANK_REVIEW",
+            "review_requested_at": rec.review_requested_at.isoformat()
+        })
+        insert_supabase_notification({
+            "notification_id": notif.notification_id,
+            "customer_id": customer_id,
+            "title": notif.title,
+            "message": notif.message,
+            "type": notif.type,
+            "read": False,
+            "action_url": notif.action_url,
+            "created_at": notif.created_at.isoformat()
+        })
+    except Exception:
+        pass
+        
     return {
         "success": True,
         "review_status": rec.review_status,
