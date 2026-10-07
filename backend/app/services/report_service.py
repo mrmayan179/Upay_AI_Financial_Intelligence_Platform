@@ -11,45 +11,157 @@ from sqlalchemy.orm import Session
 from backend.app.database.models import Complaint, Case, CaseEvent, Notification
 from backend.app.services.audit_service import log_ai_activity
 
-# Rule-based NLP Intent & Classification Engine
-COMPLAINT_PATTERNS = [
-    (r"fraud|unauthorized|stolen|scam|hacked|without my consent|phishing", "FRAUD", "CRITICAL", "FRAUD_INVESTIGATION"),
-    (r"payment|deducted|merchant|qr|bill|recharge|not received|pending", "PAYMENT", "HIGH", "TRANSACTION_OPERATIONS"),
-    (r"card|cvv|declined|nfc|international|endorsement|atm", "CARD", "MEDIUM", "CARD_SERVICES"),
-    (r"cash out|agent|cashin|fee charged", "CASH_OUT", "MEDIUM", "TRANSACTION_OPERATIONS"),
-    (r"bank|transfer|account number|inter-wallet", "TRANSFER", "MEDIUM", "TRANSACTION_OPERATIONS"),
-    (r"refund|returned|cancellation", "REFUND", "MEDIUM", "DISPUTES"),
-    (r"pin|locked|dormant|restricted|update|nid|biometric", "ACCOUNT", "LOW", "DISPUTES"),
-    (r"app crash|otp|sms|network|error", "TECHNICAL", "LOW", "TECH_SUPPORT"),
+# Structured NLP Classification Knowledge Base
+INTENT_CLASSIFICATION_RULES = [
+    {
+        "intent": "UNAUTHORIZED_TRANSACTION_FRAUD",
+        "category": "FRAUD",
+        "priority": "CRITICAL",
+        "team": "FRAUD_INVESTIGATION",
+        "pattern": r"fraud|unauthorized|stolen|scam|hacked|without my consent|phishing|stolen card|compromised|suspicious activity|fake caller",
+        "recommended_next_step": "Temporarily freeze payment channel, flag recipient identifier, and route to Tier-2 Fraud Squad.",
+        "requires_supervisor": True
+    },
+    {
+        "intent": "REFUND_DELAY_ISSUE",
+        "category": "REFUND",
+        "priority": "MEDIUM",
+        "pattern": r"refund|returned|cancellation|order cancelled|merchant refund|chargeback",
+        "team": "DISPUTES",
+        "recommended_next_step": "Request merchant settlement credit note and track merchant reversal SLA window.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "CARD_CHANNEL_PROBLEM",
+        "category": "CARD",
+        "priority": "MEDIUM",
+        "pattern": r"card|cvv|declined|nfc|international|endorsement|atm|visa|mastercard|pos terminal|tap and go",
+        "team": "CARD_SERVICES",
+        "recommended_next_step": "Verify card toggle statuses (online/international/NFC) and passport USD quota balances.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "CASH_OUT_DISPUTE",
+        "category": "CASH_OUT",
+        "priority": "MEDIUM",
+        "pattern": r"cash out|agent|cashin|fee charged|agent refused|atm cash not dispensed|atm cash didn't come",
+        "team": "TRANSACTION_OPERATIONS",
+        "recommended_next_step": "Retrieve agent terminal transaction log and verify counterparty cash settlement status.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "INTER_BANK_TRANSFER_DELAY",
+        "category": "TRANSFER",
+        "priority": "MEDIUM",
+        "pattern": r"bank|transfer|account number|inter-wallet|beftn|npsb|rtgs|routing number",
+        "team": "TRANSACTION_OPERATIONS",
+        "recommended_next_step": "Check Bangladesh Bank NPSB/BEFTN inter-bank settlement batch status.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "PAYMENT_STUCK_NOT_RECEIVED",
+        "category": "PAYMENT",
+        "priority": "HIGH",
+        "pattern": r"payment|deducted|merchant|qr|bill|recharge|not received|pending|receiver did not get|charged twice|double charge|money cut",
+        "team": "TRANSACTION_OPERATIONS",
+        "recommended_next_step": "Query core switch reconciliation ledger and schedule auto-reversal if unreconciled within 24h.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "ACCOUNT_SECURITY_ACCESS",
+        "category": "ACCOUNT",
+        "priority": "LOW",
+        "pattern": r"pin|locked|dormant|restricted|update|nid|biometric|kyc|change number|profile",
+        "team": "DISPUTES",
+        "recommended_next_step": "Trigger biometric facial challenge and dispatch SMS self-service security verification link.",
+        "requires_supervisor": False
+    },
+    {
+        "intent": "APP_TECHNICAL_GLITCH",
+        "category": "TECHNICAL",
+        "priority": "LOW",
+        "pattern": r"app crash|otp|sms|network|error|bug|cannot open|session timeout|server down|login failed",
+        "team": "TECH_SUPPORT",
+        "recommended_next_step": "Log client device telemetry, invalidate cached auth tokens, and escalate app error payload.",
+        "requires_supervisor": False
+    }
 ]
 
+def extract_complaint_entities(text: str) -> Dict[str, Any]:
+    """Extracts monetary amounts, transaction references, and time expressions from text."""
+    entities = {}
+    
+    # Amount detection (e.g., BDT 1,400 or 1400 tk or $45)
+    amt_match = re.search(r"(?:bdt|tk|৳|\$)\s*([\d,]+(?:\.\d{1,2})?)|([\d,]+(?:\.\d{1,2})?)\s*(?:bdt|taka|tk|৳)", text, re.IGNORECASE)
+    if amt_match:
+        val = amt_match.group(1) or amt_match.group(2)
+        try:
+            entities["amount_mentioned"] = float(val.replace(",", ""))
+        except Exception:
+            pass
+            
+    # Transaction ID detection (e.g., TXN-1234 or UPAY-...)
+    txn_match = re.search(r"\b(TXN-[A-Za-z0-9\-]+|CTXN-[A-Za-z0-9\-]+|UP-[A-Za-z0-9\-]+|[0-9]{8,14})\b", text)
+    if txn_match:
+        entities["transaction_reference"] = txn_match.group(1)
+        
+    # Urgency indicators
+    if re.search(r"emergency|urgent|immediately|police|medical|hospital", text, re.IGNORECASE):
+        entities["urgency_marker"] = True
+        
+    return entities
+
 def classify_complaint_text(text: str) -> Dict[str, Any]:
-    """Intelligently classify customer dispute text into structured category and priority."""
+    """
+    Intelligently classifies customer dispute text into structured intent,
+    category, priority, suggested team, and recommended next steps.
+    Enforces deterministic safety rules: AI never executes autonomous money movements.
+    """
     t_lower = text.lower()
+    entities = extract_complaint_entities(text)
     
-    category = "OTHER"
-    priority = "MEDIUM"
-    team = "DISPUTES"
-    confidence = 0.88
-    
-    for pattern, cat, prio, assigned_team in COMPLAINT_PATTERNS:
-        if re.search(pattern, t_lower):
-            category = cat
-            priority = prio
-            team = assigned_team
-            confidence = 0.94 if cat == "FRAUD" else 0.91
+    matched_rule = None
+    for rule in INTENT_CLASSIFICATION_RULES:
+        if re.search(rule["pattern"], t_lower):
+            matched_rule = rule
             break
             
-    summary = f"Customer reported {category.lower()} issue: '{text[:80]}...'" if len(text) > 80 else f"Dispute logged: {text}"
+    if matched_rule:
+        intent = matched_rule["intent"]
+        category = matched_rule["category"]
+        priority = matched_rule["priority"]
+        team = matched_rule["team"]
+        rec_step = matched_rule["recommended_next_step"]
+        requires_sup = matched_rule["requires_supervisor"]
+        confidence = 0.95 if category == "FRAUD" else 0.92
+    else:
+        intent = "GENERAL_INQUIRY"
+        category = "OTHER"
+        priority = "MEDIUM"
+        team = "DISPUTES"
+        rec_step = "Route ticket to front-line customer assistance desk for manual assessment."
+        requires_sup = False
+        confidence = 0.85
+        
+    # Elevate priority if emergency urgency marker is present
+    if entities.get("urgency_marker") and priority in ["LOW", "MEDIUM"]:
+        priority = "HIGH"
+        
+    summary = f"Customer dispute: [{category}] {text[:90]}..." if len(text) > 90 else f"Customer dispute: [{category}] {text}"
     
     return {
+        "intent": intent,
         "category": category,
         "priority": priority,
         "suggested_team": team,
         "summary": summary,
+        "recommended_next_step": rec_step,
         "confidence": confidence,
-        "model_provider": "upay-complaint-intel-engine",
-        "version": "complaint-intel-1.0.0"
+        "entities_detected": entities,
+        "requires_supervisor_approval": requires_sup,
+        "auto_action_permitted": False, # Deterministic Safety Boundary
+        "model_provider": "upay-nlp-dispute-classifier-v2",
+        "version": "complaint-intel-2.0.0"
     }
 
 def create_report_and_case(

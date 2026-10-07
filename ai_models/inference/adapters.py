@@ -197,86 +197,331 @@ def predict_credit(profile: Dict[str, Any]) -> Dict[str, Any]:
         "model_version": "credit-xgb-1.0.0"
     }
 
-def evaluate_unified_risk_adapter(txn: Dict[str, Any]) -> Dict[str, Any]:
+def _score_to_level(score: int) -> str:
+    if score >= 80:
+        return "CRITICAL"
+    elif score >= 60:
+        return "HIGH"
+    elif score >= 35:
+        return "MEDIUM"
+    return "LOW"
+
+def evaluate_granular_risk_breakdown(txn: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Computes an explicit multi-dimensional risk breakdown across all required dimensions:
+    - Fraud Risk (XGBoost ML)
+    - Behavioral Anomaly Risk (Isolation Forest ML)
+    - Amount Risk (Deviation Signal)
+    - Velocity Risk (Frequency Signal)
+    - Device Risk (Hardware Fingerprint Signal)
+    - Location Risk (Geolocation Signal)
+    - Recipient Risk (Counterparty Novelty)
+    - Merchant Risk (Category & Channel Rules)
+    - Account-Takeover / Security Risk (Multi-Vector Defense Rules)
+    """
     fraud_res = predict_fraud(txn)
     anom_res = predict_anomaly(txn)
     
-    # Deterministic Business Rules
     amount = float(txn.get("amount_bdt", 0.0))
     hist_avg = float(txn.get("historical_avg_amount", 1000.0))
     dev = float(txn.get("amount_deviation", amount / max(1.0, hist_avg)))
     v1h = int(txn.get("velocity_1h", 0))
+    v24h = int(txn.get("velocity_24h", 0))
     new_dev = int(txn.get("is_new_device", 0))
     new_loc = int(txn.get("is_new_location", 0))
     new_recip = int(txn.get("is_new_recipient", 0))
+    is_intl = int(txn.get("is_international", 0))
+    channel = str(txn.get("channel", "APP")).upper()
+    merchant_name = str(txn.get("merchant_name", "General Merchant"))
     
+    # 1. Dimension: Fraud Risk (ML)
+    fraud_score = int(round(fraud_res["fraud_probability"] * 100))
+    fraud_level = _score_to_level(fraud_score)
+    fraud_reason = f"XGBoost probability {fraud_res['fraud_probability']:.2f} based on aggregate features"
+    
+    # 2. Dimension: Behavioral Anomaly Risk (ML)
+    anom_score = int(round(anom_res["anomaly_score"] * 100))
+    anom_level = _score_to_level(anom_score)
+    anom_reason = "; ".join(anom_res["deviation_factors"]) if anom_res["deviation_factors"] else "Behavioral spending pattern normal"
+    
+    # 3. Dimension: Amount Risk
+    if dev <= 1.5:
+        amount_score = 12
+        amount_reason = f"Amount is within normal range ({dev:.1f}x baseline)"
+    elif dev <= 3.0:
+        amount_score = 42
+        amount_reason = f"Moderate amount deviation ({dev:.1f}x baseline)"
+    elif dev <= 6.0:
+        amount_score = 72
+        amount_reason = f"Significant spending spike ({dev:.1f}x baseline)"
+    else:
+        amount_score = min(98, int(round(72 + (dev - 6.0) * 4)))
+        amount_reason = f"Extreme amount outlier ({dev:.1f}x historical average)"
+    amount_level = _score_to_level(amount_score)
+    
+    # 4. Dimension: Velocity Risk
+    if v1h <= 1 and v24h <= 4:
+        velocity_score = 10
+        velocity_reason = f"Standard transaction velocity ({v1h}/hr, {v24h}/24hr)"
+    elif v1h == 2 or v24h <= 8:
+        velocity_score = 36
+        velocity_reason = f"Elevated frequency ({v1h} in past hour)"
+    elif v1h in (3, 4) or v24h <= 15:
+        velocity_score = 68
+        velocity_reason = f"Burst velocity spike ({v1h} txns in 1hr)"
+    else:
+        velocity_score = min(98, 76 + (v1h - 4) * 5)
+        velocity_reason = f"Critical burst velocity ({v1h} txns in 1hr, {v24h} in 24hr)"
+    velocity_level = _score_to_level(velocity_score)
+    
+    # 5. Dimension: Device Risk
+    if new_dev == 0:
+        device_score = 10
+        device_reason = "Recognized hardware fingerprint"
+    else:
+        device_score = 72
+        device_reason = "Unrecognized / First-time hardware device fingerprint"
+    device_level = _score_to_level(device_score)
+    
+    # 6. Dimension: Location Risk
+    if new_loc == 0 and is_intl == 0:
+        location_score = 10
+        location_reason = "Habitual domestic jurisdiction"
+    elif new_loc == 1 and is_intl == 0:
+        location_score = 55
+        location_reason = "New geographic domestic region"
+    else:
+        location_score = 72
+        location_reason = f"Cross-border international transaction ({txn.get('country', 'Foreign')})"
+    location_level = _score_to_level(location_score)
+    
+    # 7. Dimension: Recipient Risk
+    if new_recip == 0:
+        recipient_score = 12
+        recipient_reason = "Established transaction counterparty"
+    else:
+        recipient_score = 64
+        recipient_reason = "First-time transfer to unfamiliar counterparty"
+    recipient_level = _score_to_level(recipient_score)
+    
+    # 8. Dimension: Merchant Risk
+    m_lower = merchant_name.lower()
+    if any(k in m_lower for k in ["unknown", "crypto", "casino", "wire", "lagos", "betting"]):
+        merchant_score = 82
+        merchant_reason = "High-risk merchant profile or unverified terminal"
+    elif channel == "ONLINE" and is_intl == 1:
+        merchant_score = 45
+        merchant_reason = "Foreign online e-commerce merchant"
+    else:
+        merchant_score = 15
+        merchant_reason = "Verified merchant channel"
+    merchant_level = _score_to_level(merchant_score)
+    
+    # 9. Dimension: Account-Takeover / Security Rule Layer
     triggered_rules = []
-    rule_penalty = 0.0
+    ato_score = 10
+    ato_reason = "No account takeover signatures identified"
     hard_block = False
-    force_review = False
-    force_2fa = False
     
-    if v1h >= 6:
-        triggered_rules.append("Rapid Velocity Threshold Exceeded (>5 txns/hr)")
-        rule_penalty += 35.0
-        force_review = True
-    if dev >= 8.0 and amount > 20000.0:
-        triggered_rules.append(f"Extreme Amount Outlier ({dev:.1f}x baseline)")
-        rule_penalty += 35.0
-        force_review = True
-    if new_dev == 1 and dev >= 2.5:
-        triggered_rules.append("Unfamiliar Device Spending Anomaly")
-        rule_penalty += 20.0
-        force_2fa = True
     if new_dev == 1 and new_loc == 1 and new_recip == 1:
+        ato_score = 92
+        ato_reason = "ATO Multi-Vector Threat: New device + new location + new recipient"
         triggered_rules.append("Account Takeover (ATO) Multi-Vector Threat Pattern")
-        rule_penalty += 45.0
-        force_review = True
-    if amount > 250000.0:
-        triggered_rules.append("Central Bank MFS Single Transaction Ceiling Breached")
-        hard_block = True
-        rule_penalty += 50.0
+    elif new_dev == 1 and dev >= 3.0:
+        ato_score = 80
+        ato_reason = "New hardware device paired with extreme amount deviation"
+        triggered_rules.append("Unfamiliar Device Spending Anomaly")
+    elif v1h >= 5:
+        ato_score = 75
+        ato_reason = f"Automated bot or rapid credential stuffing pattern ({v1h} txns/hr)"
+        triggered_rules.append("Rapid Velocity Threshold Exceeded (>4 txns/hr)")
         
+    if amount > 250000.0:
+        triggered_rules.append("Central Bank MFS Single Transaction Ceiling Breached (BDT 250,000)")
+        hard_block = True
+        
+    ato_level = _score_to_level(ato_score)
+    
+    # Composite Risk Calculation (Weighted Policy)
     composite = int(round(
-        (fraud_res["fraud_probability"] * 50.0) +
-        (anom_res["anomaly_score"] * 30.0) +
-        (min(50.0, rule_penalty) * 0.60)
+        0.30 * fraud_score +
+        0.20 * anom_score +
+        0.15 * amount_score +
+        0.12 * velocity_score +
+        0.08 * device_score +
+        0.05 * location_score +
+        0.05 * recipient_score +
+        0.05 * merchant_score
     ))
     
-    if force_review and composite < 70:
-        composite = max(composite, 72)
-    elif force_2fa and composite < 42:
-        composite = max(composite, 45)
+    # Rule floors
+    if ato_score >= 80:
+        composite = max(composite, ato_score)
+    if hard_block:
+        composite = 100
+        
     composite = max(0, min(100, composite))
+    risk_level = _score_to_level(composite)
     
-    if hard_block or composite >= 85:
+    # Governance Decision & Recommended Action
+    if hard_block or composite >= 82:
         decision = "BLOCK"
-        risk_level = "CRITICAL"
-    elif composite >= 65:
+        recommended_action = "Decline authorization and flag for immediate security review."
+    elif composite >= 62:
         decision = "HOLD_FOR_REVIEW"
-        risk_level = "HIGH"
-    elif composite >= 38:
+        recommended_action = "Hold transaction in supervisory queue pending customer confirmation."
+    elif composite >= 35:
         decision = "CHALLENGE_2FA"
-        risk_level = "MEDIUM"
+        recommended_action = "Require secondary biometric or OTP challenge before processing."
     else:
         decision = "ALLOW"
-        risk_level = "LOW"
+        recommended_action = "Authorize transaction through automated straight-through processing."
         
+    # Primary Human-Readable Reasons
     reasons = []
-    if dev > 2.0: reasons.append(f"Amount {dev:.1f}x user's baseline")
-    if new_dev == 1: reasons.append("Unrecognized device fingerprint")
-    if new_recip == 1: reasons.append("First-time recipient transfer")
-    if new_loc == 1: reasons.append("Unfamiliar transaction location")
-    if v1h >= 4: reasons.append(f"Burst velocity ({v1h} txns in 1 hour)")
+    if dev > 2.0:
+        reasons.append(f"Amount is {dev:.1f}x customer historical average (BDT {amount:,.0f} vs BDT {hist_avg:,.0f})")
+    if new_dev == 1:
+        reasons.append("Unrecognized hardware device fingerprint")
+    if new_recip == 1:
+        reasons.append(f"First-time transfer to merchant '{merchant_name}'")
+    if v1h >= 2:
+        reasons.append(f"High velocity: {v1h} transactions in the last hour")
+    if is_intl == 1:
+        reasons.append(f"International foreign transaction ({txn.get('country', 'US')})")
     for r in triggered_rules:
-        if r not in reasons: reasons.append(r)
+        if r not in reasons:
+            reasons.append(r)
+    if not reasons:
+        reasons = ["Transaction aligns with habitual spending behavior and verified device"]
         
+    # Proactive Predictive User Warning Experience (Phase D)
+    should_warn = (composite >= 35) or (amount_level in ["HIGH", "CRITICAL"]) or (new_dev == 1 and new_recip == 1)
+    
+    warning_points = []
+    if dev >= 2.5:
+        warning_points.append(f"Amount is {dev:.1f}× higher than your usual average (BDT {hist_avg:,.0f})")
+    if new_recip == 1:
+        warning_points.append(f"You haven't transacted with '{merchant_name}' before")
+    if new_dev == 1:
+        warning_points.append("This device hasn't been used for previous transactions")
+    if v1h >= 3:
+        warning_points.append(f"Multiple transactions ({v1h}) sent in the past hour")
+    if is_intl == 1:
+        warning_points.append("International merchant payment with foreign exchange quota deduction")
+        
+    if should_warn:
+        severity = "HIGH_RISK" if composite >= 65 else "CAUTION"
+        proactive_warning = {
+            "should_warn": True,
+            "is_warning_active": True,
+            "severity": severity,
+            "headline": "This transaction looks unusual" if severity == "HIGH_RISK" else "Please review transaction details",
+            "title": "This transaction looks unusual" if severity == "HIGH_RISK" else "Please review transaction details",
+            "subtitle": f"Amount is {dev:.1f}x your recent average" if dev > 2.0 else "Unusual activity factors detected",
+            "headline_bn": "লেনদেনটি আপনার স্বাভাবিক খরচের তুলনায় ব্যতিক্রমী" if severity == "HIGH_RISK" else "দয়া করে লেনদেনের বিবরণ পুনরায় যাচাই করুন",
+            "message": "Our AI safety engine noticed deviations from your typical activity. We want to help you prevent mistakes.",
+            "message_bn": "আপনার পূর্ববর্তী লেনদেনের তুলনায় কিছু অমিল পাওয়া গেছে। আপনার নিরাপত্তা নিশ্চিত করতেই এই তথ্য প্রদর্শন করা হচ্ছে।",
+            "warning_reasons": warning_points if warning_points else reasons[:3],
+            "reasons": warning_points if warning_points else reasons[:3],
+            "recommended_action": "Verify the merchant name and amount before continuing." if severity != "HIGH_RISK" else "Carefully check if you authorized this payment before proceeding.",
+            "recommended_action_bn": "সম্মতি দেওয়ার আগে মার্চেন্টের নাম এবং টাকার পরিমাণ ভালোভাবে যাচাই করে নিন।",
+            "allowed_user_actions": ["CONTINUE_WITH_PIN", "CANCEL"] if composite < 80 else ["HOLD_FOR_REVIEW", "CANCEL"],
+            "disclaimer": "This is a predictive risk advisory to help protect your account. No absolute claim of loss is made."
+        }
+    else:
+        proactive_warning = {
+            "should_warn": False,
+            "is_warning_active": False,
+            "severity": "NORMAL",
+            "headline": "Transaction looks standard",
+            "title": "Transaction looks standard",
+            "subtitle": "Transaction aligns with normal spending behavior",
+            "headline_bn": "লেনদেনটি স্বাভাবিক সীমার মধ্যে রয়েছে",
+            "message": "Activity matches your verified historical pattern.",
+            "message_bn": "লেনদেনের ধারা আপনার স্বাভাবিক খরচের সাথে সঙ্গতিপূর্ণ।",
+            "warning_reasons": ["Normal spending behavior"],
+            "reasons": ["Normal spending behavior"],
+            "recommended_action": "Proceed with regular PIN authentication.",
+            "recommended_action_bn": "নিয়মিত পিন দিয়ে লেনদেন সম্পন্ন করুন।",
+            "allowed_user_actions": ["CONTINUE_WITH_PIN", "CANCEL"],
+            "disclaimer": "Standard automated transaction verification."
+        }
+        
+    risk_breakdown = {
+        "fraud": {
+            "score": fraud_score,
+            "level": fraud_level,
+            "reason": fraud_reason,
+            "source": "ML: XGBoost Classifier (fraud-xgb-1.0.0)"
+        },
+        "anomaly": {
+            "score": anom_score,
+            "level": anom_level,
+            "reason": anom_reason,
+            "source": "ML: Isolation Forest (anomaly-iforest-1.0.0)"
+        },
+        "amount": {
+            "score": amount_score,
+            "level": amount_level,
+            "reason": amount_reason,
+            "source": "Derived: Spending Baseline Deviation"
+        },
+        "velocity": {
+            "score": velocity_score,
+            "level": velocity_level,
+            "reason": velocity_reason,
+            "source": "Derived: 1h & 24h Frequency Velocity"
+        },
+        "device": {
+            "score": device_score,
+            "level": device_level,
+            "reason": device_reason,
+            "source": "Signal: Hardware Identity Verification"
+        },
+        "location": {
+            "score": location_score,
+            "level": location_level,
+            "reason": location_reason,
+            "source": "Signal: Geolocation Consistency"
+        },
+        "recipient": {
+            "score": recipient_score,
+            "level": recipient_level,
+            "reason": recipient_reason,
+            "source": "Signal: Counterparty Novelty"
+        },
+        "merchant": {
+            "score": merchant_score,
+            "level": merchant_level,
+            "reason": merchant_reason,
+            "source": "Rule: Merchant Risk Profiling"
+        },
+        "security_ato": {
+            "score": ato_score,
+            "level": ato_level,
+            "reason": ato_reason,
+            "source": "Rule: Multi-Vector Account Takeover Guard"
+        }
+    }
+    
     return {
         "decision": decision,
         "risk_level": risk_level,
+        "final_level": risk_level,
         "composite_risk_score": composite,
+        "composite_score": composite,
+        "risk": risk_breakdown,
+        "recommended_action": recommended_action,
+        "proactive_warning": proactive_warning,
+        "triggered_rules": triggered_rules,
+        "reasons": reasons[:4] if reasons else ["Normal historical spending pattern"],
         "fraud_output": fraud_res,
         "anomaly_output": anom_res,
-        "triggered_rules": triggered_rules,
-        "reasons": reasons[:4] if reasons else ["Normal historical spending pattern"]
+        "model_version": "fraud-xgb-1.0.0+anomaly-iforest-1.0.0"
     }
+
+def evaluate_unified_risk_adapter(txn: Dict[str, Any]) -> Dict[str, Any]:
+    """Compatibility bridge calling the full granular risk breakdown engine."""
+    return evaluate_granular_risk_breakdown(txn)
+

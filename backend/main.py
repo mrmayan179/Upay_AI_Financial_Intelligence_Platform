@@ -35,14 +35,33 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Enable CORS for Next.js / React / Vite frontend
+# Explicit CORS Configuration (No wildcard origin for production security compliance)
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Custom Security Headers Middleware
+@app.middleware("http")
+async def add_security_headers_middleware(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 # Mount Evidence Report & Assets
 EVIDENCE_HTML_PATH = PROJECT_ROOT / "model_competition" / "evidence" / "final_report.html"

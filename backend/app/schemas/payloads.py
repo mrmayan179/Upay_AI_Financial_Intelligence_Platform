@@ -21,6 +21,9 @@ class UserProfileResponse(BaseModel):
     account_balance_bdt: float
     cash_reward_bdt: float
     status: str
+    access_token: Optional[str] = None
+    token_type: Optional[str] = "bearer"
+    expires_in_hours: Optional[int] = 24
 
 # ==============================================================================
 # Reports & Cases
@@ -29,13 +32,20 @@ class ComplaintClassifyRequest(BaseModel):
     text: str = Field(..., example="Money was deducted but receiver did not receive")
 
 class ComplaintClassifyResponse(BaseModel):
+    intent: Optional[str] = "PAYMENT_UNRECEIVED"
     category: str
     priority: str
     suggested_team: str
     summary: str
+    recommended_next_step: Optional[str] = "Verify gateway settlement logs and reconcile"
     confidence: float
-    model_provider: str
-    version: str
+    entities_detected: Optional[Dict[str, Any]] = None
+    extracted_entities: Optional[Dict[str, Any]] = None
+    auto_action_permitted: Optional[bool] = False
+    safety_rationale: Optional[str] = None
+    model_provider: Optional[str] = "Upay-Local-NLP"
+    model_version: Optional[str] = "Upay-NLP-Dispute-v1.3"
+    version: Optional[str] = "1.3"
 
 class CreateReportRequest(BaseModel):
     complaint_text: str = Field(..., example="Payment of 1400 BDT to grocery merchant failed but balance was debited.")
@@ -114,14 +124,49 @@ class CardTransactionResponse(BaseModel):
     transaction_id: str
     card_id: str
     amount_usd: float
+    amount_bdt: Optional[float] = None
     merchant_name: str
     channel: str
     risk_score: int
+    composite_score: Optional[int] = None
     risk_level: str
+    final_level: Optional[str] = None
     decision: str
     reasons: List[str]
+    risk: Optional[Dict[str, Any]] = None
+    recommended_action: Optional[str] = None
+    proactive_warning: Optional[Dict[str, Any]] = None
+    model_version: Optional[str] = None
     status: str
     created_at: str
+
+class CardPreCheckRequest(BaseModel):
+    card_id: str
+    amount_usd: float = Field(..., example=45.0)
+    merchant_name: str = Field(..., example="Coursera Online")
+    channel: str = Field("ONLINE", example="ONLINE")
+    country: str = Field("US", example="US")
+    device_id: Optional[str] = "DEV-APP-01"
+    is_new_merchant: Optional[int] = None
+    is_new_device: Optional[int] = None
+
+class CardPreCheckResponse(BaseModel):
+    card_id: str
+    amount_usd: float
+    amount_bdt: float
+    historical_avg_amount_bdt: float
+    amount_deviation: float
+    merchant_name: str
+    channel: str
+    country: str
+    risk: Dict[str, Any]
+    composite_score: int
+    final_level: str
+    decision: str
+    recommended_action: str
+    proactive_warning: Dict[str, Any]
+    reasons: List[str]
+    model_version: str
 
 # ==============================================================================
 # Credit Readiness

@@ -9,11 +9,13 @@ from backend.app.database.connection import get_db
 from backend.app.database.models import Customer, Card, CardTransaction
 from backend.app.schemas.payloads import (
     CardSchema, CardSettingsUpdateRequest, CardPinResetRequest,
-    CardTransactionSimulationRequest, CardTransactionResponse
+    CardTransactionSimulationRequest, CardTransactionResponse,
+    CardPreCheckRequest, CardPreCheckResponse
 )
 from backend.app.services.card_service import (
     get_user_cards, get_card_by_id, update_card_toggles,
-    freeze_card_toggle, reset_mock_pin, process_card_authorization
+    freeze_card_toggle, reset_mock_pin, process_card_authorization,
+    pre_check_card_transaction
 )
 
 router = APIRouter(prefix="/cards", tags=["Dual-Currency Smart Card"])
@@ -124,6 +126,31 @@ def reset_card_pin_endpoint(card_id: str, payload: CardPinResetRequest, db: Sess
         raise HTTPException(status_code=400, detail=res["message"])
     return res
 
+@router.post("/transactions/pre-check", response_model=CardPreCheckResponse)
+def pre_check_transaction_risk(payload: CardPreCheckRequest, db: Session = Depends(get_db)):
+    """
+    Evaluates transaction risk against runtime database features BEFORE execution.
+    Provides customer-facing proactive warnings and coaching.
+    """
+    cust = db.query(Customer).first()
+    customer_id = cust.customer_id if cust else "SYN-U-10082"
+    
+    result = pre_check_card_transaction(
+        db=db,
+        customer_id=customer_id,
+        card_id=payload.card_id,
+        amount_usd=payload.amount_usd,
+        merchant_name=payload.merchant_name,
+        channel=payload.channel,
+        country=payload.country,
+        device_id=payload.device_id or "DEV-APP-01",
+        is_new_merchant=payload.is_new_merchant,
+        is_new_device=payload.is_new_device
+    )
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
 @router.post("/transactions/analyze", response_model=CardTransactionResponse)
 def analyze_and_execute_transaction(payload: CardTransactionSimulationRequest, db: Session = Depends(get_db)):
     cust = db.query(Customer).first()
@@ -137,10 +164,45 @@ def analyze_and_execute_transaction(payload: CardTransactionSimulationRequest, d
         merchant_name=payload.merchant_name,
         channel=payload.channel,
         country=payload.country,
-        is_new_merchant=payload.is_new_merchant or 0,
-        is_new_device=payload.is_new_device or 0
+        is_new_merchant=payload.is_new_merchant,
+        is_new_device=payload.is_new_device
     )
     return result
+
+@router.get("/transactions/{transaction_id}/analysis")
+def get_transaction_analysis(transaction_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieves complete runtime feature values, model scores, and risk breakdown
+    for a transaction record from the database.
+    """
+    import json
+    txn = db.query(CardTransaction).filter(CardTransaction.transaction_id == transaction_id).first()
+    if not txn:
+        raise HTTPException(status_code=404, detail="Transaction record not found in database")
+        
+    return {
+        "transaction_id": txn.transaction_id,
+        "card_id": txn.card_id,
+        "customer_id": txn.customer_id,
+        "amount_usd": txn.amount_usd,
+        "amount_bdt": txn.amount_bdt,
+        "merchant_name": txn.merchant_name,
+        "channel": txn.channel,
+        "country": txn.country,
+        "risk_score": txn.risk_score,
+        "risk_level": txn.risk_level,
+        "final_level": txn.risk_level,
+        "decision": txn.decision,
+        "status": txn.status,
+        "fraud_score": txn.fraud_score,
+        "anomaly_score": txn.anomaly_score,
+        "device_id": txn.device_id,
+        "recommended_action": txn.recommended_action,
+        "model_version": txn.model_version,
+        "reasons": json.loads(txn.reasons) if txn.reasons else [],
+        "risk": json.loads(txn.risk_breakdown) if txn.risk_breakdown else {},
+        "created_at": txn.created_at.isoformat()
+    }
 
 @router.get("/{card_id}/transactions")
 def get_card_transactions(card_id: str, db: Session = Depends(get_db)):
@@ -155,9 +217,16 @@ def get_card_transactions(card_id: str, db: Session = Depends(get_db)):
             "merchant_name": t.merchant_name,
             "channel": t.channel,
             "risk_score": t.risk_score,
+            "composite_score": t.risk_score,
             "risk_level": t.risk_level,
+            "final_level": t.risk_level,
             "decision": t.decision,
+            "fraud_score": t.fraud_score,
+            "anomaly_score": t.anomaly_score,
+            "recommended_action": t.recommended_action,
+            "model_version": t.model_version,
             "reasons": json.loads(t.reasons) if t.reasons else [],
+            "risk": json.loads(t.risk_breakdown) if t.risk_breakdown else {},
             "status": t.status,
             "created_at": t.created_at.isoformat()
         }

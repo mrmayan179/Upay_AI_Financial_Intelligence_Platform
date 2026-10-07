@@ -6,6 +6,7 @@ import {
   Case,
   Card,
   CardTransaction,
+  CardPreCheckResult,
   CreditProfile,
   AIActivityLog,
   AppNotification
@@ -14,9 +15,11 @@ const ENV_BACKEND_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/
 const API_BASE = `${ENV_BACKEND_URL}/api/v1`;
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const headers = {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('upay_token') : null;
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers || {})
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(options.headers as Record<string, string> || {})
   };
   
   const res = await fetch(`${API_BASE}${url}`, {
@@ -39,8 +42,23 @@ async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> 
 
 export const api = {
   // Auth & Profile
-  login: (phone = '01771449164', pin = '1234'): Promise<UserProfile> =>
-    fetchJson<UserProfile>('/auth/demo-login', { method: 'POST', body: JSON.stringify({ phone_number: phone, pin }) }),
+  login: async (phone = '01771449164', pin = '1234'): Promise<UserProfile> => {
+    const profile = await fetchJson<UserProfile>('/auth/demo-login', {
+      method: 'POST',
+      body: JSON.stringify({ phone_number: phone, pin })
+    });
+    if ((profile as any).access_token) {
+      localStorage.setItem('upay_token', (profile as any).access_token);
+    }
+    return profile;
+  },
+  logout: async (): Promise<any> => {
+    try {
+      await fetchJson('/auth/logout', { method: 'POST' });
+    } finally {
+      localStorage.removeItem('upay_token');
+    }
+  },
   getProfile: (): Promise<UserProfile> => fetchJson<UserProfile>('/me'),
   getNotifications: (): Promise<AppNotification[]> => fetchJson<AppNotification[]>('/notifications'),
 
@@ -66,6 +84,20 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ current_pin: currentPin, new_pin: newPin })
     }),
+  preCheckCardTransaction: (payload: {
+    card_id: string;
+    amount_usd: number;
+    merchant_name: string;
+    channel?: string;
+    country?: string;
+    device_id?: string;
+    is_new_merchant?: number;
+    is_new_device?: number;
+  }): Promise<CardPreCheckResult> =>
+    fetchJson<CardPreCheckResult>('/cards/transactions/pre-check', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
   simulateCardTransaction: (payload: {
     card_id: string;
     amount_usd: number;
@@ -75,6 +107,8 @@ export const api = {
     is_new_merchant?: number;
     is_new_device?: number;
   }): Promise<CardTransaction> => fetchJson<CardTransaction>('/cards/transactions/analyze', { method: 'POST', body: JSON.stringify(payload) }),
+  getTransactionAnalysis: (transactionId: string): Promise<any> =>
+    fetchJson(`/cards/transactions/${transactionId}/analysis`),
   getCardTransactions: (cardId: string): Promise<CardTransaction[]> => fetchJson<CardTransaction[]>(`/cards/${cardId}/transactions`),
 
   // Credit Readiness

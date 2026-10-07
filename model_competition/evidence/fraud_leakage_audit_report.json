@@ -1,0 +1,94 @@
+{
+  "audit_title": "Upay Fraud Model Leakage and Synthetic Data Audit",
+  "audit_date": "2026-10-07",
+  "model_target": "fraud_xgb.joblib",
+  "algorithm": "XGBoost Classifier",
+  "version": "v1.2",
+  "audit_verdict": "VERIFIED_CLEAN_OF_TARGET_LEAKAGE",
+  "root_cause_of_perfect_metrics": "SYNTHETIC_PARAMETER_DISTRIBUTION_BINARIZATION",
+  "feature_audit_results": [
+    {
+      "feature": "amount_usd",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "historical_avg_amount_bdt",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "amount_deviation",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "velocity_1h",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "velocity_24h",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "is_new_merchant",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "is_new_device",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "is_international",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    },
+    {
+      "feature": "hour_of_day",
+      "leakage_present": false,
+      "causal_timing": "pre_event",
+      "target_derived": false
+    }
+  ],
+  "synthetic_generator_bounds": {
+    "velocity_1h": {
+      "legitimate_range": [0, 2],
+      "fraud_range": [3, 12],
+      "overlap": false
+    },
+    "amount_deviation": {
+      "legitimate_range": [0.3, 2.2],
+      "fraud_range": [4.5, 14.0],
+      "overlap": false
+    }
+  },
+  "runtime_mitigation_architecture": {
+    "dimensions_count": 9,
+    "dimensions": [
+      "fraud",
+      "anomaly",
+      "amount",
+      "velocity",
+      "device",
+      "location",
+      "recipient",
+      "merchant",
+      "security_ato"
+    ],
+    "unsupervised_anomaly_layer": "Isolation Forest (contamination=0.08)",
+    "proactive_warning_enabled": true,
+    "database_backed_features": true
+  }
+}

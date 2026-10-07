@@ -58,7 +58,13 @@ class CardTransaction(Base):
     risk_level = Column(String(20), default="LOW") # LOW, MEDIUM, HIGH, CRITICAL
     decision = Column(String(20), default="ALLOW") # ALLOW, CHALLENGE_2FA, HOLD_FOR_REVIEW, BLOCK
     reasons = Column(Text, default="[]")
-    status = Column(String(30), default="APPROVED")
+    risk_breakdown = Column(Text, default="{}") # JSON containing multi-dimensional risk scores
+    fraud_score = Column(Integer, default=0)
+    anomaly_score = Column(Integer, default=0)
+    device_id = Column(String(50), default="DEV-APP-01")
+    recommended_action = Column(String(100), default="ALLOW")
+    model_version = Column(String(80), default="fraud-xgb-1.0.0+anomaly-iforest-1.0.0")
+    status = Column(String(30), default="APPROVED") # PENDING, APPROVED, SUCCESSFUL, DECLINED, FAILED, CANCELLED, REFUNDED, HELD_FOR_REVIEW, CHALLENGE_REQUIRED
     created_at = Column(DateTime, default=datetime.utcnow)
 
 class Complaint(Base):

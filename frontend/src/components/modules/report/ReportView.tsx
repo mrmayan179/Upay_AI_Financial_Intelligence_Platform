@@ -303,6 +303,64 @@ export const ReportView: React.FC<ReportViewProps> = ({
               </div>
             </div>
 
+            {/* Quick Test Scenarios for Judge Domains */}
+            <div className="mb-3">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5 font-sans">
+                {isBn ? 'দ্রুত পরীক্ষামূলক ডোমেইনসমূহ (৭টি ক্যাটাগরি):' : 'Judge Test Scenarios (7 Complaint Domains):'}
+              </span>
+              <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("My money was deducted 1400 BDT for QR payment TXN-99881 but receiver did not get it.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-upayBlue border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  💳 Payment Stuck
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("Someone withdrew 5000 BDT from my account without my permission, this is unauthorized fraudulent transaction!")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  🚨 Unauthorized / Fraud
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("My smart card online international payment USD 45 failed at Netflix but limit was reduced.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-amber-50 hover:text-amber-800 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  🌐 Card International
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("Cash out at agent point gave me 2000 BDT less than deducted balance.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  🏧 Cash-Out Dispute
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("Inter-bank BEFTN transfer of 10000 BDT delayed for 48 hours not credited to recipient bank.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-blue-50 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  🏦 Bank Transfer Delay
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("Merchant refund of 2500 BDT not processed yet after return.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-purple-50 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  🔄 Refund Delay
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTextChange("App crashed during transaction checkout and session was frozen.")}
+                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 transition cursor-pointer font-medium"
+                >
+                  ⚙️ App Glitch
+                </button>
+              </div>
+            </div>
+
             <form onSubmit={handleCreateCase} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
@@ -313,8 +371,8 @@ export const ReportView: React.FC<ReportViewProps> = ({
                   value={complaintText}
                   onChange={(e) => handleTextChange(e.target.value)}
                   placeholder={isBn 
-                    ? "যেমন: আজ সকালে মীনা বাজার কিউআর পেমেন্টে ১৪০০ টাকা কেটেছে কিন্তু মার্চেন্ট পেমেন্ট পায়নি..." 
-                    : "e.g., Today morning 1400 BDT was deducted for Meena Bazar QR payment but merchant terminal timed out..."}
+                    ? "যেমন: আজ সকালে কিউআর পেমেন্টে ১৪০০ টাকা কেটেছে কিন্তু মার্চেন্ট পেমেন্ট পায়নি..." 
+                    : "e.g., Today morning 1400 BDT was deducted for QR payment but merchant terminal timed out..."}
                   className="w-full p-3 rounded-2xl border border-slate-200 text-xs font-sans focus:outline-none focus:border-upayBlue focus:ring-1 focus:ring-upayBlue resize-none"
                   required
                 />
@@ -322,19 +380,54 @@ export const ReportView: React.FC<ReportViewProps> = ({
 
               {/* Real-time AI Classification Preview */}
               {aiPreview && (
-                <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-bold text-upayBlue flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {isBn ? 'এআই বিশ্লেষণ' : 'Realtime NLP Prediction'}
+                <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs animate-in fade-in duration-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-upayBlue flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>{isBn ? 'রিয়েলটাইম NLP বিশ্লেষণ' : 'Real-Time NLP Intent Classification'}</span>
                     </span>
-                    <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-mono text-slate-600">
+                    <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-mono font-bold text-slate-700 shadow-2xs">
                       {(aiPreview.confidence * 100).toFixed(0)}% Confidence
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 mt-2">
-                    <div>{isBn ? 'ক্যাটাগরি:' : 'Category:'} <strong className="text-slate-900">{aiPreview.category}</strong></div>
-                    <div>{isBn ? 'প্রায়োরিটি:' : 'Priority:'} <strong className="text-slate-900">{aiPreview.priority}</strong></div>
-                    <div className="col-span-2">{isBn ? 'দায়িত্বপ্রাপ্ত দল:' : 'Assigned Team:'} <strong>{aiPreview.suggested_team}</strong></div>
+
+                  <div className="p-2.5 bg-white rounded-xl border border-blue-100 space-y-1.5 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Intent:</span>
+                      <span className="font-mono font-bold text-upayBlue">{aiPreview.intent || aiPreview.category}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Category & Priority:</span>
+                      <span className="font-bold text-slate-800">
+                        {aiPreview.category} • <span className={aiPreview.priority === 'CRITICAL' || aiPreview.priority === 'HIGH' ? 'text-rose-600' : 'text-slate-700'}>{aiPreview.priority}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Assigned Team:</span>
+                      <span className="font-bold text-slate-800">{aiPreview.suggested_team}</span>
+                    </div>
+                    {aiPreview.recommended_next_step && (
+                      <div className="pt-1 border-t border-slate-100">
+                        <span className="text-slate-500 block">Recommended Action:</span>
+                        <span className="font-medium text-slate-800">{aiPreview.recommended_next_step}</span>
+                      </div>
+                    )}
+                    {aiPreview.extracted_entities && (aiPreview.extracted_entities.amount || aiPreview.extracted_entities.transaction_ref) && (
+                      <div className="pt-1 border-t border-slate-100 flex items-center gap-2 text-[10px] font-mono text-slate-600">
+                        {aiPreview.extracted_entities.amount && <span>Amount: ৳{aiPreview.extracted_entities.amount}</span>}
+                        {aiPreview.extracted_entities.transaction_ref && <span>Ref: {aiPreview.extracted_entities.transaction_ref}</span>}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Deterministic Safety Rule Indicator */}
+                  <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-[10px] text-amber-900 flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span>
+                      {isBn 
+                        ? 'নিরাপত্তা গার্ড: আর্থিক লেনদেন সরাসরি কোনো AI দিয়ে করা যাবে না, অপারেশন অফিসার যাচাই করবেন।'
+                        : 'Deterministic Safety Enforced: Financial ledger mutations strictly require authorized ops approval.'}
+                    </span>
                   </div>
                 </div>
               )}

@@ -55,6 +55,42 @@ export interface Card {
   available_usd: number;
 }
 
+export interface RiskDimension {
+  score: number;
+  level: string;
+  reason: string;
+  source: string;
+}
+
+export interface ProactiveWarning {
+  is_warning_active: boolean;
+  title: string;
+  subtitle: string;
+  reasons: string[];
+  recommended_action: string;
+  disclaimer: string;
+  amount_deviation_ratio: number;
+}
+
+export interface CardPreCheckResult {
+  card_id: string;
+  amount_usd: number;
+  amount_bdt: number;
+  historical_avg_amount_bdt: number;
+  amount_deviation: number;
+  merchant_name: string;
+  channel: string;
+  country: string;
+  risk: Record<string, RiskDimension>;
+  composite_score: number;
+  final_level: string;
+  decision: string;
+  recommended_action: string;
+  proactive_warning: ProactiveWarning;
+  reasons: string[];
+  model_version: string;
+}
+
 export interface CardTransaction {
   transaction_id: string;
   card_id: string;
@@ -63,9 +99,17 @@ export interface CardTransaction {
   merchant_name: string;
   channel: string;
   risk_score: number;
+  composite_score?: number;
   risk_level: string;
+  final_level?: string;
   decision: string;
   reasons: string[];
+  risk?: Record<string, RiskDimension>;
+  fraud_score?: number;
+  anomaly_score?: number;
+  recommended_action?: string;
+  proactive_warning?: ProactiveWarning;
+  model_version?: string;
   status: string;
   created_at: string;
 }
