@@ -17,6 +17,27 @@ interface CreditViewProps {
   onOpenNotifications?: () => void;
 }
 
+const DEMO_CREDIT_DEFAULT: CreditProfile = {
+  readiness_score: 86,
+  risk_probability: 0.14,
+  risk_category: 'LOW / DEMO RISK',
+  suggested_limit_range_bdt: 'BDT 20,000 - BDT 30,000',
+  recommendation: 'RECOMMENDED_FOR_PARTNER_REVIEW',
+  disclaimer: 'Demonstration readiness signal only. Final lending decisions require partner licensed bank underwriting.',
+  positive_factors: [
+    '+ Stable monthly salary inflow exceeding BDT 65,000',
+    '+ 100% on-time historical micro-credit repayment track record',
+    '+ Healthy average daily wallet balance retention (>65%)'
+  ],
+  negative_factors: [
+    '- Elevated cash-out ratio (28% of incoming funds converted to physical cash)',
+    '- Limited utility bill payment history recorded through Upay app'
+  ],
+  review_status: 'UNDER_BANK_REVIEW',
+  review_requested: true,
+  model_version: 'credit-xgb-1.0.0'
+};
+
 export const CreditView: React.FC<CreditViewProps> = ({ 
   credit, 
   onRefresh,
@@ -31,22 +52,13 @@ export const CreditView: React.FC<CreditViewProps> = ({
   const [requesting, setRequesting] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
 
-  if (!credit) {
-    return (
-      <div className={`w-full flex flex-col bg-white text-slate-800 ${isDesktop ? 'rounded-3xl shadow-xl overflow-hidden pb-12' : 'pb-28'}`}>
-        <UpayPageHeader
-          moduleName={isBn ? 'লোন ও ক্রেডিট স্কোর' : 'Credit Readiness & Loans'}
-          moduleBadge="TreeSHAP"
-          profile={profile}
-          onOpenBalanceSheet={onOpenBalanceSheet}
-          onOpenNotifications={onOpenNotifications}
-        />
-        <div className="p-12 text-center text-slate-500 font-sans">
-          {isBn ? 'ক্রেডিট তথ্য লোড হচ্ছে...' : 'Loading credit readiness profile...'}
-        </div>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    if (!credit) {
+      onRefresh();
+    }
+  }, [credit]);
+
+  const activeCredit = credit || DEMO_CREDIT_DEFAULT;
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -66,7 +78,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
     }
   };
 
-  const isLow = credit.risk_category.includes("LOW") || credit.risk_category.includes("PRIME");
+  const isLow = activeCredit.risk_category.includes("LOW") || activeCredit.risk_category.includes("PRIME");
 
   return (
     <div className={`w-full flex flex-col bg-white text-slate-800 ${isDesktop ? 'rounded-3xl shadow-xl overflow-hidden pb-12' : 'pb-28'}`}>
@@ -133,7 +145,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center">
-                  <span className="text-3xl font-extrabold font-mono tracking-tight">{credit.readiness_score}</span>
+                  <span className="text-3xl font-extrabold font-mono tracking-tight">{activeCredit.readiness_score}</span>
                   <span className="text-[10px] text-slate-400 tracking-widest uppercase font-mono">
                     {isBn ? '১০০ এর মধ্যে' : 'Out of 100'}
                   </span>
@@ -141,7 +153,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
               </div>
 
               <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold mb-3 font-mono">
-                {credit.risk_category}
+                {activeCredit.risk_category}
               </div>
 
               {/* Suggested Borrowing Range */}
@@ -150,7 +162,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
                   {isBn ? 'মডেল নির্দেশিত সম্ভাব্য মাইক্রো-লোন রেঞ্জ:' : 'Eligible Pre-Approved Nano-Loan Range:'}
                 </span>
                 <span className="text-lg font-bold text-amber-300 font-mono mt-0.5 block">
-                  {credit.suggested_limit_range_bdt}
+                  {activeCredit.suggested_limit_range_bdt}
                 </span>
               </div>
             </section>
@@ -171,7 +183,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
                 </div>
               </div>
 
-              {credit.review_requested ? (
+              {activeCredit.review_requested ? (
                 <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[#0047BA] shrink-0" />
                   <span>
@@ -231,7 +243,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
                   {isBn ? '✓ ইতিবাচক স্কোর প্রবৃদ্ধি (+ পয়েন্ট)' : '✓ Positive Readiness Drivers (+ Boost)'}
                 </span>
                 <div className="space-y-2">
-                  {credit.positive_factors.map((factor, i) => (
+                  {activeCredit.positive_factors.map((factor, i) => (
                     <div key={i} className="p-3 rounded-xl bg-white border border-emerald-200/80 flex items-start gap-2.5 text-xs text-emerald-950 shadow-2xs">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span className="leading-snug">{factor}</span>
@@ -246,7 +258,7 @@ export const CreditView: React.FC<CreditViewProps> = ({
                   {isBn ? '⚠ উন্নতির সুযোগ (- ঝুঁকি হ্রাস পরামর্শ)' : '⚠ Improvement Areas (- Risk Weight)'}
                 </span>
                 <div className="space-y-2">
-                  {credit.negative_factors.map((factor, i) => (
+                  {activeCredit.negative_factors.map((factor, i) => (
                     <div key={i} className="p-3 rounded-xl bg-white border border-amber-200/80 flex items-start gap-2.5 text-xs text-amber-950 shadow-2xs">
                       <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                       <span className="leading-snug">{factor}</span>

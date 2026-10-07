@@ -14,18 +14,63 @@ import {
 const ENV_BACKEND_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
 const API_BASE = `${ENV_BACKEND_URL}/api/v1`;
 
+let authPromise: Promise<string> | null = null;
+
+async function ensureToken(): Promise<string> {
+  const existing = typeof window !== 'undefined' ? localStorage.getItem('upay_token') : null;
+  if (existing) return existing;
+  if (!authPromise) {
+    authPromise = fetch(`${API_BASE}/auth/demo-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number: '01771449164', pin: '1234' })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.access_token) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('upay_token', data.access_token);
+            localStorage.setItem('upay_authenticated', 'true');
+          }
+          return data.access_token;
+        }
+        return '';
+      })
+      .catch(() => '')
+      .finally(() => {
+        authPromise = null;
+      });
+  }
+  return authPromise;
+}
+
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('upay_token') : null;
+  let token = typeof window !== 'undefined' ? localStorage.getItem('upay_token') : null;
+  if (!token && !url.startsWith('/auth/')) {
+    token = await ensureToken();
+  }
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
     ...(options.headers as Record<string, string> || {})
   };
   
-  const res = await fetch(`${API_BASE}${url}`, {
+  let res = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers
   });
+  
+  if (res.status === 401 && !url.startsWith('/auth/')) {
+    if (typeof window !== 'undefined') localStorage.removeItem('upay_token');
+    const freshToken = await ensureToken();
+    if (freshToken) {
+      headers['Authorization'] = `Bearer ${freshToken}`;
+      res = await fetch(`${API_BASE}${url}`, {
+        ...options,
+        headers
+      });
+    }
+  }
   
   if (!res.ok) {
     const errorText = await res.text();
